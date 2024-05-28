@@ -1,0 +1,244 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CreditCalculatorWithAnnuityPayments</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.munsun.calculator.services.impl.providers.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: CreditCalculatorWithAnnuityPayments (com.munsun.calculator.services.impl.providers.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CreditCalculatorWithAnnuityPayments</td>
+<td class="coverageStat">
+  <span class="percent">
+    14,3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,8%
+  </span>
+  <span class="absValue">
+    (1/57)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CreditCalculatorWithAnnuityPayments$$EnhancerBySpringCGLIB$$fafbc9c3</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    14,3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,8%
+  </span>
+  <span class="absValue">
+    (1/57)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.munsun.calculator.services.impl.providers.impl;
+&nbsp;
+&nbsp;import com.munsun.calculator.dto.request.ScoringDataDto;
+&nbsp;import com.munsun.calculator.dto.response.CreditDto;
+&nbsp;import com.munsun.calculator.dto.response.LoanOfferDto;
+&nbsp;import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
+&nbsp;import com.munsun.calculator.services.impl.providers.CreditCalculator;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.context.annotation.Profile;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.math.MathContext;
+&nbsp;import java.math.RoundingMode;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;@Component
+&nbsp;@Profile(&quot;default&quot;)
+<b class="fc">&nbsp;public class CreditCalculatorWithAnnuityPayments implements CreditCalculator {</b>
+&nbsp;    @Value(&quot;${service.calculator.round}&quot;)
+&nbsp;    private Integer countDigitAfterPoint;
+&nbsp;    @Value(&quot;${service.insurance.cost}&quot;)
+&nbsp;    private BigDecimal insurance;
+&nbsp;    @Value(&quot;${service.rate}&quot;)
+&nbsp;    private BigDecimal rate;
+&nbsp;    @Value(&quot;${scoring.filters.soft.salary_client.change_rate}&quot;)
+&nbsp;    private BigDecimal changeRateValueSalaryClient;
+&nbsp;    @Value(&quot;${scoring.filters.soft.insurance.change_rate}&quot;)
+&nbsp;    private BigDecimal changeRateValueInsurance;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public LoanOfferDto generateLoanOffer(BigDecimal amount, Integer term, boolean isSalaryClient, boolean isInsuranceEnable) {
+<b class="nc">&nbsp;        BigDecimal totalAmount = amount;</b>
+<b class="nc">&nbsp;        BigDecimal newRate = rate;</b>
+<b class="nc">&nbsp;        if(isSalaryClient) {</b>
+<b class="nc">&nbsp;            newRate = newRate.add(changeRateValueSalaryClient);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if(isInsuranceEnable) {</b>
+<b class="nc">&nbsp;            totalAmount = amount.add(insurance);</b>
+<b class="nc">&nbsp;            newRate = newRate.add(changeRateValueInsurance);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        BigDecimal monthlyRate = getMonthlyRate(newRate);</b>
+<b class="nc">&nbsp;        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, term, newRate).setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN);</b>
+<b class="nc">&nbsp;        List&lt;PaymentScheduleElementDto&gt; schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, term);</b>
+<b class="nc">&nbsp;        BigDecimal psk = getPsk(schedule);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new LoanOfferDto(</b>
+<b class="nc">&nbsp;                UUID.randomUUID(),</b>
+&nbsp;                amount,
+&nbsp;                psk,
+&nbsp;                term,
+&nbsp;                monthlyPayment,
+&nbsp;                newRate,
+<b class="nc">&nbsp;                isInsuranceEnable,</b>
+<b class="nc">&nbsp;                isSalaryClient</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CreditDto calculate(ScoringDataDto scoringDataDto, BigDecimal newRate, BigDecimal otherService) {
+<b class="nc">&nbsp;        BigDecimal monthlyRate = getMonthlyRate(newRate);</b>
+<b class="nc">&nbsp;        BigDecimal totalAmount = scoringDataDto.amount().add(otherService);</b>
+<b class="nc">&nbsp;        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, scoringDataDto.term(), newRate);</b>
+<b class="nc">&nbsp;        List&lt;PaymentScheduleElementDto&gt; schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, scoringDataDto.term());</b>
+<b class="nc">&nbsp;        BigDecimal psk = getPsk(schedule);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new CreditDto(</b>
+<b class="nc">&nbsp;                scoringDataDto.amount(),</b>
+<b class="nc">&nbsp;                scoringDataDto.term(),</b>
+<b class="nc">&nbsp;                monthlyPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</b>
+&nbsp;                newRate,
+&nbsp;                psk,
+<b class="nc">&nbsp;                scoringDataDto.isInsuranceEnabled(),</b>
+<b class="nc">&nbsp;                scoringDataDto.isSalaryClient(),</b>
+&nbsp;                schedule
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    private BigDecimal getPsk(List&lt;PaymentScheduleElementDto&gt; schedule) {
+<b class="nc">&nbsp;        BigDecimal summaInterestRatePayment = schedule.stream()</b>
+<b class="nc">&nbsp;                .map(PaymentScheduleElementDto::interestPayment)</b>
+<b class="nc">&nbsp;                .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+<b class="nc">&nbsp;        BigDecimal summaDebtPayment = schedule.stream()</b>
+<b class="nc">&nbsp;                .map(PaymentScheduleElementDto::debtPayment)</b>
+<b class="nc">&nbsp;                .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+<b class="nc">&nbsp;        return summaInterestRatePayment.add(summaDebtPayment);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;PaymentScheduleElementDto&gt; getSchedule(BigDecimal monthlyPayment, BigDecimal monthlyRate, BigDecimal totalAmount, Integer term) {
+<b class="nc">&nbsp;        List&lt;PaymentScheduleElementDto&gt; schedule = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        BigDecimal remainingDebt = totalAmount;</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt;= term; i++) {</b>
+<b class="nc">&nbsp;            LocalDate month = LocalDate.now().plusMonths(i);</b>
+<b class="nc">&nbsp;            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate);</b>
+<b class="nc">&nbsp;            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment);</b>
+<b class="nc">&nbsp;            remainingDebt = remainingDebt.subtract(debtPayment);</b>
+&nbsp;
+<b class="nc">&nbsp;            PaymentScheduleElementDto dto = new PaymentScheduleElementDto(</b>
+<b class="nc">&nbsp;                    i,</b>
+&nbsp;                    month,
+<b class="nc">&nbsp;                    monthlyPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</b>
+<b class="nc">&nbsp;                    interestPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</b>
+<b class="nc">&nbsp;                    debtPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</b>
+<b class="nc">&nbsp;                    remainingDebt.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN)</b>
+&nbsp;            );
+<b class="nc">&nbsp;            schedule.add(dto);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return schedule;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private BigDecimal getMonthlyPayment(BigDecimal totalAmount, Integer term, BigDecimal newRate) {
+<b class="nc">&nbsp;        BigDecimal monthlyPercent = getMonthlyRate(newRate);</b>
+<b class="nc">&nbsp;        return totalAmount.multiply(</b>
+<b class="nc">&nbsp;                monthlyPercent.add(</b>
+<b class="nc">&nbsp;                        monthlyPercent.divide(</b>
+<b class="nc">&nbsp;                                BigDecimal.ONE.add(monthlyPercent).pow(term).subtract(BigDecimal.ONE),</b>
+<b class="nc">&nbsp;                                new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN)</b>
+&nbsp;                        )
+&nbsp;                )
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    private BigDecimal getMonthlyRate(BigDecimal newRate) {
+<b class="nc">&nbsp;        return newRate.divide(BigDecimal.valueOf(100))</b>
+<b class="nc">&nbsp;                .divide(BigDecimal.valueOf(12), new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-28 12:54</div>
+</div>
+</body>
+</html>

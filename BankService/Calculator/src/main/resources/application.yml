@@ -1,0 +1,53 @@
+spring:
+  profiles:
+    active: default
+
+service:
+  rate: 20
+  calculator:
+    round: 2
+  insurance:
+    cost: 10000
+
+scoring:
+  filters:
+    soft:
+      salary_client:
+        change_rate: -2
+      insurance:
+        change_rate: -1
+      work_status:
+        self_employed:
+          change_rate: 1
+        businessman:
+          change_rate: 2
+      work_position:
+        middle_manager:
+          change_rate: -2
+        top_manager:
+          change_rate: -3
+      marital_status:
+        married:
+          change_rate: -3
+        single:
+          change_rate: 1
+      gender_age:
+        not_binary:
+          change_rate: 7
+        age_male:
+          min: 30
+          max: 55
+        age_female:
+          min: 32
+          max: 60
+          change_rate: -3
+    hard:
+      loan_amount:
+        count_salary: 25
+      age:
+        min: 20
+        max: 65
+      work:
+        experience:
+          total: 18
+          current: 3
