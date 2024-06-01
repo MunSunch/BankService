@@ -10,13 +10,18 @@ import com.munsun.calculator.dto.request.enums.Position;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
 import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
+import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TestUtils {
+    private static final String nameSalaryFilter = "SalaryClientSoftScoringFilter";
+    private static final String nameInsuranceFilter = "InsuranceSoftScoringFilter";
     public static ScoringDataDto getScoringDataDto() {
         return new ScoringDataDto(
                 BigDecimal.valueOf(10_000),
@@ -562,7 +567,7 @@ public class TestUtils {
 
     public static LoanStatementRequestDto getLoanStatementRequestDto() {
         return new LoanStatementRequestDto(
-                new BigDecimal("50000"),
+                new BigDecimal("10000"),
                 12,
                 "Munir",
                 "Sunchalyaev",
@@ -574,16 +579,12 @@ public class TestUtils {
         );
     }
 
-    public static LoanOfferDto getLoanOfferDto() {
-        return new LoanOfferDto(
-                UUID.randomUUID(),
-                new BigDecimal("10000"),
-                new BigDecimal("11000"),
-                12,
-                new BigDecimal("1000"),
-                new BigDecimal("10"),
-                false,
-                false
+    public static List<LoanOfferDto> getDifferentPaymentListLoanOffersDtoAmount10_000Term12() {
+        return List.of(
+                getDifferentPaymentLoanOfferDtoAmount10_000Term12NotSalaryClentAndNotInsurance(),
+                getDifferentPaymentLoanOfferDtoAmount10_000Term12SalaryClient(),
+                getDifferentPaymentLoanOfferDtoAmount10_000Term12Insurance(),
+                getDifferentPaymentLoanOfferDtoAmount10_000Term12()
         );
     }
 
@@ -591,9 +592,9 @@ public class TestUtils {
         return new LoanOfferDto(
                 UUID.randomUUID(),
                 new BigDecimal("10000"),
-                new BigDecimal("12623.67"),
+                new BigDecimal("11086.03"),
                 12,
-                new BigDecimal("1100.00"),
+                new BigDecimal("920.00"),
                 new BigDecimal("20"),
                 false,
                 false
@@ -604,9 +605,9 @@ public class TestUtils {
         return new LoanOfferDto(
                 UUID.randomUUID(),
                 new BigDecimal("10000"),
-                new BigDecimal("12361.32"),
+                new BigDecimal("10977.44"),
                 12,
-                new BigDecimal("1000.00"),
+                new BigDecimal("910.00"),
                 new BigDecimal("18"),
                 false,
                 true
@@ -617,9 +618,9 @@ public class TestUtils {
         return new LoanOfferDto(
                 UUID.randomUUID(),
                 new BigDecimal("10000"),
-                new BigDecimal("24985.11"),
+                new BigDecimal("22063.60"),
                 12,
-                new BigDecimal("2100.00"),
+                new BigDecimal("1800.00"),
                 new BigDecimal("19"),
                 true,
                 false
@@ -630,12 +631,21 @@ public class TestUtils {
         return new LoanOfferDto(
                 UUID.randomUUID(),
                 new BigDecimal("10000"),
-                new BigDecimal("24460.36"),
+                new BigDecimal("21846.36"),
                 12,
-                new BigDecimal("2000.00"),
+                new BigDecimal("1800.00"),
                 new BigDecimal("17"),
                 true,
                 true
+        );
+    }
+
+    public static List<LoanOfferDto> getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12() {
+        return List.of(
+                getAnnuitentPaymentLoanOfferDtoAmount10_000Term12(),
+                getAnnuitentPaymentLoanOfferDtoAmount10_000Term12SalaryClient(),
+                getAnnuitentPaymentLoanOfferDtoAmount10_000Term12Insurance(),
+                getAnnuitentPaymentLoanOfferDtoAmount10_000Term12NotSalaryClentAndNotInsurance()
         );
     }
 
@@ -816,20 +826,45 @@ public class TestUtils {
                 "46979"
         );
     }
+
+    public static List<SimpleScoringInfoDto> getSimpleScoringInfoDto() {
+        return List.of(
+                getSimpleScoringInfoDtoNotSalaryClientAndNotInsurance(),
+                getSimpleScoringInfoDtoSalaryClient(),
+                getSimpleScoringInfoDtoInsurance(),
+                getSimpleScoringInfoDtoSalaryAndInsurance()
+        );
+    }
+
+    public static SimpleScoringInfoDto getSimpleScoringInfoDtoSalaryClient() {
+        return new SimpleScoringInfoDto(
+                        Map.of(nameSalaryFilter, true,
+                                nameInsuranceFilter, false),
+                        new RateAndOtherServiceDto(new BigDecimal("18"), BigDecimal.ZERO)
+                );
+    }
+
+    public static SimpleScoringInfoDto getSimpleScoringInfoDtoNotSalaryClientAndNotInsurance() {
+        return new SimpleScoringInfoDto(
+                Map.of(nameSalaryFilter, false,
+                        nameInsuranceFilter, false),
+                new RateAndOtherServiceDto(new BigDecimal("20"), BigDecimal.ZERO)
+        );
+    }
+
+    public static SimpleScoringInfoDto getSimpleScoringInfoDtoInsurance() {
+        return new SimpleScoringInfoDto(
+                Map.of(nameSalaryFilter, false,
+                        nameInsuranceFilter, true),
+                new RateAndOtherServiceDto(new BigDecimal("19"), new BigDecimal("10000"))
+        );
+    }
+
+    public static SimpleScoringInfoDto getSimpleScoringInfoDtoSalaryAndInsurance() {
+        return new SimpleScoringInfoDto(
+                Map.of(nameSalaryFilter, true,
+                        nameInsuranceFilter, true),
+                new RateAndOtherServiceDto(new BigDecimal("17"), new BigDecimal("10000"))
+        );
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

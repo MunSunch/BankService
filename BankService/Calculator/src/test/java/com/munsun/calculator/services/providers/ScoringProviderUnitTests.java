@@ -2,6 +2,7 @@ package com.munsun.calculator.services.providers;
 
 import com.munsun.calculator.TestUtils;
 import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
 import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -170,5 +172,18 @@ public class ScoringProviderUnitTests {
             scoringProvider.fullScoring(TestUtils.getScoringDataDtoLessTotalWorkExperience());
             scoringProvider.fullScoring(TestUtils.getScoringDataDtoUnemployedWorkStatus());
         });
+    }
+
+    @DisplayName("Test simple scoring for loan offer")
+    @Test
+    public void givenScoringInfoWithSalaryAndInsurance_whenSimpleScoring_thenReturnListSimpleSoringInfoSize4() {
+        List<SimpleScoringInfoDto> expected = TestUtils.getSimpleScoringInfoDto();
+
+        var actual = scoringProvider.simpleScoring();
+
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(expected.size())
+                .hasSameElementsAs(expected);
     }
 }

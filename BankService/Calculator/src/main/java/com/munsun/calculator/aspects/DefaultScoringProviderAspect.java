@@ -2,6 +2,7 @@ package com.munsun.calculator.aspects;
 
 import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -9,6 +10,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Aspect
@@ -16,6 +18,9 @@ import java.math.BigDecimal;
 public class DefaultScoringProviderAspect {
     @Pointcut("execution(* com.munsun.calculator.services.impl.providers.impl.DefaultScoringProvider.fullScoring(*))")
     public void executionFullScoring() {}
+
+    @Pointcut("execution(* com.munsun.calculator.services.impl.providers.impl.DefaultScoringProvider.simpleScoring())")
+    public void executionSimpleScoring() {}
 
     @Pointcut("execution(public boolean com.munsun.calculator.services.impl.providers.impl.filters.ScoringHardFilter+.check(*))")
     public void executionHardFilter() {}
@@ -50,6 +55,14 @@ public class DefaultScoringProviderAspect {
             returning = "result", argNames = "scoringDataDto,result")
     public void loggingResultScoringProvider(ScoringDataDto scoringDataDto, RateAndOtherServiceDto result) {
         log.info("Result scoring data={} is {}, other service={}", scoringDataDto, result.newRate(), result.otherService());
+    }
+
+    @AfterReturning(
+            value = "executionSimpleScoring()",
+            returning = "result")
+    public void loggingResultScoringProvider(List<SimpleScoringInfoDto> result) {
+        log.debug("Possible offers have been formed: {}", result);
+        log.info("Possible offers have been formed");
     }
 
     @AfterThrowing(

@@ -4,7 +4,10 @@ import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
 import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
+import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.InsuranceSoftScoringFilter;
+import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.SalaryClientSoftScoringFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -22,41 +25,33 @@ import java.util.UUID;
 public class CreditCalculatorWithAnnuityPayments implements CreditCalculator {
     @Value("${service.calculator.round}")
     private Integer countDigitAfterPoint;
-    @Value("${service.insurance.cost}")
-    private BigDecimal insurance;
-    @Value("${service.rate}")
-    private BigDecimal rate;
-    @Value("${scoring.filters.soft.salary_client.change_rate}")
-    private BigDecimal changeRateValueSalaryClient;
-    @Value("${scoring.filters.soft.insurance.change_rate}")
-    private BigDecimal changeRateValueInsurance;
 
     @Override
-    public LoanOfferDto generateLoanOffer(BigDecimal amount, Integer term, boolean isSalaryClient, boolean isInsuranceEnable) {
-        BigDecimal totalAmount = amount;
-        BigDecimal newRate = rate;
-        if(isSalaryClient) {
-            newRate = newRate.add(changeRateValueSalaryClient);
-        }
-        if(isInsuranceEnable) {
-            totalAmount = amount.add(insurance);
-            newRate = newRate.add(changeRateValueInsurance);
-        }
-        BigDecimal monthlyRate = getMonthlyRate(newRate);
-        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, term, newRate).setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN);
-        List<PaymentScheduleElementDto> schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, term);
-        BigDecimal psk = getPsk(schedule);
+    public List<LoanOfferDto> generateLoanOffer(BigDecimal amount, Integer term, List<SimpleScoringInfoDto> listInfo) {
+        List<LoanOfferDto> loanOffers = new ArrayList<>();
+        for(var info: listInfo) {
+            BigDecimal totalAmount = amount.add(info.rateAndOtherServiceDto().otherService());
+            BigDecimal newRate = info.rateAndOtherServiceDto().newRate();
+            BigDecimal monthlyRate = getMonthlyRate(newRate);
+            BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, term, newRate).setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN);
+            List<PaymentScheduleElementDto> schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, term);
+            BigDecimal psk = getPsk(schedule);
 
-        return new LoanOfferDto(
-                UUID.randomUUID(),
-                amount,
-                psk,
-                term,
-                monthlyPayment,
-                newRate,
-                isInsuranceEnable,
-                isSalaryClient
-        );
+            boolean isSalaryClient = info.filters().get(SalaryClientSoftScoringFilter.class.getSimpleName());
+            boolean isInsuranceEnabled = info.filters().get(InsuranceSoftScoringFilter.class.getSimpleName());
+
+            loanOffers.add(new LoanOfferDto(
+                    UUID.randomUUID(),
+                    amount,
+                    psk,
+                    term,
+                    monthlyPayment,
+                    newRate,
+                    isInsuranceEnabled,
+                    isSalaryClient
+            ));
+        }
+        return loanOffers;
     }
 
     @Override

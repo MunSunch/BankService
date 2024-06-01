@@ -10,6 +10,7 @@ import com.munsun.calculator.dto.request.enums.Position;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
 import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.impl.providers.impl.CreditCalculatorWithDifferentPayments;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,99 +92,78 @@ public class CreditCalculatorWithDifferentPaymentsUnitTests {
                 .isEqualTo(expectedRemainingDebt);
     }
 
-    @DisplayName("Test generate loan offer without insurance, client of the bank")
+    @DisplayName("Test generate loan offer without insurance and not client of the bank")
     @Test
     public void givenDataWithNotSalaryClientAndNotInsuranceForCredit_whenGenerateOffer_thenReturnLoanOffer() {
+        SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoNotSalaryClientAndNotInsurance();
         LoanOfferDto expected = TestUtils.getDifferentPaymentLoanOfferDtoAmount10_000Term12NotSalaryClentAndNotInsurance();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), expected.isSalaryClient(), expected.isInsuranceEnabled());
+        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+                .get(0);
 
         assertThat(actual)
-                .extracting(LoanOfferDto::isSalaryClient,
-                        LoanOfferDto::isInsuranceEnabled,
-                        LoanOfferDto::monthlyPayment,
-                        LoanOfferDto::requestedAmount,
-                        LoanOfferDto::totalAmount,
-                        LoanOfferDto::term,
-                        LoanOfferDto::rate)
-                .containsExactly(expected.isSalaryClient(),
-                        expected.isInsuranceEnabled(),
-                        expected.monthlyPayment(),
-                        expected.requestedAmount(),
-                        expected.totalAmount(),
-                        expected.term(),
-                        expected.rate());
+                .usingRecursiveComparison()
+                .ignoringFields("statementId")
+                .isEqualTo(expected);
     }
 
     @DisplayName("Test generate loan offer without insurance, client of the bank")
     @Test
     public void givenDataWithSalaryClientAndNotInsuranceForCredit_whenGenerateOffer_thenReturnLoanOffer() {
+        SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoSalaryClient();
         LoanOfferDto expected = TestUtils.getDifferentPaymentLoanOfferDtoAmount10_000Term12SalaryClient();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), expected.isSalaryClient(), expected.isInsuranceEnabled());
+        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+                .get(0);
 
         assertThat(actual)
-                .extracting(LoanOfferDto::isSalaryClient,
-                        LoanOfferDto::isInsuranceEnabled,
-                        LoanOfferDto::monthlyPayment,
-                        LoanOfferDto::requestedAmount,
-                        LoanOfferDto::totalAmount,
-                        LoanOfferDto::term,
-                        LoanOfferDto::rate)
-                .containsExactly(expected.isSalaryClient(),
-                        expected.isInsuranceEnabled(),
-                        expected.monthlyPayment(),
-                        expected.requestedAmount(),
-                        expected.totalAmount(),
-                        expected.term(),
-                        expected.rate());
+                .usingRecursiveComparison()
+                .ignoringFields("statementId")
+                .isEqualTo(expected);
     }
 
     @DisplayName("Test generate loan offer with insurance, not client of the bank")
     @Test
     public void givenDataWithNotSalaryClientAndInsuranceEnabledForCredit_whenGenerateOffer_thenReturnLoanOffer() {
+        SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoInsurance();
         LoanOfferDto expected = TestUtils.getDifferentPaymentLoanOfferDtoAmount10_000Term12Insurance();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), expected.isSalaryClient(), expected.isInsuranceEnabled());
+        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+                .get(0);
 
         assertThat(actual)
-                .extracting(LoanOfferDto::isSalaryClient,
-                        LoanOfferDto::isInsuranceEnabled,
-                        LoanOfferDto::monthlyPayment,
-                        LoanOfferDto::requestedAmount,
-                        LoanOfferDto::totalAmount,
-                        LoanOfferDto::term,
-                        LoanOfferDto::rate)
-                .containsExactly(expected.isSalaryClient(),
-                        expected.isInsuranceEnabled(),
-                        expected.monthlyPayment(),
-                        expected.requestedAmount(),
-                        expected.totalAmount(),
-                        expected.term(),
-                        expected.rate());
+                .usingRecursiveComparison()
+                .ignoringFields("statementId")
+                .isEqualTo(expected);
     }
 
     @DisplayName("Test generate loan offer with insurance and client of the bank")
     @Test
     public void givenDataWithSalaryClientAndInsuranceEnabledForCredit_whenGenerateOffer_thenReturnLoanOffer() {
+        SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoSalaryAndInsurance();
         LoanOfferDto expected = TestUtils.getDifferentPaymentLoanOfferDtoAmount10_000Term12();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), expected.isSalaryClient(), expected.isInsuranceEnabled());
+        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+                .get(0);
 
         assertThat(actual)
-                .extracting(LoanOfferDto::isSalaryClient,
-                        LoanOfferDto::isInsuranceEnabled,
-                        LoanOfferDto::monthlyPayment,
-                        LoanOfferDto::requestedAmount,
-                        LoanOfferDto::totalAmount,
-                        LoanOfferDto::term,
-                        LoanOfferDto::rate)
-                .containsExactly(expected.isSalaryClient(),
-                        expected.isInsuranceEnabled(),
-                        expected.monthlyPayment(),
-                        expected.requestedAmount(),
-                        expected.totalAmount(),
-                        expected.term(),
-                        expected.rate());
+                .usingRecursiveComparison()
+                .ignoringFields("statementId")
+                .isEqualTo(expected);
+    }
+
+    @DisplayName("Test generate list of loans")
+    @Test
+    public void givenListSimpleScoringInfoDto_whenGenerateLoanOffer_thenReturnListLoanOffers() {
+        List<SimpleScoringInfoDto> info = TestUtils.getSimpleScoringInfoDto();
+        List<LoanOfferDto> expectedOffers = TestUtils.getDifferentPaymentListLoanOffersDtoAmount10_000Term12();
+
+        List<LoanOfferDto> actualOffers = calculator.generateLoanOffer(new BigDecimal("10000"), 12, info);
+
+        assertThat(actualOffers)
+                .isNotNull()
+                .hasSize(expectedOffers.size())
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("statementId")
+                .isEqualTo(expectedOffers);
     }
 }

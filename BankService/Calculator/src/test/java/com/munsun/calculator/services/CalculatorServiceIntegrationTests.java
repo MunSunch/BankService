@@ -65,13 +65,15 @@ public class CalculatorServiceIntegrationTests {
     @Test
     public void givenLoanStatementRequestDto_whenCalculateLoan_thenListLoanOffersSize4() {
         LoanStatementRequestDto testLoanOffer = TestUtils.getLoanStatementRequestDto();
-        int expectedSize = 4;
+        List<LoanOfferDto> expectedOffers = TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12();
 
-        List<LoanOfferDto> offers = service.calculateLoan(testLoanOffer);
+        List<LoanOfferDto> actualOffers = service.calculateLoan(testLoanOffer);
 
-        assertThat(offers)
+        assertThat(actualOffers)
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(expectedSize);
+                .hasSize(expectedOffers.size())
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("statementId")
+                .isEqualTo(expectedOffers);
     }
 }

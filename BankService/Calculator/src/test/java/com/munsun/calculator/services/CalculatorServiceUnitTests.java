@@ -1,6 +1,7 @@
 package com.munsun.calculator.services;
 
 import com.munsun.calculator.TestUtils;
+import com.munsun.calculator.dto.response.LoanOfferDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -45,12 +47,9 @@ public class CalculatorServiceUnitTests {
     @DisplayName("Test calling calculator.generateLoanOffer(...) exactly four times")
     @Test
     public void givenGenerateLoanOfferReturnLoanOfferDto_whenCallCalculateLoan_thenCallGenerateLoanOfferFourTimes() {
-        int expectedCallTimes = 4;
-        when(calculator.generateLoanOffer(any(), any(), anyBoolean(), anyBoolean()))
-                .thenReturn(TestUtils.getLoanOfferDto());
-
         service.calculateLoan(TestUtils.getLoanStatementRequestDto());
 
-        verify(calculator, times(expectedCallTimes)).generateLoanOffer(any(), any(), anyBoolean(), anyBoolean());
+        verify(scoringProvider, atLeastOnce()).simpleScoring();
+        verify(calculator, atLeastOnce()).generateLoanOffer(any(), anyInt(), any());
     }
 }

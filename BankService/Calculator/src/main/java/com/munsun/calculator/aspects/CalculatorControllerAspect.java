@@ -31,8 +31,13 @@ public class CalculatorControllerAspect {
         return object;
     }
 
-    @Before("executeCalculatePossibleLoanEndpoint() && args(loanStatementRequestDto)")
-    public void loggingCalculatePossibleLoanEndpoint(LoanStatementRequestDto loanStatementRequestDto) {
-        log.info("Request: POST /offers; body={}", loanStatementRequestDto);
+    @Around("executeCalculatePossibleLoanEndpoint() && args(loanStatementRequestDto)")
+    public Object loggingCalculatePossibleLoanEndpoint(ProceedingJoinPoint point, LoanStatementRequestDto loanStatementRequestDto) throws Throwable {
+        log.info("Request: POST /offers");
+        log.debug("Request: POST /offers; body={}", loanStatementRequestDto);
+        Object object = point.proceed();
+        log.debug("Response: POST /offers; body={}", object);
+        log.info("Response: POST /offers");
+        return object;
     }
 }

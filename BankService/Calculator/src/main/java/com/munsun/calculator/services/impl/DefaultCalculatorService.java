@@ -4,6 +4,7 @@ import com.munsun.calculator.dto.request.LoanStatementRequestDto;
 import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.CalculatorService;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
@@ -28,11 +29,10 @@ public class DefaultCalculatorService implements CalculatorService {
 
     @Override
     public List<LoanOfferDto> calculateLoan(LoanStatementRequestDto loan) {
-        return List.of(creditCalculator.generateLoanOffer(loan.amount(), loan.term(), true, true),
-                       creditCalculator.generateLoanOffer(loan.amount(), loan.term(), true, false),
-                       creditCalculator.generateLoanOffer(loan.amount(), loan.term(), false, true),
-                       creditCalculator.generateLoanOffer(loan.amount(), loan.term(), false, false))
-                .stream().sorted((firstOfferLoan, secondOfferLoan) -> firstOfferLoan.rate().compareTo(secondOfferLoan.rate()))
+        List<SimpleScoringInfoDto> info = scoringProvider.simpleScoring();
+        return creditCalculator.generateLoanOffer(loan.amount(), loan.term(), info)
+                .stream()
+                .sorted((offer1, offer2) -> offer1.rate().subtract(offer2.rate()).intValue())
                 .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreditCalculatorWithAnnuityPayments.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Calculator</a> &gt; <a href="index.source.html" class="el_package">com.munsun.calculator.services.impl.providers.impl</a> &gt; <span class="el_source">CreditCalculatorWithAnnuityPayments.java</span></div><h1>CreditCalculatorWithAnnuityPayments.java</h1><pre class="source lang-java linenums">package com.munsun.calculator.services.impl.providers.impl;
+
+import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.response.CreditDto;
+import com.munsun.calculator.dto.response.LoanOfferDto;
+import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
+import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
+import com.munsun.calculator.services.impl.providers.CreditCalculator;
+import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.InsuranceSoftScoringFilter;
+import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.SalaryClientSoftScoringFilter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Component
+@Profile(&quot;default&quot;)
+<span class="fc" id="L25">public class CreditCalculatorWithAnnuityPayments implements CreditCalculator {</span>
+    @Value(&quot;${service.calculator.round}&quot;)
+    private Integer countDigitAfterPoint;
+
+    @Override
+    public List&lt;LoanOfferDto&gt; generateLoanOffer(BigDecimal amount, Integer term, List&lt;SimpleScoringInfoDto&gt; listInfo) {
+<span class="fc" id="L31">        List&lt;LoanOfferDto&gt; loanOffers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for(var info: listInfo) {</span>
+<span class="fc" id="L33">            BigDecimal totalAmount = amount.add(info.rateAndOtherServiceDto().otherService());</span>
+<span class="fc" id="L34">            BigDecimal newRate = info.rateAndOtherServiceDto().newRate();</span>
+<span class="fc" id="L35">            BigDecimal monthlyRate = getMonthlyRate(newRate);</span>
+<span class="fc" id="L36">            BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, term, newRate).setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN);</span>
+<span class="fc" id="L37">            List&lt;PaymentScheduleElementDto&gt; schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, term);</span>
+<span class="fc" id="L38">            BigDecimal psk = getPsk(schedule);</span>
+
+<span class="fc" id="L40">            boolean isSalaryClient = info.filters().get(SalaryClientSoftScoringFilter.class.getSimpleName());</span>
+<span class="fc" id="L41">            boolean isInsuranceEnabled = info.filters().get(InsuranceSoftScoringFilter.class.getSimpleName());</span>
+
+<span class="fc" id="L43">            loanOffers.add(new LoanOfferDto(</span>
+<span class="fc" id="L44">                    UUID.randomUUID(),</span>
+                    amount,
+                    psk,
+                    term,
+                    monthlyPayment,
+                    newRate,
+<span class="fc" id="L50">                    isInsuranceEnabled,</span>
+<span class="fc" id="L51">                    isSalaryClient</span>
+            ));
+<span class="fc" id="L53">        }</span>
+<span class="fc" id="L54">        return loanOffers;</span>
+    }
+
+    @Override
+    public CreditDto calculate(ScoringDataDto scoringDataDto, BigDecimal newRate, BigDecimal otherService) {
+<span class="fc" id="L59">        BigDecimal monthlyRate = getMonthlyRate(newRate);</span>
+<span class="fc" id="L60">        BigDecimal totalAmount = scoringDataDto.amount().add(otherService);</span>
+<span class="fc" id="L61">        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, scoringDataDto.term(), newRate);</span>
+<span class="fc" id="L62">        List&lt;PaymentScheduleElementDto&gt; schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, scoringDataDto.term());</span>
+<span class="fc" id="L63">        BigDecimal psk = getPsk(schedule);</span>
+
+<span class="fc" id="L65">        return new CreditDto(</span>
+<span class="fc" id="L66">                scoringDataDto.amount(),</span>
+<span class="fc" id="L67">                scoringDataDto.term(),</span>
+<span class="fc" id="L68">                monthlyPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</span>
+                newRate,
+                psk,
+<span class="fc" id="L71">                scoringDataDto.isInsuranceEnabled(),</span>
+<span class="fc" id="L72">                scoringDataDto.isSalaryClient(),</span>
+                schedule
+        );
+    }
+
+    private BigDecimal getPsk(List&lt;PaymentScheduleElementDto&gt; schedule) {
+<span class="fc" id="L78">        BigDecimal summaInterestRatePayment = schedule.stream()</span>
+<span class="fc" id="L79">                .map(PaymentScheduleElementDto::interestPayment)</span>
+<span class="fc" id="L80">                .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+<span class="fc" id="L81">        BigDecimal summaDebtPayment = schedule.stream()</span>
+<span class="fc" id="L82">                .map(PaymentScheduleElementDto::debtPayment)</span>
+<span class="fc" id="L83">                .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+<span class="fc" id="L84">        return summaInterestRatePayment.add(summaDebtPayment);</span>
+    }
+
+    private List&lt;PaymentScheduleElementDto&gt; getSchedule(BigDecimal monthlyPayment, BigDecimal monthlyRate, BigDecimal totalAmount, Integer term) {
+<span class="fc" id="L88">        List&lt;PaymentScheduleElementDto&gt; schedule = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L89">        BigDecimal remainingDebt = totalAmount;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int i = 1; i &lt;= term; i++) {</span>
+<span class="fc" id="L91">            LocalDate month = LocalDate.now().plusMonths(i);</span>
+<span class="fc" id="L92">            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate);</span>
+<span class="fc" id="L93">            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment);</span>
+<span class="fc" id="L94">            remainingDebt = remainingDebt.subtract(debtPayment);</span>
+
+<span class="fc" id="L96">            PaymentScheduleElementDto dto = new PaymentScheduleElementDto(</span>
+<span class="fc" id="L97">                    i,</span>
+                    month,
+<span class="fc" id="L99">                    monthlyPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</span>
+<span class="fc" id="L100">                    interestPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</span>
+<span class="fc" id="L101">                    debtPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),</span>
+<span class="fc" id="L102">                    remainingDebt.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN)</span>
+            );
+<span class="fc" id="L104">            schedule.add(dto);</span>
+        }
+<span class="fc" id="L106">        return schedule;</span>
+    }
+
+    private BigDecimal getMonthlyPayment(BigDecimal totalAmount, Integer term, BigDecimal newRate) {
+<span class="fc" id="L110">        BigDecimal monthlyPercent = getMonthlyRate(newRate);</span>
+<span class="fc" id="L111">        return totalAmount.multiply(</span>
+<span class="fc" id="L112">                monthlyPercent.add(</span>
+<span class="fc" id="L113">                        monthlyPercent.divide(</span>
+<span class="fc" id="L114">                                BigDecimal.ONE.add(monthlyPercent).pow(term).subtract(BigDecimal.ONE),</span>
+<span class="fc" id="L115">                                new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN)</span>
+                        )
+                )
+        );
+    }
+
+    private BigDecimal getMonthlyRate(BigDecimal newRate) {
+<span class="fc" id="L122">        return newRate.divide(BigDecimal.valueOf(100))</span>
+<span class="fc" id="L123">                .divide(BigDecimal.valueOf(12), new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
