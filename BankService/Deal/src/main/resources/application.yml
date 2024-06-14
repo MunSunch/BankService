@@ -1,0 +1,29 @@
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: Deal
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-main.xml
+  datasource:
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:8088/deal_db
+    driver-class-name: org.postgresql.Driver
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: full
+
+client:
+  calculator:
+    url: http://service-advice.ru
+
+logging:
+  level:
+    root: info

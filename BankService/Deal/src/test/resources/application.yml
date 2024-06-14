@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Deal
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-main.xml
+  datasource:
+    driver-class-name: org.h2.Driver
+
+client:
+  calculator:
+    url: http://service-advice.ru
