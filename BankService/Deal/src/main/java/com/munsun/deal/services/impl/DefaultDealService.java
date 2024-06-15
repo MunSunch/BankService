@@ -5,6 +5,8 @@ import com.munsun.deal.dto.request.LoanStatementRequestDto;
 import com.munsun.deal.dto.request.ScoringDataDto;
 import com.munsun.deal.dto.response.CreditDto;
 import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.exceptions.PrescoringException;
+import com.munsun.deal.exceptions.ScoringException;
 import com.munsun.deal.exceptions.StatementNotFoundException;
 import com.munsun.deal.mapping.ClientMapper;
 import com.munsun.deal.mapping.CreditMapper;
@@ -46,10 +48,11 @@ public class DefaultDealService implements DealService {
     public List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatement) {
         Client client = clientMapper.toClient(loanStatement);
             client.getPassport().setPassportUUID(UUID.randomUUID());
+        clientRepository.save(client);
         Statement statement = new Statement();
             statement.setCreationDate(LocalDate.now());
             statement.setStatus(ApplicationStatus.PREAPPROVAL, ChangeType.AUTOMATIC);
-            statement.setClient(clientRepository.save(client));
+            statement.setClient(client);
         statementRepository.save(statement);
         List<LoanOfferDto> offers;
         try {
@@ -58,6 +61,7 @@ public class DefaultDealService implements DealService {
             if(e.status() == 400 && e.contentUTF8().contains("prescoring")) {
                 statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
                 statementRepository.save(statement);
+                throw new PrescoringException(e.contentUTF8());
             }
             throw e;
         }
@@ -79,6 +83,7 @@ public class DefaultDealService implements DealService {
             if(e.status() == 500 && e.contentUTF8().contains("scoring")) {
                 statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
                 statementRepository.save(statement);
+                throw new ScoringException(e.contentUTF8());
             }
             throw e;
         }

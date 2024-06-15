@@ -1,24 +1,23 @@
 version: '3'
 services:
-  deal:
+  deal-mc:
     build:
       context: ./
     ports:
       - '8080:8080'
     environment:
-      - 'CLIENT_CALCULATOR_URL=http://calculator'
-      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db/deal_db'
+      CLIENT_CALCULATOR_URL: http://calculator-mc:8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
     depends_on:
+      - calculator-mc
       - postgres-db
 
-#  calculator:
-#    image: 'munirsunchalyaev/calculator-mc'
-#    depends_on:
-#      - postgres-db
+  calculator-mc:
+    image: munirsunchalyaev/calculator-mc
 
   postgres-db:
     image: postgres
     environment:
-      - 'POSTGRES_USER=admin'
-      - 'POSTGRES_PASSWORD=admin'
-      - 'POSTGRES_DB=deal_db'
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: deal_db

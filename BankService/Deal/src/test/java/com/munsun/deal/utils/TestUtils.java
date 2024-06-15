@@ -21,15 +21,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class TestUtils {
     private final ObjectMapper mapper;
 
-    public static final String LOAN_OFFERS_ENDPOINT = "/v1/calculator/offers";
-    public static final String CALC_CREDIT_ENDPOINT = "/v1/calculator/calc";
+    public static final String LOAN_OFFERS_ENDPOINT_CALCULATOR = "/v1/calculator/offers";
+    public static final String LOAN_OFFERS_ENDPOINT_DEAL = "/v1/deal/statement";
+    public static final String CALC_CREDIT_ENDPOINT_CALCULATOR = "/v1/calculator/calc";
 
     public static ScoringDataDto getScoringDataDto() {
         return new ScoringDataDto(
@@ -51,7 +51,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "1234567890123456",
                         BigDecimal.valueOf(100_000),
-                        EmploymentPosition.MIDDLE_MANAGER,
+                        EmploymentPosition.MID_MANAGER,
                         20,
                         18
                 ),
@@ -133,7 +133,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        EmploymentPosition.MIDDLE_MANAGER,
+                        EmploymentPosition.MID_MANAGER,
                         19,
                         4
                 ),
@@ -197,7 +197,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "1234567890123456",
                         new BigDecimal("100000"),
-                        EmploymentPosition.MIDDLE_MANAGER,
+                        EmploymentPosition.MID_MANAGER,
                         20,
                         18
                 ),
@@ -309,7 +309,9 @@ public class TestUtils {
                                 new BigDecimal("15.19"),
                                 new BigDecimal("911.16"),
                                 new BigDecimal("0.00")
-                        )));
+                        )
+                )
+        );
     }
 
     public static Credit getCredit() {
@@ -322,9 +324,7 @@ public class TestUtils {
                 .insuranceEnabled(creditDto.isInsuranceEnabled())
                 .monthlyPayment(creditDto.monthlyPayment())
                 .salaryClient(creditDto.isSalaryClient())
-                .paymentSchedule(creditDto.paymentSchedule().stream()
-                        .map(PaymentScheduleElementDto::toString)
-                        .collect(Collectors.joining(",")))
+                .paymentSchedule(creditDto.paymentSchedule())
                 .build();
     }
 

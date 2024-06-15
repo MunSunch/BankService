@@ -1,6 +1,8 @@
 package com.munsun.deal.advice;
 
 import com.munsun.deal.dto.response.ErrorMessageDto;
+import com.munsun.deal.exceptions.PrescoringException;
+import com.munsun.deal.exceptions.ScoringException;
 import com.munsun.deal.exceptions.StatementNotFoundException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,28 +19,46 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class DealRestControllerAdvice {
     @ExceptionHandler(StatementNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessageDto handlerStatementNotFoundException(Exception e) {
+    public ResponseEntity<ErrorMessageDto> handlerStatementNotFoundException(Exception e) {
         log.error("Error = {}", e.getMessage());
-        return new ErrorMessageDto(e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessageDto(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessageDto handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorMessageDto> handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         log.error("Error = {}", message);
-        return new ErrorMessageDto(message);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorMessageDto(message));
+    }
+
+    @ExceptionHandler(PrescoringException.class)
+    public ResponseEntity<ErrorMessageDto> handlerPrescoringException(PrescoringException e) {
+        log.error("Prescoring error: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorMessageDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(ScoringException.class)
+    public ResponseEntity<ErrorMessageDto> handlerScoringException(ScoringException e) {
+        log.error("Scoring error = {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorMessageDto(e.getMessage()));
     }
 
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<String> handlerFeignException(FeignException e) {
+    public ResponseEntity<ErrorMessageDto> handlerFeignException(FeignException e) {
         String message = String.valueOf(e.contentUTF8());
         log.error("Error's feign client = {}", e.contentUTF8());
         return ResponseEntity
                 .status(e.status())
-                .body(message);
+                .body(new ErrorMessageDto(message));
     }
 }

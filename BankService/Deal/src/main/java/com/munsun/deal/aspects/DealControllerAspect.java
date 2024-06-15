@@ -20,7 +20,7 @@ public class DealControllerAspect {
     @Pointcut("execution(public * com.munsun.deal.controllers.DealRestController.selectLoanOffer(..))")
     public void executionSelectLoanOffer() {}
 
-    @Pointcut("execution(public * com.munsun.deal.controllers.DealRestController.calculateLoanOffers(..))")
+    @Pointcut("execution(public * com.munsun.deal.controllers.DealRestController.calculateCredit(..))")
     public void executionCalculateCredit() {}
 
     @Around("executionGetLoanOffers() && args(loanStatement)")
@@ -45,7 +45,7 @@ public class DealControllerAspect {
 
     @Around(value = "executionCalculateCredit() && args(finishRegistration, statementId)",
             argNames = "point,finishRegistration,statementId")
-    public Object loggingSelectLoanOfferEndpoint(ProceedingJoinPoint point, FinishRegistrationRequestDto finishRegistration, String statementId) throws Throwable {
+    public Object loggingCalculateCreditEndpoint(ProceedingJoinPoint point, FinishRegistrationRequestDto finishRegistration, String statementId) throws Throwable {
         log.info("Request: POST /v1/deal/calculate/{}", statementId);
         log.debug("Request: POST /v1/deal/calculate/{} body={}", statementId, finishRegistration);
         Object object = point.proceed();

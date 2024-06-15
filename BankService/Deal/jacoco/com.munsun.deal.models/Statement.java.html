@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Statement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Deal</a> &gt; <a href="index.source.html" class="el_package">com.munsun.deal.models</a> &gt; <span class="el_source">Statement.java</span></div><h1>Statement.java</h1><pre class="source lang-java linenums">package com.munsun.deal.models;
+
+import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.models.enums.ApplicationStatus;
+import com.munsun.deal.models.enums.ChangeType;
+import com.munsun.deal.models.json.StatusHistory;
+import jakarta.persistence.*;
+import liquibase.sql.Sql;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = &quot;statements&quot;)
+<span class="fc" id="L20">@AllArgsConstructor</span>
+<span class="fc" id="L21">@NoArgsConstructor</span>
+<span class="pc" id="L22">@Getter @Setter</span>
+<span class="pc" id="L23">@Builder</span>
+public class Statement {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = &quot;statement_id&quot;)
+<span class="fc" id="L28">    UUID statementId;</span>
+
+    @OneToOne
+    @JoinColumn(name = &quot;client_id&quot;, referencedColumnName = &quot;client_id&quot;)
+<span class="fc" id="L32">    Client client;</span>
+
+    @OneToOne
+    @JoinColumn(name=&quot;credit_id&quot;, referencedColumnName = &quot;credit_id&quot;)
+<span class="fc" id="L36">    Credit credit;</span>
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;application_status&quot;)
+<span class="fc" id="L40">    ApplicationStatus status;</span>
+
+    @Column(name = &quot;creation_date&quot;, columnDefinition = &quot;timestamp&quot;)
+<span class="nc" id="L43">    LocalDate creationDate;</span>
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = &quot;applied_offer&quot;, columnDefinition = &quot;text&quot;)
+<span class="fc" id="L47">    LoanOfferDto appliedOffer;</span>
+
+    @Column(name = &quot;sign_date&quot;, columnDefinition = &quot;timestamp&quot;)
+<span class="nc" id="L50">    LocalDate signDate;</span>
+
+    @Column(name = &quot;ses_code&quot;)
+<span class="nc" id="L53">    String code;</span>
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = &quot;status_history&quot;, columnDefinition = &quot;jsonb&quot;)
+<span class="fc" id="L57">    List&lt;StatusHistory&gt; statusHistory;</span>
+
+    public void setStatus(ApplicationStatus status, ChangeType type) {
+<span class="fc" id="L60">        this.status = status;</span>
+<span class="fc" id="L61">        addStatusHistory(StatusHistory.builder()</span>
+<span class="fc" id="L62">                .type(ChangeType.AUTOMATIC)</span>
+<span class="fc" id="L63">                .time(LocalDate.now())</span>
+<span class="fc" id="L64">                .type(type)</span>
+<span class="fc" id="L65">                .build());</span>
+<span class="fc" id="L66">    }</span>
+
+    public void addStatusHistory(StatusHistory status) {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if(statusHistory == null) {</span>
+<span class="fc" id="L70">            statusHistory = new ArrayList&lt;&gt;();</span>
+        }
+<span class="fc" id="L72">        statusHistory.add(status);</span>
+<span class="fc" id="L73">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

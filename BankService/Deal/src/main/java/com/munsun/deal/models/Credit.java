@@ -1,5 +1,6 @@
 package com.munsun.deal.models;
 
+import com.munsun.deal.dto.response.PaymentScheduleElementDto;
 import com.munsun.deal.models.enums.CreditStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -39,7 +41,7 @@ public class Credit {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name="payment_schedule")
-    private String paymentSchedule;
+    private List<PaymentScheduleElementDto> paymentSchedule;
 
     @Column(name="insurance_enabled")
     private Boolean insuranceEnabled;

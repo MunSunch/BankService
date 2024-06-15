@@ -1,7 +1,6 @@
 package com.munsun.deal.aspects;
 
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.response.CreditDto;
 import com.munsun.deal.models.Statement;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

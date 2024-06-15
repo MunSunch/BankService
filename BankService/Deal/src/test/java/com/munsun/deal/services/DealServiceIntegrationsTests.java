@@ -6,10 +6,12 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
 import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
+import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.response.ErrorMessageDto;
 import com.munsun.deal.exceptions.StatementNotFoundException;
+import com.munsun.deal.models.Credit;
 import com.munsun.deal.models.enums.ApplicationStatus;
-import com.munsun.deal.models.json.StatusHistory;
+import com.munsun.deal.models.enums.CreditStatus;
 import com.munsun.deal.repositories.ClientRepository;
 import com.munsun.deal.repositories.CreditRepository;
 import com.munsun.deal.utils.PostgresContainer;
@@ -31,7 +33,8 @@ import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.munsun.deal.utils.TestUtils.LOAN_OFFERS_ENDPOINT;
+import static com.munsun.deal.utils.TestUtils.CALC_CREDIT_ENDPOINT_CALCULATOR;
+import static com.munsun.deal.utils.TestUtils.LOAN_OFFERS_ENDPOINT_CALCULATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,7 +61,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     @Test
     public void givenLoanStatementRequestDto_whenGetLoanOffers_thenReturnListLoanOffersSize4() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDto();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT)
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR)
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12()))));
@@ -82,7 +85,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     public void givenInvalidLoanStatementRequestDto_whenGetLoanOffers_thenReturnPrescoringException() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDtoInvalidAmount();
         ErrorMessageDto errorMessage = TestUtils.getErrorMessageInvalidAmount();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT)
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR)
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.BAD_REQUEST.value())
                         .withHeader("Content-Type", "application/json")
@@ -126,4 +129,42 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
                 .isInstanceOf(StatementNotFoundException.class)
                 .hasMessageContaining(loanOffer.statementId().toString());
     }
+
+    @DisplayName("Test get credit not exists statementId")
+    @Test
+    public void givenNotExistsStatementId_whenCalculateCredit_thenThrowStatementNotFoundException() {
+        UUID uuid = UUID.randomUUID();
+        assertThatThrownBy(
+                () -> service.calculateCredit(uuid.toString(), TestUtils.getFinishRegistrationRequestDto()))
+                .isInstanceOf(StatementNotFoundException.class)
+                .hasMessageContaining(uuid.toString());
+    }
+
+    @DisplayName("Test get credit")
+    @Test
+    public void givenDataForCredit_whenCalculateCredit_thenSaveCreditInDB() throws JsonProcessingException {
+        Statement statement = TestUtils.getStatementTransient();
+        statementRepository.save(statement);
+        FinishRegistrationRequestDto finishRegistration = TestUtils.getFinishRegistrationRequestDto();
+        calculatorServer.stubFor(post(CALC_CREDIT_ENDPOINT_CALCULATOR)
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(mapper.writeValueAsString(TestUtils.getCreditDto()))));
+
+
+        service.calculateCredit(statement.getStatementId().toString(), finishRegistration);
+
+        Optional<Statement> savedStatement = statementRepository.findById(statement.getStatementId());
+        assertThat(savedStatement)
+                .isPresent().get()
+                .extracting(Statement::getCredit)
+                .isNotNull()
+                .extracting(Credit::getStatus).isEqualTo(CreditStatus.CALCULATED);
+        assertThat(savedStatement.get().getStatus())
+                .isEqualTo(ApplicationStatus.CC_APPROVED);
+        assertThat(savedStatement.get().getStatusHistory())
+                .isNotNull().isNotEmpty();
+    }
+
+
 }

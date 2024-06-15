@@ -18,11 +18,15 @@ spring:
       client:
         config:
           default:
-            loggerLevel: full
+            logger-level: full
+
+springdoc:
+  swagger-ui:
+    path: /api-docs-ui
 
 client:
   calculator:
-    url: http://service-advice.ru
+    url: http://localhost:8081
 
 logging:
   level:
