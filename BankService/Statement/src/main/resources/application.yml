@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: Statement
+client:
+  deal:
+    url: http://localhost:8081
