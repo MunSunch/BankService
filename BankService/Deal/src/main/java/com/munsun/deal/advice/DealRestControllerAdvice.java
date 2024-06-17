@@ -46,19 +46,19 @@ public class DealRestControllerAdvice {
     }
 
     @ExceptionHandler(ScoringException.class)
-    public ResponseEntity<ErrorMessageDto> handlerScoringException(ScoringException e) {
+    public ResponseEntity<String> handlerScoringException(ScoringException e) {
         log.error("Scoring error = {}", e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorMessageDto(e.getMessage()));
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<ErrorMessageDto> handlerFeignException(FeignException e) {
+    public ResponseEntity<String> handlerFeignException(FeignException e) {
         String message = String.valueOf(e.contentUTF8());
         log.error("Error's feign client = {}", e.contentUTF8());
         return ResponseEntity
                 .status(e.status())
-                .body(new ErrorMessageDto(message));
+                .body(message);
     }
 }
