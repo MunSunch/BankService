@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StatementServiceAspect.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Statement</a> &gt; <a href="index.source.html" class="el_package">com.munsun.statement.aspects</a> &gt; <span class="el_source">StatementServiceAspect.java</span></div><h1>StatementServiceAspect.java</h1><pre class="source lang-java linenums">package com.munsun.statement.aspects;
+
+import com.munsun.statement.dto.LoanOfferDto;
+import com.munsun.statement.dto.LoanStatementRequestDto;
+import com.munsun.statement.exceptions.PrescoringException;
+import com.munsun.statement.exceptions.StatementNotFoundException;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L17">@Slf4j</span>
+@Aspect
+@Component
+<span class="fc" id="L20">public class StatementServiceAspect {</span>
+    @Pointcut(&quot;execution(public * com.munsun.statement.services.StatementService+.getLoanOffers(..))&quot;)
+<span class="nc" id="L22">    public void executionGetLoanOffersMethods() {}</span>
+
+    @Pointcut(&quot;execution(public * com.munsun.statement.services.StatementService+.selectLoanOffer(..))&quot;)
+<span class="nc" id="L25">    public void executionSelectLoanOfferMethods() {}</span>
+
+    @Before(&quot;executionGetLoanOffersMethods() &amp;&amp; args(loanStatement)&quot;)
+    public void loggingGetLoanOffersMethods(JoinPoint point, LoanStatementRequestDto loanStatement) {
+<span class="fc" id="L29">        log.debug(&quot;execution={}, loanStatement={}&quot;, point.getSignature(), loanStatement);</span>
+<span class="fc" id="L30">        log.info(&quot;execution={}...&quot;, point.getSignature());</span>
+<span class="fc" id="L31">    }</span>
+
+    @Before(&quot;executionSelectLoanOfferMethods() &amp;&amp; args(loanOfferDto)&quot;)
+    public void loggingSelectLoanOfferMethods(JoinPoint point, LoanOfferDto loanOfferDto) {
+<span class="fc" id="L35">        log.debug(&quot;execution={}, loanOfferDto={}&quot;, point.getSignature(), loanOfferDto);</span>
+<span class="fc" id="L36">        log.info(&quot;execution={}...&quot;, point.getSignature());</span>
+<span class="fc" id="L37">    }</span>
+
+    @AfterReturning(value = &quot;executionSelectLoanOfferMethods()&quot;)
+    public void loggingResultSelectLoanOfferMethods(JoinPoint point) {
+<span class="fc" id="L41">        log.debug(&quot;execution={}&quot;, point.getSignature());</span>
+<span class="fc" id="L42">        log.info(&quot;execution={} success&quot;, point.getSignature());</span>
+<span class="fc" id="L43">    }</span>
+
+    @AfterReturning(value = &quot;executionGetLoanOffersMethods()&quot;, returning = &quot;loanOffers&quot;)
+    public void loggingResultGetLoanOffersMethods(JoinPoint point, List&lt;LoanOfferDto&gt; loanOffers) {
+<span class="fc" id="L47">        log.debug(&quot;execution={}, loanOffers={}&quot;, point.getSignature(), loanOffers);</span>
+<span class="fc" id="L48">        log.info(&quot;execution={} success&quot;, point.getSignature());</span>
+<span class="fc" id="L49">    }</span>
+
+    @AfterThrowing(value = &quot;executionGetLoanOffersMethods() &amp;&amp; args(loanStatement)&quot;, throwing = &quot;e&quot;)
+    public void createPrescoringException(JoinPoint point, LoanStatementRequestDto loanStatement, ConstraintViolationException e) {
+<span class="fc" id="L53">        String message = e.getConstraintViolations().stream()</span>
+<span class="fc" id="L54">                .map(v -&gt; v.getMessage())</span>
+<span class="fc" id="L55">                .collect(Collectors.joining(&quot;;&quot;));</span>
+<span class="fc" id="L56">        log.debug(&quot;execution={}, prescoring error = {}, loanStatement={}&quot;, point.getSignature(),</span>
+                message, loanStatement);
+<span class="fc" id="L58">        log.warn(&quot;Prescoring error = {}&quot;, message);</span>
+<span class="fc" id="L59">        throw new PrescoringException(message);</span>
+    }
+
+    @AfterThrowing(value = &quot;executionGetLoanOffersMethods() || executionSelectLoanOfferMethods()&quot;, throwing = &quot;e&quot;)
+    public void createClientException(FeignException e) {
+<span class="fc" id="L64">        log.debug(&quot;Error client's: status={}, body={}&quot;, e.status(), e.contentUTF8());</span>
+<span class="fc" id="L65">        log.warn(&quot;Error client's: status={}, body={}&quot;, e.status(), e.contentUTF8());</span>
+<span class="fc" id="L66">    }</span>
+
+    @AfterThrowing(value = &quot;executionSelectLoanOfferMethods()&quot;, throwing = &quot;ex&quot;)
+    public void loggingStatementNotFoundException(JoinPoint point, StatementNotFoundException ex) {
+<span class="fc" id="L70">        log.warn(&quot;execution={}, statement not found! statement id={}&quot;, point.getSignature(), ex.getMessage());</span>
+<span class="fc" id="L71">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
