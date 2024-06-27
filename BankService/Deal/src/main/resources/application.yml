@@ -1,4 +1,9 @@
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   main:
     banner-mode: off
   application:
@@ -19,6 +24,16 @@ spring:
         config:
           default:
             logger-level: full
+
+kafka:
+  topics:
+    init: true
+    finish_registration: finish-registration
+    create_documents: create-documents
+    send_documents: send-documents
+    send_ses: send-ses
+    credit_issued: credit-issued
+    statement_denied: statement-denied
 
 springdoc:
   swagger-ui:

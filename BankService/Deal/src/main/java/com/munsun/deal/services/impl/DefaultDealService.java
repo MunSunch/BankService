@@ -1,5 +1,6 @@
 package com.munsun.deal.services.impl;
 
+import com.munsun.deal.dto.payload.enums.Theme;
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.request.LoanStatementRequestDto;
 import com.munsun.deal.dto.request.ScoringDataDto;
@@ -17,6 +18,7 @@ import com.munsun.deal.models.Statement;
 import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.models.enums.ChangeType;
 import com.munsun.deal.models.enums.CreditStatus;
+import com.munsun.deal.queries.producers.DealProducer;
 import com.munsun.deal.repositories.ClientRepository;
 import com.munsun.deal.repositories.CreditRepository;
 import com.munsun.deal.repositories.StatementRepository;
@@ -43,6 +45,7 @@ public class DefaultDealService implements DealService {
     private final CreditMapper creditMapper;
 
     private final CalculatorFeignClient calculatorClient;
+    private final DealProducer dealProducer;
 
     @Override
     public List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatement) {
@@ -74,6 +77,9 @@ public class DefaultDealService implements DealService {
     public void calculateCredit(String statementId, FinishRegistrationRequestDto finishRegistration) {
         Statement statement = statementRepository.findById(UUID.fromString(statementId))
                 .orElseThrow(() -> new StatementNotFoundException(statementId));
+        if(statement.getAppliedOffer() == null) {
+            throw new IllegalArgumentException("select loan offer!");
+        }
         ScoringDataDto scoringDataDto = scoringMapper.toScoringDataDto(statement, finishRegistration);
         CreditDto creditDto;
         try {
@@ -83,6 +89,7 @@ public class DefaultDealService implements DealService {
             if(e.status() == 500 && e.contentUTF8().contains("scoring")) {
                 statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
                 statementRepository.save(statement);
+                dealProducer.sendScoringException(statement.getClient().getEmail(), Theme.CC_DENIED, e.contentUTF8());
                 throw new ScoringException(e.contentUTF8());
             }
             throw e;
@@ -90,6 +97,9 @@ public class DefaultDealService implements DealService {
         Credit credit = creditMapper.toCredit(creditDto);
             credit.setStatus(CreditStatus.CALCULATED);
         creditRepository.save(credit);
+
+        dealProducer.sendCreateDocumentsNotification(statement.getClient().getEmail(), Theme.CC_APROVED,
+                "Go to paperwork");
     }
 
     @Override
@@ -99,6 +109,51 @@ public class DefaultDealService implements DealService {
                 .orElseThrow(() -> new StatementNotFoundException(loanOffer.statementId().toString()));
         statement.setAppliedOffer(loanOffer);
         statement.setStatus(ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
+        statementRepository.save(statement);
+
+        dealProducer.sendFinishRegistrationRequestNotification(statement.getClient().getEmail(),
+                Theme.FINISH_REGISTRATION, statement.getStatementId());
+    }
+
+    @Override
+    public void prepareDocuments(UUID statementId) {
+        Statement statement = statementRepository.findById(statementId)
+                .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
+            statement.setStatus(ApplicationStatus.PREPARE_DOCUMENTS, ChangeType.MANUAL);
+        dealProducer.sendPrepareDocumentsNotification(statement.getClient().getEmail(), Theme.CREATED_DOCUMENTS, statementId);
+        statementRepository.save(statement);
+    }
+
+    @Override
+    public void updateStatus(UUID statementId, ApplicationStatus status) {
+        Statement statement = statementRepository.findById(statementId)
+                .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
+            statement.setStatus(status, ChangeType.AUTOMATIC);
+        statementRepository.save(statement);
+    }
+
+    @Override
+    public void createSignCodeDocuments(UUID statementId) {
+        Statement statement = statementRepository.findById(statementId)
+                .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
+        statement.setCode(UUID.randomUUID().toString());
+        dealProducer.sendSignCodeDocumentsNotification(statement.getClient().getEmail(), Theme.SIGN_DOCUMENTS, statementId,
+                statement.getCode().toString());
+        statementRepository.save(statement);
+    }
+
+    @Override
+    public void signDocuments(UUID statementId, String sesCode) {
+        Statement statement = statementRepository.findById(statementId)
+                .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
+        if(!sesCode.equals(statement.getCode())) {
+            throw new IllegalArgumentException("Invalid ses code!");
+        }
+        statement.setSignDate(LocalDate.now());
+        statement.setStatus(ApplicationStatus.DOCUMENT_SIGNED, ChangeType.AUTOMATIC);
+        dealProducer.sendSuccessSignDocumentsNotification(statement.getClient().getEmail(),
+                Theme.SIGN_DOCUMENTS, statementId, "Credit issued");
+        statement.setStatus(ApplicationStatus.CREDIT_ISSUED, ChangeType.AUTOMATIC);
         statementRepository.save(statement);
     }
 }
