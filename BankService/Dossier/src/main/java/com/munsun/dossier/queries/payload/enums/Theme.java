@@ -1,0 +1,5 @@
+package com.munsun.dossier.queries.payload.enums;
+
+public enum Theme {
+    PREPARE_DOCUMENTS, DOCUMENTS_CREATED, CREATED_DOCUMENTS, SIGN_DOCUMENTS, CC_DENIED, CC_APROVED, FINISH_REGISTRATION
+}
