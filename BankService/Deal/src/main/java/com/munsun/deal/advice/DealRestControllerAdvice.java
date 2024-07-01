@@ -1,6 +1,7 @@
 package com.munsun.deal.advice;
 
 import com.munsun.deal.dto.response.ErrorMessageDto;
+import com.munsun.deal.exceptions.InvalidSesCode;
 import com.munsun.deal.exceptions.PrescoringException;
 import com.munsun.deal.exceptions.ScoringException;
 import com.munsun.deal.exceptions.StatementNotFoundException;
@@ -60,5 +61,13 @@ public class DealRestControllerAdvice {
         return ResponseEntity
                 .status(e.status())
                 .body(message);
+    }
+
+    @ExceptionHandler(InvalidSesCode.class)
+    public ResponseEntity<String> handlerInvalidSesCode(Exception e) {
+        log.error("Invalid ses code = {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(e.getMessage());
     }
 }

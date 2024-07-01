@@ -1,5 +1,6 @@
 package com.munsun.deal.services.impl;
 
+import com.munsun.deal.exceptions.InvalidSesCode;
 import com.munsun.deal.queries.payload.enums.Theme;
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.request.LoanStatementRequestDto;
@@ -151,7 +152,7 @@ public class DefaultDealService implements DealService {
         Statement statement = statementRepository.findById(statementId)
                 .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
         if(!sesCode.equals(statement.getCode())) {
-            throw new IllegalArgumentException("Invalid ses code!");
+            throw new InvalidSesCode("Invalid ses code="+sesCode);
         }
         statement.setSignDate(LocalDate.now());
         statement.setStatus(ApplicationStatus.DOCUMENT_SIGNED, ChangeType.AUTOMATIC);
