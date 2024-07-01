@@ -7,6 +7,5 @@ import java.util.UUID;
 public record EmailMessage(
         String address,
         Theme theme,
-        UUID statementId,
-        String description
+        UUID statementId
 ) {}
