@@ -1,14 +1,16 @@
 package com.munsun.dossier.queries.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.support.JacksonUtils;
 
 @Configuration
-@ConditionalOnExpression("#{${kafka.init.topics}=true}")
+@ConditionalOnExpression("${kafka.init.topics}==true")
 public class KafkaConfiguration {
     @Value("${kafka.topics.finish_registration}")
     private String finishRegistration;
@@ -65,4 +67,3 @@ public class KafkaConfiguration {
                 .build();
     }
 }
-

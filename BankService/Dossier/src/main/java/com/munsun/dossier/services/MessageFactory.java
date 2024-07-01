@@ -1,9 +1,12 @@
 package com.munsun.dossier.services;
 
-import com.munsun.dossier.queries.payload.enums.Theme;
-
-import javax.mail.internet.MimeMessage;
+import com.munsun.dossier.queries.payload.EmailMessage;
+import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.queries.payload.EmailMessageWithSesCode;
+import org.springframework.mail.SimpleMailMessage;
 
 public interface MessageFactory {
-    MimeMessage getMessage(Theme theme);
+    SimpleMailMessage getMessage(EmailMessage theme);
+    SimpleMailMessage getMessage(EmailMessageWithSesCode emailMessage);
+    SimpleMailMessage getMessage(EmailMessageWithCreditDto emailMessage);
 }

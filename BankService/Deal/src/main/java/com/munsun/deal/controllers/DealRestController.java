@@ -46,24 +46,23 @@ public class DealRestController {
     }
 
     @PostMapping("/document/{statementId}/send")
-    private void createDocument(@PathVariable UUID statementId) {
+    public void createDocument(@PathVariable UUID statementId) {
         service.prepareDocuments(statementId);
     }
 
     @PutMapping("/admin/statement/{statementId}/status")
-    private void updateStatusDocument(@RequestParam ApplicationStatus status,
-                                      @PathVariable UUID statementId)
+    public void updateStatusDocument(@PathVariable UUID statementId)
     {
-        service.updateStatus(statementId, status);
+        service.updateStatus(statementId);
     }
 
     @PostMapping("/document/{statementId}/sign")
-    private void sendCodeDocument(@PathVariable UUID statementId) {
+    public void sendCodeDocument(@PathVariable UUID statementId) {
         service.createSignCodeDocuments(statementId);
     }
 
     @PostMapping("/document/{statementId}/code")
-    private void signCodeDocument(@PathVariable UUID statementId,
+    public void signCodeDocument(@PathVariable UUID statementId,
                                   @RequestParam String sesCode)
     {
         service.signDocuments(statementId, sesCode);

@@ -11,10 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 public class CreditMapperUnitTests {
-    @Autowired
-    private CreditMapper creditMapper;
+    private CreditMapper creditMapper = new CreditMapperImpl();
 
     @DisplayName("Test map CreditDto to Credit")
     @Test
@@ -28,5 +26,16 @@ public class CreditMapperUnitTests {
                 .usingRecursiveComparison()
                 .ignoringFields("creditId")
                 .isEqualTo(expectedCredit);
+    }
+
+    @DisplayName("Test map Credit to CreditDto")
+    @Test
+    public void givenCreditPersistent_whenMapToCreditDto_thenReturnCreditDtoNotNull() {
+        Credit creditPersistent = TestUtils.getCredit();
+
+        CreditDto creditDto = creditMapper.toCreditDto(creditPersistent);
+
+        assertThat(creditDto)
+                .isNotNull();
     }
 }

@@ -3,7 +3,6 @@ package com.munsun.deal.services;
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.request.LoanStatementRequestDto;
 import com.munsun.deal.dto.response.LoanOfferDto;
-import com.munsun.deal.models.enums.ApplicationStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,5 +14,5 @@ public interface DealService {
     void prepareDocuments(UUID statementId);
     void createSignCodeDocuments(UUID statementId);
     void signDocuments(UUID statementId, String sesCode);
-    void updateStatus(UUID statementId, ApplicationStatus status);
+    void updateStatus(UUID statementId);
 }

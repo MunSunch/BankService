@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
-@ConditionalOnExpression("#{${kafka.topics.init}=true}")
+@ConditionalOnExpression("#{${kafka.topics.init}==true}")
 public class KafkaConfiguration {
     @Value("${kafka.topics.finish_registration}")
     private String finishRegistration;
