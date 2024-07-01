@@ -1,15 +1,25 @@
 version: '3'
 services:
+  dossier-mc:
+    build:
+      context: ./Dossier
+    environment:
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+      SPRING_KAFKA_CONSUMER_BOOTSTRAPSERVERS: kafka:29092
+      CLIENT_DEAL_URL: http://deal-mc:8080
+    depends_on:
+      - kafka
+      
   deal-mc:
     build:
-      context: ./
+      context: ./Deal
     ports:
       - '8080:8080'
     environment:
       CLIENT_CALCULATOR_URL: http://calculator-mc:8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
-#      'spring.kafka.producer.bootstrap-servers': http://kafka:9092
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+      SPRING_KAFKA_PRODUCER_BOOTSTRAPSERVERS: kafka:29092
     depends_on:
       - postgres-db
       - kafka

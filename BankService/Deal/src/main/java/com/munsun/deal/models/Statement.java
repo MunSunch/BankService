@@ -31,7 +31,7 @@ public class Statement {
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     Client client;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="credit_id", referencedColumnName = "credit_id")
     Credit credit;
 
