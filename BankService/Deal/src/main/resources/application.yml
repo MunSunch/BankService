@@ -26,8 +26,9 @@ spring:
             logger-level: full
 
 kafka:
+  init:
+    topics: true
   topics:
-    init: true
     finish_registration: finish-registration
     create_documents: create-documents
     send_documents: send-documents
