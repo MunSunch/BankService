@@ -3,16 +3,28 @@ package com.munsun.dossier.services.impl;
 import com.munsun.dossier.queries.payload.EmailMessage;
 import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
 import com.munsun.dossier.queries.payload.EmailMessageWithSesCode;
-import com.munsun.dossier.services.MessageFactory;
-import org.springframework.beans.factory.annotation.Value;
+import com.munsun.dossier.services.DossierService;
+import com.munsun.dossier.services.impl.clients.DossierFeignClient;
+import com.munsun.dossier.services.impl.providers.DocumentGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
-public class SimpleMessageFactory implements MessageFactory {
+@RequiredArgsConstructor
+public class DefaultDossierService implements DossierService {
+    private final JavaMailSender sender;
+    private final DossierFeignClient client;
+    private final DocumentGenerator documentGenerator;
+
     @Override
-    public SimpleMailMessage getMessage(EmailMessage emailMessage) {
+    public void sendMessageEmail(EmailMessage emailMessage) {
         SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailMessage.address());
             message.setSubject("Кредитные уведомления");
@@ -38,24 +50,27 @@ public class SimpleMessageFactory implements MessageFactory {
             }
         }
         message.setText(text);
-        return message;
+        sender.send(message);
     }
 
     @Override
-    public SimpleMailMessage getMessage(EmailMessageWithSesCode emailMessage) {
+    public void sendMessageEmail(EmailMessageWithCreditDto emailMessage) throws MessagingException {
+        DataSource dataSource = documentGenerator.generateDocument(emailMessage);
+        MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(emailMessage.address());
+            helper.setSubject("Кредитные уведомления");
+            helper.addAttachment("documents.pdf", dataSource);
+            helper.setText("Ваши документы");
+        sender.send(message);
+    }
+
+    @Override
+    public void sendMessageEmail(EmailMessageWithSesCode emailMessage) {
         SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailMessage.address());
             message.setSubject("Кредитные уведомления");
             message.setText(String.format("Код подтверждения операции: %s", emailMessage.sesCodeConfirm().toString()));
-        return message;
-    }
-
-    @Override
-    public SimpleMailMessage getMessage(EmailMessageWithCreditDto emailMessage) {
-        SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(emailMessage.address());
-            message.setSubject("Кредитные уведомления");
-            message.setText(String.format("Ваши документы: %s", emailMessage.creditDto().toString()));
-        return message;
+        sender.send(message);
     }
 }

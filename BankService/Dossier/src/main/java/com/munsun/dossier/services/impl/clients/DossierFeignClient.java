@@ -1,4 +1,4 @@
-package com.munsun.dossier.clients;
+package com.munsun.dossier.services.impl.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
