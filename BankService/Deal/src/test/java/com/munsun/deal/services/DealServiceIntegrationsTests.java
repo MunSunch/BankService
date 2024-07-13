@@ -116,7 +116,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
                 .containsExactly(loanOffer, ApplicationStatus.APPROVED);
         assertThat(savedStatement)
                 .get()
-                .extracting(Statement::getStatusHistory)
+                .extracting(Statement::getListStatusHistory)
                 .isNotNull();
     }
 
@@ -162,7 +162,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
                 .extracting(Credit::getStatus).isEqualTo(CreditStatus.CALCULATED);
         assertThat(savedStatement.get().getStatus())
                 .isEqualTo(ApplicationStatus.CC_APPROVED);
-        assertThat(savedStatement.get().getStatusHistory())
+        assertThat(savedStatement.get().getListStatusHistory())
                 .isNotNull().isNotEmpty();
     }
 

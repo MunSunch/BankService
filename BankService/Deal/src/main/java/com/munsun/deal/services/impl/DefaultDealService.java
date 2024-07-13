@@ -57,9 +57,7 @@ public class DefaultDealService implements DealService {
         clientRepository.save(client);
         Statement statement = new Statement();
             statement.setCreationDate(LocalDate.now());
-            statement.setStatus(ApplicationStatus.PREAPPROVAL, ChangeType.AUTOMATIC);
             statement.setClient(client);
-        statementRepository.save(statement);
         List<LoanOfferDto> offers;
         try {
             offers = calculatorClient.getLoanOffers(loanStatement);
@@ -71,6 +69,8 @@ public class DefaultDealService implements DealService {
             }
             throw e;
         }
+        statement.setStatus(ApplicationStatus.PREAPPROVAL, ChangeType.AUTOMATIC);
+        statementRepository.save(statement);
         return offers.stream()
                 .map(oldOffer -> new LoanOfferDto(statement.getStatementId(), oldOffer))
                 .collect(Collectors.toList());
