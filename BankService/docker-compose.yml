@@ -1,5 +1,24 @@
 version: '3'
 services:
+  gateway:
+    build:
+      context: ./Gateway
+    environment:
+      CLIENTS_URL_DEAL: http://deal-mc:8080
+      CLIENTS_URL_STATEMENT: http://statement-mc:8080
+    ports:
+      - 8080:8080
+
+  statement-mc:
+    build:
+      context: ./Statement
+    # ports:
+    #   - '8080:8080'
+    environment:
+      CLIENT_DEAL_URL: http://deal-mc:8080
+    depends_on:
+      - deal-mc
+
   dossier-mc:
     build:
       context: ./Dossier
@@ -13,8 +32,8 @@ services:
   deal-mc:
     build:
       context: ./Deal
-    ports:
-      - '8080:8080'
+    # ports:
+    #   - '8080:8080'
     environment:
       CLIENT_CALCULATOR_URL: http://calculator-mc:8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
