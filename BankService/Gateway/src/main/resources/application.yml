@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Gateway
+clients:
+  url:
+    deal: http://localhost:8080
+    statement: http://localhost:8081
+
+springdoc:
+  api-docs:
+      path: /api
+  swagger-ui:
+    path: /api/ui
