@@ -18,8 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "confirm loan offer")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "loan offer is confirmed",
-                content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = LoanOfferDto.class))}),
+        @ApiResponse(responseCode = "200", description = "loan offer is confirmed"),
         @ApiResponse(responseCode = "400", description = "Invalid confirm code",
                 content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) }),
         @ApiResponse(responseCode = "404", description = "Statement not found",

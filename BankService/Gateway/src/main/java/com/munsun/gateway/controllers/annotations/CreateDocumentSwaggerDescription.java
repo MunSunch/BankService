@@ -18,8 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "create documents")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "documents created",
-                content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = LoanOfferDto.class))}),
+        @ApiResponse(responseCode = "200", description = "documents created"),
         @ApiResponse(responseCode = "404", description = "Statement not found",
                 content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) }),
         @ApiResponse(responseCode = "500", description = "Server's error",
