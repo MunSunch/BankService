@@ -3,6 +3,7 @@ package com.munsun.deal.aspects;
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.request.LoanStatementRequestDto;
 import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.models.Statement;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -35,6 +36,27 @@ public class DealServiceAspect {
 
     @Pointcut("execution(public * com.munsun.deal.services.DealService+.updateStatus(..))")
     private void executionUpdateStatusDocument() {}
+
+    @Pointcut("execution(public * com.munsun.deal.services.DealService+.getStatement(..))")
+    private void executionGetStatement() {}
+
+    @Before("executionGetStatement() && args(statementId)")
+    public void loggingBeforeGetStatementMethod(JoinPoint point, UUID statementId) {
+        log.info("Get statement uuid={}", statementId);
+        log.debug("execution={}, get statement uuid={}", point.getSignature(), statementId);
+    }
+
+    @AfterThrowing(value = "executionGetStatement() && args(statementId)", throwing = "e")
+    public void loggingThrowGetStatementMethod(JoinPoint point, UUID statementId, Exception e) {
+        log.info("Thrown exception={}, statement uuid={}", e, statementId);
+        log.debug("execution={}, Thrown exception={}, statement uuid={}", point.getSignature(), e, statementId);
+    }
+
+    @AfterReturning(value = "executionGetStatement() && args(statementId)", returning = "statement", argNames = "point,statementId,statement")
+    public void loggingResultGetStatementMethod(JoinPoint point, UUID statementId, Statement statement) {
+        log.info("Return statement={} by uuid={}", statement, statementId);
+        log.debug("execution={}, Return statement={} by uuid={}", point.getSignature(), statementId, statement);
+    }
 
     @After("executionUpdateStatusDocument() && args(statementId)")
     public void loggingUpdateStatusDocumentMethod(JoinPoint point, UUID statementId) {

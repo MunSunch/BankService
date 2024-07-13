@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +18,12 @@ import java.util.List;
 public class GatewayController {
     private final DealClient dealClient;
     private final StatementClient statementClient;
+
+    @GetMapping("/admin/statement/{statementId}")
+    @GetStatementSwaggerDescription
+    public String getStatement(@PathVariable UUID statementId) {
+        return dealClient.getStatement(statementId);
+    }
 
     @PostMapping("/statement")
     @CreateLoanOffersStatementSwaggerDescription

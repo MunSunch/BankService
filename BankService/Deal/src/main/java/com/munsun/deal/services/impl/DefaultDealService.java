@@ -161,4 +161,10 @@ public class DefaultDealService implements DealService {
         statement.setStatus(ApplicationStatus.CREDIT_ISSUED, ChangeType.AUTOMATIC);
         statementRepository.save(statement);
     }
+
+    @Override
+    public Statement getStatement(UUID statementId) {
+        return statementRepository.findById(statementId)
+                .orElseThrow(() -> new StatementNotFoundException(statementId.toString()));
+    }
 }

@@ -5,8 +5,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @FeignClient(value = "deal-client", url = "${clients.url.deal}/v1/deal")
 public interface DealClient {
+    @GetMapping("/admin/statement/{statementId}")
+    String getStatement(@PathVariable UUID statementId);
+
     @PostMapping(value = "/calculate/{statementId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     void finishRegistration(@PathVariable String statementId,
                             @RequestBody FinishRegistrationRequestDto finishRegistration);
