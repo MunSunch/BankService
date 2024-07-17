@@ -11,8 +11,8 @@ server {
     listen  [::]:8080;
     server_name  localhost;
 
-    location ~ /api/admin/statement/(.+) {
-        rewrite ^/api/admin/statement/(\w+)$ /v1/deal/admin/statement/$1 break;
+    location /api/admin/statement/ {
+        rewrite ^/api/admin/statement/(.*)$ /v1/deal/admin/statement/$1 break;
         proxy_pass http://deal;
     }
 
