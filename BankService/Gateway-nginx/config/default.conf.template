@@ -33,7 +33,7 @@ server {
 
     location /api/document/ {
         location ~ ^/api/document/(.+)/code {
-            rewrite ^/api/document/(.+)/code$ /v1/deal/document/$1/code$query_string break;
+            rewrite ^/api/document/(.+)/code$ /v1/deal/document/$1/code break;
             proxy_pass http://deal;
         }
         location ~ ^/api/document/(.+)/sign {

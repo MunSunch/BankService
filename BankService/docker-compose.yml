@@ -1,16 +1,12 @@
 version: '3'
 services:
   gateway:
-    image: nginx
-    volumes:
-      - ./Gateway-nginx/config/custom.conf.template:/etc/nginx/conf.d/custom.conf.template
-      - ./Gateway-nginx/html:/usr/share/nginx/html
+    image: munirsunchalyaev/gateway-custom-nginx
     environment:
       DEAL_MC: deal-mc:8080
       STATEMENT_MC: statement-mc:8080
     ports:
       - 8080:8080
-    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/custom.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     depends_on:
       - statement-mc
       - deal-mc
