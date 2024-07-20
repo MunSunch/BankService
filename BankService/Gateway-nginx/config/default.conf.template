@@ -1,0 +1,51 @@
+upstream deal {
+    server ${DEAL_MC};
+}
+
+upstream statement {
+    server ${STATEMENT_MC};
+}
+
+server {
+    listen       8080;
+    listen  [::]:8080;
+    server_name  localhost;
+
+    location /api/admin/statement/ {
+        rewrite ^/api/admin/statement/(.*)$ /v1/deal/admin/statement/$1 break;
+        proxy_pass http://deal;
+    }
+
+    location /api/statement {
+        rewrite ^/api/statement$ /v1/statement break;
+        proxy_pass http://statement;
+    }
+
+    location /api/statement/select {
+        rewrite ^/api/statement/select$ /v1/statement/offer break;
+        proxy_pass http://statement;
+    }
+
+    location /api/statement/registration/ {
+        rewrite ^/api/statement/registration/(.*)$ /v1/deal/calculate/$1 break;
+        proxy_pass http://deal;
+    }
+
+    location /api/document/ {
+        location ~ ^/api/document/(.+)/code {
+            rewrite ^/api/document/(.+)/code$ /v1/deal/document/$1/code break;
+            proxy_pass http://deal;
+        }
+        location ~ ^/api/document/(.+)/sign {
+            rewrite ^/api/document/(.+)/sign$ /v1/deal/document/$1/sign break;
+            proxy_pass http://deal;
+        }
+        rewrite ^/api/document/(.*)$ /v1/deal/document/$1/send break;
+        proxy_pass http://deal;
+    }
+
+    location /api {
+        alias /usr/share/nginx/html;
+        autoindex on;
+    }
+}

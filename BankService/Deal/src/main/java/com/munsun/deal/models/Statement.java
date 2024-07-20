@@ -5,7 +5,6 @@ import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.models.enums.ChangeType;
 import com.munsun.deal.models.json.StatusHistory;
 import jakarta.persistence.*;
-import liquibase.sql.Sql;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -54,21 +53,14 @@ public class Statement {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "status_history", columnDefinition = "jsonb")
-    List<StatusHistory> statusHistory;
+    List<StatusHistory> listStatusHistory = new ArrayList<>();
 
     public void setStatus(ApplicationStatus status, ChangeType type) {
         this.status = status;
-        addStatusHistory(StatusHistory.builder()
-                .type(ChangeType.AUTOMATIC)
-                .time(LocalDate.now())
-                .type(type)
-                .build());
-    }
-
-    public void addStatusHistory(StatusHistory status) {
-        if(statusHistory == null) {
-            statusHistory = new ArrayList<>();
-        }
-        statusHistory.add(status);
+        listStatusHistory.add(StatusHistory.builder()
+                                .type(ChangeType.AUTOMATIC)
+                                .time(LocalDate.now())
+                                .status(status.name())
+                                .build());
     }
 }

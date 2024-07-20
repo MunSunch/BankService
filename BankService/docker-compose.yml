@@ -1,5 +1,24 @@
 version: '3'
 services:
+  gateway:
+    image: munirsunchalyaev/gateway-custom-nginx
+    environment:
+      DEAL_MC: deal-mc:8080
+      STATEMENT_MC: statement-mc:8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - statement-mc
+      - deal-mc
+
+  statement-mc:
+    build:
+      context: ./Statement
+    environment:
+      CLIENT_DEAL_URL: http://deal-mc:8080
+    depends_on:
+      - deal-mc
+
   dossier-mc:
     build:
       context: ./Dossier
@@ -13,8 +32,6 @@ services:
   deal-mc:
     build:
       context: ./Deal
-    ports:
-      - '8080:8080'
     environment:
       CLIENT_CALCULATOR_URL: http://calculator-mc:8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
@@ -22,7 +39,7 @@ services:
       SPRING_KAFKA_PRODUCER_BOOTSTRAPSERVERS: kafka:29092
     depends_on:
       - postgres-db
-      - kafka
+      - init-kafka
 
   zookeeper:
     image: confluentinc/cp-zookeeper
@@ -44,6 +61,27 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  init-kafka:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic finish-registration --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic create-documents --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic send-documents --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic send-ses --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic credit-issued --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic statement-denied --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:29092 --list
+      "
 
   calculator-mc:
     image: munirsunchalyaev/calculator-mc

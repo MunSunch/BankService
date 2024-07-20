@@ -17,8 +17,6 @@ spring:
                                   com.munsun.deal.dto.response.PaymentScheduleElementDto:com.munsun.dossier.queries.payload.PaymentScheduleElementDto
 
 kafka:
-  init:
-    topics: true
   topics:
     finish_registration: finish-registration
     create_documents: create-documents

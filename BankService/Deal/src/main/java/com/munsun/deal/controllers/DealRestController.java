@@ -2,10 +2,12 @@ package com.munsun.deal.controllers;
 
 import com.munsun.deal.controllers.annotations.CalculateCreditSwaggerDescription;
 import com.munsun.deal.controllers.annotations.CalculateLoanOfferSwaggerDescription;
+import com.munsun.deal.controllers.annotations.GetStatementSwaggerDescription;
 import com.munsun.deal.controllers.annotations.SelectLoanOfferSwaggerDescription;
 import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
 import com.munsun.deal.dto.request.LoanStatementRequestDto;
 import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.models.Statement;
 import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.queries.producers.DealProducer;
 import com.munsun.deal.services.DealService;
@@ -66,5 +68,11 @@ public class DealRestController {
                                   @RequestParam String sesCode)
     {
         service.signDocuments(statementId, sesCode);
+    }
+
+    @GetMapping("/admin/statement/{statementId}")
+    @GetStatementSwaggerDescription
+    public Statement getStatement(@PathVariable UUID statementId) {
+        return service.getStatement(statementId);
     }
 }

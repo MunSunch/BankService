@@ -56,6 +56,7 @@ public class DefaultDossierService implements DossierService {
     @Override
     public void sendMessageEmail(EmailMessageWithCreditDto emailMessage) throws MessagingException {
         DataSource dataSource = documentGenerator.generateDocument(emailMessage);
+        client.updateStatus(emailMessage.statementId());
         MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(emailMessage.address());
