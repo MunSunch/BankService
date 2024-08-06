@@ -3,7 +3,7 @@ name: calculator-ci
 on:
   push:
     branches:
-      - dev/calculator
+      - main
 
 jobs:
   build:
