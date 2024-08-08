@@ -12,7 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: BankService/Calculator
           path: Calculator
 
       - name: Set up to JDK 17
