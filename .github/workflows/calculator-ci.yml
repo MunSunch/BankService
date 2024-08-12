@@ -44,7 +44,7 @@ jobs:
 
       - name: Extract project version for docker image
         run: |
-          VERSION=$(mvn help:describe -Dcmd=display-version -q -DforceStdout)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | grep -v '\[.*\]' | sed -e 's/^[[:space:]]*//')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Build image
