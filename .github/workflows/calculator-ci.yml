@@ -45,7 +45,7 @@ jobs:
       - name: Extract project version for docker image
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          RELEASE_VERSION=$(echo $VERSION | sed 's/-SNAPSHOT//')
+          echo mvn help:evaluate -Dexpression=project.version -q -DforceStdout
           echo "VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
       - name: Build image
