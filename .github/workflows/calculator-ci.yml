@@ -46,6 +46,7 @@ jobs:
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "{name}={version}" >> $VERSION
+        run: env
 
       - name: Build image
         run: docker build -t ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION .
