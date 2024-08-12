@@ -7,7 +7,7 @@ on:
 
 env:
   DIRECTORY: BankService/Statement
-  PROJECT: Statement
+  PROJECT: statement
 
 jobs:
   build:
