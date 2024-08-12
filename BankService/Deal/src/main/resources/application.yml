@@ -1,0 +1,49 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  main:
+    banner-mode: off
+  application:
+    name: Deal
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-main.xml
+  datasource:
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:8088/deal_db
+    driver-class-name: org.postgresql.Driver
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: full
+
+kafka:
+  init:
+    topics: true
+  topics:
+    finish_registration: finish-registration
+    create_documents: create-documents
+    send_documents: send-documents
+    send_ses: send-ses
+    credit_issued: credit-issued
+    statement_denied: statement-denied
+
+springdoc:
+  swagger-ui:
+    path: /api-docs-ui
+
+client:
+  calculator:
+    url: http://localhost:8081
+
+logging:
+  level:
+    root: info

@@ -8,4 +8,6 @@ client:
 
 springdoc:
   swagger-ui:
-    path: /api-docs-ui
+    path: /swagger-docs
+  api-docs:
+    path: /docs
