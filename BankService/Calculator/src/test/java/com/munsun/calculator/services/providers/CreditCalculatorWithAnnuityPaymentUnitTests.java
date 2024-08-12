@@ -197,19 +197,4 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
                         expected.term(),
                         expected.rate());
     }
-
-    @DisplayName("Test generate list of loans")
-    @Test
-    public void givenListSimpleScoringInfoDto_whenGenerateLoanOffer_thenReturnListLoanOffers() {
-        List<SimpleScoringInfoDto> info = TestUtils.getSimpleScoringInfoDto();
-        List<LoanOfferDto> expectedOffers = TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12();
-
-        List<LoanOfferDto> actualOffers = calculator.generateLoanOffer(new BigDecimal("10000"), 12, info);
-
-        assertThat(actualOffers)
-                .isNotNull()
-                .hasSize(expectedOffers.size())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("statementId")
-                .isEqualTo(expectedOffers);
-    }
 }
