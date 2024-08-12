@@ -1,6 +1,13 @@
 spring:
-  config:
-    import: email-config.yml
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: ${MAIL_PROTOCOL}
+    properties:
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -15,7 +22,6 @@ spring:
                                   com.munsun.deal.queries.payload.EmailMessageWithCreditDto:com.munsun.dossier.queries.payload.EmailMessageWithCreditDto,
                                   com.munsun.deal.dto.response.CreditDto:com.munsun.dossier.queries.payload.CreditDto,
                                   com.munsun.deal.dto.response.PaymentScheduleElementDto:com.munsun.dossier.queries.payload.PaymentScheduleElementDto
-
 kafka:
   init:
     topics: true
@@ -26,10 +32,6 @@ kafka:
     send_ses: send-ses
     credit_issued: credit-issued
     statement_denied: statement-denied
-
-server:
-  port: 8082
-
 client:
   deal:
     url: http://localhost:8080
