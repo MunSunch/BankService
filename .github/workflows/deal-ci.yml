@@ -28,8 +28,7 @@ jobs:
       - name: Set environment with docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./docker-compose.yml"
-        working-directory: ${{ env.DIRECTORY }}
+          compose-file: ${{ env.DIRECTORY }}/docker-compose.yml
 
       - name: Analyze with SonarCloud
         env:
