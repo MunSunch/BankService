@@ -45,7 +45,7 @@ jobs:
       - name: Extract project version for docker image
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "::set-output name=version::$VERSION"
+          echo "{name}={version}" >> $VERSION
 
       - name: Build image
         run: docker build -t ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION .
