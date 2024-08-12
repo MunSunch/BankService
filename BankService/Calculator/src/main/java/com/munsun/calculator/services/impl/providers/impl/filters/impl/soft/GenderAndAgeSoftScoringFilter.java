@@ -35,7 +35,7 @@ public class GenderAndAgeSoftScoringFilter implements ScoringSoftFilter {
             || gender==Gender.MALE && (age>=minAgeMale && age<=maxAgeMale))
         {
             return new RateAndOtherServiceDto(changeRateFemaleValue, BigDecimal.ZERO);
-        } else if (gender == Gender.NOT_BINARY) {
+        } else if (gender == Gender.NON_BINARY) {
             return new RateAndOtherServiceDto(changeRateNotBinaryValue, BigDecimal.ZERO);
         }
         return new RateAndOtherServiceDto(BigDecimal.ZERO, BigDecimal.ZERO);

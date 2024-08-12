@@ -78,7 +78,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         12,
                         4
                 ),

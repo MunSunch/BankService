@@ -1,5 +1,5 @@
 package com.munsun.calculator.dto.request.enums;
 
 public enum MaritalStatus {
-    SINGLE, MARRIED, UNKNOWN
+    UNKNOWN, MARRIED, DIVORCED, SINGLE, WIDOW_WIDOWER
 }
