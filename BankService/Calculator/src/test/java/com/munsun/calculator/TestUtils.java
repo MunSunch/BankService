@@ -42,7 +42,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -58,7 +58,7 @@ public class TestUtils {
                 "Munir",
                 "Sunchalyaev",
                 "Raisovich",
-                Gender.NOT_BINARY,
+                Gender.NON_BINARY,
                 "msunchalyaev@gmail.com",
                 LocalDate.of(1998, 5, 26),
                 "1234",
@@ -71,7 +71,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -208,7 +208,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -237,7 +237,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -266,7 +266,7 @@ public class TestUtils {
                         EmploymentStatus.UNEMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -295,7 +295,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         6,
                         4
                 ),
@@ -324,7 +324,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         2
                 ),
@@ -353,7 +353,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(10_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -382,7 +382,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(10_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -411,7 +411,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(10_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -437,7 +437,7 @@ public class TestUtils {
                 MaritalStatus.SINGLE,
                 27,
                 new EmploymentDto(
-                        EmploymentStatus.BUSINESSMAN,
+                        EmploymentStatus.BUSINESS_OWNER,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
                         Position.TOP_MANAGER,
@@ -469,7 +469,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -498,7 +498,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),
@@ -527,7 +527,7 @@ public class TestUtils {
                         EmploymentStatus.UNKNOWN,
                         "123456789011231212",
                         BigDecimal.ZERO,
-                        Position.UNKNOWN,
+                        Position.WORKER,
                         19,
                         0
                 ),
@@ -556,7 +556,7 @@ public class TestUtils {
                         EmploymentStatus.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        Position.MIDDLE_MANAGER,
+                        Position.MID_MANAGER,
                         19,
                         4
                 ),

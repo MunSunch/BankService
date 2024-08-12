@@ -18,7 +18,7 @@ public class WorkPositionSoftScoringFilter implements ScoringSoftFilter {
     @Override
     public RateAndOtherServiceDto check(ScoringDataDto scoringDataDto) {
         switch(scoringDataDto.employment().position()) {
-            case MIDDLE_MANAGER -> {
+            case MID_MANAGER -> {
                 return new RateAndOtherServiceDto(changeRateValueMiddleManager, BigDecimal.ZERO);
             }
             case TOP_MANAGER -> {

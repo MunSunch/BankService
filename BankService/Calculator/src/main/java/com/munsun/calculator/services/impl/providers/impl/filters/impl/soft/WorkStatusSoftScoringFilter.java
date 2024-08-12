@@ -20,7 +20,7 @@ public class WorkStatusSoftScoringFilter implements ScoringSoftFilter {
             case SELF_EMPLOYED -> {
                 return new RateAndOtherServiceDto(changeRateValueSelfEmployed, BigDecimal.ZERO);
             }
-            case BUSINESSMAN -> {
+            case BUSINESS_OWNER -> {
                 return new RateAndOtherServiceDto(changeRateValueBusinessman, BigDecimal.ZERO);
             }
             default -> {
