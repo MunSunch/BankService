@@ -1,25 +1,5 @@
 version: '3'
 services:
-  dossier-mc:
-    build:
-      context: ./
-    depends_on:
-      - kafka
-
-  deal-mc:
-    build:
-      context: ./
-    ports:
-      - '8080:8080'
-    environment:
-      CLIENT_CALCULATOR_URL: http://calculator-mc:8080
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
-      #      'spring.kafka.producer.bootstrap-servers': http://kafka:9092
-      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
-    depends_on:
-      - postgres-db
-      - kafka
-
   zookeeper:
     image: confluentinc/cp-zookeeper
     environment:
@@ -40,13 +20,3 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-  calculator-mc:
-    image: munirsunchalyaev/calculator-mc
-
-  postgres-db:
-    image: postgres
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: deal_db
