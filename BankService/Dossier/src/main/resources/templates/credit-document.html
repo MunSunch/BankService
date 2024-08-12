@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin-left: 2em;
+            margin-bottom: 1em;
+            margin-right: 1em;
+            margin-top: 1em;
+        }
+        h1 {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        table caption {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        table thead {
+            background-color: silver;
+        }
+    </style>
+</head>
+<body>
+<h1>Документы по заявке №<span th:text="${message.statementId}"></span></h1>
+
+<p>
+    Сумма, взятая в кредит на срок <span th:text="${message.creditDto.term}"></span>
+    с процентной ставкой <span th:text="${message.creditDto.rate}"></span>,
+    составляет <span th:text="${message.creditDto.amount}"></span>. Кредит с аннуитентными выплатами, и
+    сумма ежемесячного платежа составляет <span th:text="${message.creditDto.monthlyPayment}"></span>
+</p>
+<p>
+    Итоговая сумма всех выплат по кредиту составляет <span th:text="${message.creditDto.psk}"></span>.
+    Детали по выплатам указаны в таблице.
+</p>
+<table>
+    <caption class="table__title">График выплат по кредиту</caption>
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Дата</th>
+            <th>Выплата</th>
+            <th>Проценты</th>
+            <th>Долг</th>
+            <th>Остаток</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="payment: ${message.creditDto.paymentSchedule}">
+            <th th:text="${payment.number}"></th>
+            <th th:text="${payment.date}"></th>
+            <th th:text="${payment.totalPayment}"></th>
+            <th th:text="${payment.interestPayment}"></th>
+            <th th:text="${payment.debtPayment}"></th>
+            <th th:text="${payment.remainingDebt}"></th>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

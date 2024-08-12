@@ -1,0 +1,477 @@
+{
+	"info": {
+		"_postman_id": "0ad9e853-7906-4e4c-8504-e076b5361815",
+		"name": "Neoflex",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27612511",
+		"_collection_link": "https://www.postman.com/navigation-candidate-51855014/workspace/system-projects/collection/27612511-0ad9e853-7906-4e4c-8504-e076b5361815?action=share&source=collection_link&creator=27612511"
+	},
+	"item": [
+		{
+			"name": "Prescoring Errors",
+			"item": [
+				{
+					"name": "Amount<30_000",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"29999\",\n    \"term\": \"10\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"2006-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Term<6",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"3\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"2006-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Age>18",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"12\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"2015-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InvalidEmail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"12\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev\",\n    \"birthdate\": \"1998-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InvalidPassportSeries",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"12\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"1998-05-01\",\n    \"passportSeries\": \"63188\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InvalidPassportNumber",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"12\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"1998-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"4967794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InvalidFIO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"30000\",\n    \"term\": \"12\",\n    \"firstName\": \"Мунир\",\n    \"lastName\": \"Сунчаляев\",\n    \"middleName\": \"Раисович\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"1998-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/offers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scoring Errors",
+			"item": [
+				{
+					"name": "Unemployed work status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1998-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"UNEMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Over big amount",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1998-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Age<Min_Age",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"2015-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Age>Max_Age",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1900-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total work experience < 18",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1998-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"12\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current work experience",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1998-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"1\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/calculator/calc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"calculator",
+								"calc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST /offers",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": \"90000\",\n    \"term\": \"10\",\n    \"firstName\": \"Munir\",\n    \"lastName\": \"Sunchalyaev\",\n    \"middleName\": \"Raisovich\",\n    \"email\": \"msunchalyaev@gmail.com\",\n    \"birthdate\": \"2006-05-01\",\n    \"passportSeries\": \"6318\",\n    \"passportNumber\": \"496794\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/calculator/offers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"calculator",
+						"offers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /calc",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": \"10000\",\n  \"term\": 12,\n  \"firstName\": \"Munir\",\n  \"lastName\": \"Sunchalyaev\",\n  \"middleName\": \"Raisovich\",\n  \"gender\": \"MALE\",\n  \"birthdate\": \"1998-05-26\",\n  \"passportSeries\": \"4618\",\n  \"passportNumber\": \"123456\",\n  \"passportIssueDate\": \"2009-12-12\",\n  \"passportIssueBranch\": \"2009-12-12\",\n  \"maritalStatus\": \"SINGLE\",\n  \"dependentAmount\": 0,\n  \"employment\": {\n    \"employmentStatus\": \"SELF_EMPLOYED\",\n    \"employerINN\": \"1234567890\",\n    \"salary\": \"20000\",\n    \"position\": \"MIDDLE_MANAGER\",\n    \"workExperienceTotal\": \"21\",\n    \"workExperienceCurrent\": \"6\"\n    },\n  \"accountNumber\": \"79873022923\",\n  \"isInsuranceEnabled\": true,\n  \"isSalaryClient\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/calculator/calc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"calculator",
+						"calc"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
