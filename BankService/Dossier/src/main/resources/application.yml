@@ -8,8 +8,6 @@ spring:
     properties:
       "mail.smtp.auth": true
       "mail.smtp.starttls.enable": true
-  config:
-    import: email-config.yml
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
