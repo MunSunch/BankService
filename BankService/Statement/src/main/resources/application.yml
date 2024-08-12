@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Statement
+
+client:
+  deal:
+    url: http://localhost:8081
+
+springdoc:
+  swagger-ui:
+    path: /swagger-docs
+  api-docs:
+    path: /docs
