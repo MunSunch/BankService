@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class CalculatorControllerAdvice {
+
+
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessageDto> handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
