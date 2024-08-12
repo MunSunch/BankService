@@ -8,6 +8,9 @@ on:
     branches:
       - dev/calculator
 
+env:
+  DIRECTORY_CALCULATOR: BankService/Calculator
+
 jobs:
   build:
     runs-on: ubuntu-latest
