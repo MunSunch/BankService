@@ -29,7 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=MunSunch_BankService -Dsonar.organization=munsunch -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml
-        working-directory: $DIRECTORY_CALCULATOR
+        working-directory: ${{ env.DIRECTORY_CALCULATOR }}
 
 
       - name: Test Coverage
@@ -48,11 +48,11 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           RELEASE_VERSION=$(echo $VERSION | sed 's/-SNAPSHOT//')
           echo "VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-        working-directory: $DIRECTORY_CALCULATOR
+        working-directory: ${{ env.DIRECTORY_CALCULATOR }}
 
       - name: Build image
         run: docker build -t ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION .
-        working-directory: $DIRECTORY_CALCULATOR
+        working-directory: ${{ env.DIRECTORY_CALCULATOR }}
 
       - name: Send to dockerhub registry
         run: docker push ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION
