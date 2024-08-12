@@ -19,7 +19,6 @@ spring:
                                   com.munsun.deal.queries.payload.EmailMessageWithCreditDto:com.munsun.dossier.queries.payload.EmailMessageWithCreditDto,
                                   com.munsun.deal.dto.response.CreditDto:com.munsun.dossier.queries.payload.CreditDto,
                                   com.munsun.deal.dto.response.PaymentScheduleElementDto:com.munsun.dossier.queries.payload.PaymentScheduleElementDto
-
 kafka:
   init:
     topics: true
@@ -30,7 +29,6 @@ kafka:
     send_ses: send-ses
     credit_issued: credit-issued
     statement_denied: statement-denied
-
 client:
   deal:
     url: http://localhost:8080
