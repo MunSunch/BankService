@@ -49,6 +49,7 @@ jobs:
 
       - name: Build image
         run: docker build -t ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION .
+        working-directory: BankService/Calculator
 
       - name: Send to dockerhub registry
         run: docker push ${{ secrets.DOCKER_LOGIN }}/calculator:$VERSION
