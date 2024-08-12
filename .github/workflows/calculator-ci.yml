@@ -1,6 +1,9 @@
 name: continue integration calculator
 
 on:
+  pull_request:
+    branches:
+      - dev/calculator
   push:
     branches:
       - dev/calculator
