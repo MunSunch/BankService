@@ -1,6 +1,6 @@
 package com.munsun.calculator.services.providers;
 
-import com.munsun.calculator.TestUtils;
+import com.munsun.calculator.utils.TestUtils;
 import com.munsun.calculator.dto.request.EmploymentDto;
 import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.request.enums.EmploymentStatus;
@@ -40,7 +40,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
         BigDecimal otherService = BigDecimal.ZERO;
         BigDecimal expectedMonthlyPayment = new BigDecimal("888.49");
 
-        CreditDto credit = calculator.calculate(testData, newRate, otherService);
+        CreditDto credit = calculator.calculateWithAnnuietyPayments(testData, newRate, otherService);
         PaymentScheduleElementDto lastPayment = credit.paymentSchedule().get(credit.paymentSchedule().size()-1);
 
         assertThat(credit.monthlyPayment())
@@ -86,7 +86,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
                 false,
                 false);
 
-        CreditDto credit = calculator.calculate(scoringDataDto, newRate, otherService);
+        CreditDto credit = calculator.calculateWithAnnuietyPayments(scoringDataDto, newRate, otherService);
         PaymentScheduleElementDto lastPayment = credit.paymentSchedule().get(credit.paymentSchedule().size()-1);
 
         assertThat(lastPayment)
@@ -100,7 +100,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
         LoanOfferDto expected = TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12NotSalaryClentAndNotInsurance();
         SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoNotSalaryClientAndNotInsurance();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+        LoanOfferDto actual = calculator.generateLoanOfferWithAnnuietyPayments(expected.requestedAmount(), expected.term(), List.of(info))
                 .get(0);
 
         assertThat(actual)
@@ -126,7 +126,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
         LoanOfferDto expected = TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12SalaryClient();
         SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoSalaryClient();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+        LoanOfferDto actual = calculator.generateLoanOfferWithAnnuietyPayments(expected.requestedAmount(), expected.term(), List.of(info))
                 .get(0);
 
         assertThat(actual)
@@ -152,7 +152,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
         LoanOfferDto expected = TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12Insurance();
         SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoInsurance();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+        LoanOfferDto actual = calculator.generateLoanOfferWithAnnuietyPayments(expected.requestedAmount(), expected.term(), List.of(info))
                 .get(0);
 
         assertThat(actual)
@@ -178,7 +178,7 @@ public class CreditCalculatorWithAnnuityPaymentUnitTests {
         LoanOfferDto expected = TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12();
         SimpleScoringInfoDto info = TestUtils.getSimpleScoringInfoDtoSalaryAndInsurance();
 
-        LoanOfferDto actual = calculator.generateLoanOffer(expected.requestedAmount(), expected.term(), List.of(info))
+        LoanOfferDto actual = calculator.generateLoanOfferWithAnnuietyPayments(expected.requestedAmount(), expected.term(), List.of(info))
                 .get(0);
 
         assertThat(actual)

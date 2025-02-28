@@ -1,4 +1,4 @@
-package com.munsun.calculator;
+package com.munsun.calculator.utils;
 
 import com.munsun.calculator.dto.request.EmploymentDto;
 import com.munsun.calculator.dto.request.LoanStatementRequestDto;

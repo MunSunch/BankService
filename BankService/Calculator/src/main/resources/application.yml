@@ -4,9 +4,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /calculator/api-docs
+    path: /openapi/docs
   swagger-ui:
-    path: /calculator/api-docs-ui
+    path: /openapi/ui-docs
 
 service:
   rate: 20

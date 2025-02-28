@@ -2,6 +2,7 @@ package com.munsun.calculator.controllers;
 
 import com.munsun.calculator.dto.request.LoanStatementRequestDto;
 import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.request.enums.TypePayments;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.ErrorMessageDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
@@ -14,12 +15,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
@@ -38,8 +37,10 @@ public class CalculatorController {
                     content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Server's error",
                     content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) })})
-    public List<LoanOfferDto> calculatePossibleLoanTerms(@RequestBody @Valid LoanStatementRequestDto loanStatementRequestDto) {
-        return calculatorService.calculateLoan(loanStatementRequestDto);
+    public List<LoanOfferDto> calculatePossibleLoanTerms(@RequestBody @Valid LoanStatementRequestDto loanStatementRequestDto,
+                                                         @RequestParam @NotBlank TypePayments typePayment)
+    {
+        return calculatorService.calculateLoan(typePayment, loanStatementRequestDto);
     }
 
     @PostMapping("/calc")
@@ -51,7 +52,9 @@ public class CalculatorController {
                     content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Server's error",
                     content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDto.class)) })})
-    public CreditDto fullCalculateLoanParametersAndScoring(@RequestBody @Valid ScoringDataDto scoringDataDto) {
-        return calculatorService.calculateCredit(scoringDataDto);
+    public CreditDto fullCalculateLoanParametersAndScoring(@RequestBody @Valid ScoringDataDto scoringDataDto,
+                                                           @RequestParam @NotBlank TypePayments typePayment)
+    {
+        return calculatorService.calculateCredit(typePayment, scoringDataDto);
     }
 }

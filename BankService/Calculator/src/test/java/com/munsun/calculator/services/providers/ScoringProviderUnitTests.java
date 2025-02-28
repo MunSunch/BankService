@@ -1,6 +1,6 @@
 package com.munsun.calculator.services.providers;
 
-import com.munsun.calculator.TestUtils;
+import com.munsun.calculator.utils.TestUtils;
 import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.exceptions.ScoringException;
@@ -17,7 +17,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class ScoringProviderUnitTests {

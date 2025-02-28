@@ -1,8 +1,9 @@
 package com.munsun.calculator.services;
 
-import com.munsun.calculator.TestUtils;
+import com.munsun.calculator.utils.TestUtils;
 import com.munsun.calculator.dto.request.LoanStatementRequestDto;
 import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.request.enums.TypePayments;
 import com.munsun.calculator.dto.response.CreditDto;
 import com.munsun.calculator.dto.response.LoanOfferDto;
 import com.munsun.calculator.exceptions.ScoringException;
@@ -33,7 +34,7 @@ public class CalculatorServiceIntegrationTests {
         ScoringDataDto testScoringDataDto = TestUtils.getScoringDataDto();
         CreditDto expectedCreditDto = TestUtils.getCreditDto();
 
-        CreditDto actualCreditDto = service.calculateCredit(testScoringDataDto);
+        CreditDto actualCreditDto = service.calculateCredit(TypePayments.ANNUITY, testScoringDataDto);
 
         assertThat(actualCreditDto)
                 .extracting(CreditDto::monthlyPayment, CreditDto::psk, CreditDto::rate, CreditDto::amount, CreditDto::term)
@@ -45,7 +46,7 @@ public class CalculatorServiceIntegrationTests {
     @MethodSource("scoringDataDtoInvalidDataProvider")
     public void givenScoringDataDtoInvalidData_whenCalculateCredit_thenThrownScoringException(ScoringDataDto scoringDataDto) {
         assertThrowsExactly(ScoringException.class, () -> {
-            CreditDto actualCredit = service.calculateCredit(scoringDataDto);
+            CreditDto actualCredit = service.calculateCredit(TypePayments.ANNUITY, scoringDataDto);
         });
     }
 
@@ -67,7 +68,7 @@ public class CalculatorServiceIntegrationTests {
         LoanStatementRequestDto testLoanOffer = TestUtils.getLoanStatementRequestDto();
         List<LoanOfferDto> expectedOffers = TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12();
 
-        List<LoanOfferDto> actualOffers = service.calculateLoan(testLoanOffer);
+        List<LoanOfferDto> actualOffers = service.calculateLoan(TypePayments.ANNUITY, testLoanOffer);
 
         assertThat(actualOffers)
                 .isNotNull()

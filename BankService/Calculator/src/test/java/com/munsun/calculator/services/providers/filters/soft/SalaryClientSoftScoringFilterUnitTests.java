@@ -1,6 +1,6 @@
 package com.munsun.calculator.services.providers.filters.soft;
 
-import com.munsun.calculator.TestUtils;
+import com.munsun.calculator.utils.TestUtils;
 import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringLoanFilter;
