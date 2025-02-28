@@ -1,4 +1,4 @@
-# MVP Level 1 реализация микросервиса Калькулятор
+# MVP Level 11 реализация микросервиса Калькулятор
 ## Реализация
 Реализовано два профиля default(используется по умолчанию) и differentiated_payment. В первом профиле применяется
 метод расчета кредита с аннуитентными выплатами класс [CreditCalculatorWithAnnuityPayments](src/main/java/com/munsun/calculator/services/impl/providers/impl/CreditCalculatorWithAnnuityPayments.java),
