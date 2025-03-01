@@ -1,6 +1,6 @@
 package com.munsun.calculator.advice;
 
-import com.munsun.calculator.dto.response.ErrorMessageDto;
+import com.munsun.calculator.dto.ErrorMessageDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class CalculatorControllerAdvice {
-
-
-
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessageDto> handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
@@ -33,6 +29,6 @@ public class CalculatorControllerAdvice {
     public ResponseEntity<ErrorMessageDto> handlerScoring(ScoringException e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorMessageDto("Scoring:".concat(e.getMessage())));
+                .body(new ErrorMessageDto(e.getMessage()));
     }
 }

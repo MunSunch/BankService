@@ -15,6 +15,12 @@ paths:
         - Calculator of loans controller
       summary: calculation possible offers
       operationId: calculatePossibleLoanTerms
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
       requestBody:
         content:
           application/json:
@@ -27,7 +33,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoanOfferDto'
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
         '400':
           description: Invalid format
           content:
@@ -46,6 +54,12 @@ paths:
         - Calculator of loans controller
       summary: calculation credit
       operationId: fullCalculateLoanParametersAndScoring
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
       requestBody:
         content:
           application/json:
@@ -73,52 +87,11 @@ paths:
                 $ref: '#/components/schemas/ErrorMessageDto'
 components:
   schemas:
-    LoanStatementRequestDto:
-      required:
-        - amount
-        - birthdate
-        - email
-        - firstName
-        - lastName
-        - middleName
-        - passportNumber
-        - passportSeries
-        - term
-      type: object
-      properties:
-        amount:
-          minimum: 30000
-          type: number
-        term:
-          minimum: 6
-          type: integer
-          format: int32
-        firstName:
-          pattern: ^[a-zA-Z]{2,30}$
-          type: string
-        lastName:
-          pattern: ^[a-zA-Z]{2,30}$
-          type: string
-        middleName:
-          pattern: ^[a-zA-Z]{2,30}$
-          type: string
-        email:
-          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
-          type: string
-        birthdate:
-          type: string
-          format: date
-        passportSeries:
-          pattern: ^\d{4}$
-          type: string
-        passportNumber:
-          pattern: ^\d{6}$
-          type: string
-    ErrorMessageDto:
-      type: object
-      properties:
-        message:
-          type: string
+    TypePayments:
+      type: string
+      enum:
+        - ANNUITY
+        - DIFFERENTIAL
     LoanOfferDto:
       type: object
       properties:
@@ -140,6 +113,95 @@ components:
           type: boolean
         isSalaryClient:
           type: boolean
+    ErrorMessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+    LoanStatementRequestDto:
+      required:
+        - amount
+        - birthdate
+        - email
+        - firstName
+        - lastName
+        - middleName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 30000
+          exclusiveMinimum: false
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        lastName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        middleName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        email:
+          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+          type: string
+        birthdate:
+          type: string
+          format: date
+          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.DiffPresentAndCurrent"
+        passportSeries:
+          pattern: ^\d{4}$
+          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.Mask"
+          type: string
+        passportNumber:
+          pattern: ^\d{6}$
+          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.Mask"
+          type: string
+    CreditDto:
+      type: object
+      properties:
+        amount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        psk:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+        paymentSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+    PaymentScheduleElementDto:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        totalPayment:
+          type: number
+        interestPayment:
+          type: number
+        debtPayment:
+          type: number
+        remainingDebt:
+          type: number
     EmploymentDto:
       type: object
       properties:
@@ -178,6 +240,7 @@ components:
           format: int32
         firstname:
           type: string
+
         lastName:
           type: string
         middleName:
@@ -222,42 +285,3 @@ components:
           type: boolean
         isSalaryClient:
           type: boolean
-    CreditDto:
-      type: object
-      properties:
-        amount:
-          type: number
-        term:
-          type: integer
-          format: int32
-        monthlyPayment:
-          type: number
-        rate:
-          type: number
-        psk:
-          type: number
-        isInsuranceEnabled:
-          type: boolean
-        isSalaryClient:
-          type: boolean
-        paymentSchedule:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentScheduleElementDto'
-    PaymentScheduleElementDto:
-      type: object
-      properties:
-        number:
-          type: integer
-          format: int32
-        date:
-          type: string
-          format: date
-        totalPayment:
-          type: number
-        interestPayment:
-          type: number
-        debtPayment:
-          type: number
-        remainingDebt:
-          type: number

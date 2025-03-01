@@ -1,11 +1,11 @@
 package com.munsun.calculator.services.providers;
 
-import com.munsun.calculator.utils.TestUtils;
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
+import com.munsun.calculator.dto.ScoringDataDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.services.impl.utils.SimpleScoringInfoDto;
+import com.munsun.calculator.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 public class ScoringProviderUnitTests {

@@ -1,8 +1,7 @@
 package com.munsun.calculator.services.impl.providers.impl.filters.impl.soft;
 
-import com.munsun.calculator.dto.request.LoanStatementRequestDto;
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.dto.ScoringDataDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringLoanFilter;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringSoftFilter;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,7 @@ public class SalaryClientSoftScoringFilter implements ScoringSoftFilter, Scoring
 
     @Override
     public RateAndOtherServiceDto check(ScoringDataDto scoringDataDto) {
-        if(scoringDataDto.isSalaryClient()) {
+        if(scoringDataDto.getIsSalaryClient()) {
             return new RateAndOtherServiceDto(changeRateValue, BigDecimal.ZERO);
         }
         return new RateAndOtherServiceDto(BigDecimal.ZERO, BigDecimal.ZERO);

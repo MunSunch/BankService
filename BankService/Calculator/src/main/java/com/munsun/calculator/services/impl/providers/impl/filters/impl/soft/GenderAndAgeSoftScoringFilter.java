@@ -1,8 +1,7 @@
 package com.munsun.calculator.services.impl.providers.impl.filters.impl.soft;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.request.enums.Gender;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.dto.ScoringDataDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringSoftFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,13 +28,13 @@ public class GenderAndAgeSoftScoringFilter implements ScoringSoftFilter {
 
     @Override
     public RateAndOtherServiceDto check(ScoringDataDto scoringDataDto) {
-        Gender gender = scoringDataDto.gender();
-        long age = ChronoUnit.YEARS.between(scoringDataDto.birthdate(), LocalDate.now());
-        if(gender==Gender.FEMALE && (age>=minAgeFemale && age<=maxAgeFemale)
-            || gender==Gender.MALE && (age>=minAgeMale && age<=maxAgeMale))
+        ScoringDataDto.GenderEnum gender = scoringDataDto.getGender();
+        long age = ChronoUnit.YEARS.between(scoringDataDto.getBirthdate(), LocalDate.now());
+        if(gender== ScoringDataDto.GenderEnum.FEMALE && (age>=minAgeFemale && age<=maxAgeFemale)
+            || gender== ScoringDataDto.GenderEnum.MALE && (age>=minAgeMale && age<=maxAgeMale))
         {
             return new RateAndOtherServiceDto(changeRateFemaleValue, BigDecimal.ZERO);
-        } else if (gender == Gender.NON_BINARY) {
+        } else if (gender == ScoringDataDto.GenderEnum.NON_BINARY) {
             return new RateAndOtherServiceDto(changeRateNotBinaryValue, BigDecimal.ZERO);
         }
         return new RateAndOtherServiceDto(BigDecimal.ZERO, BigDecimal.ZERO);

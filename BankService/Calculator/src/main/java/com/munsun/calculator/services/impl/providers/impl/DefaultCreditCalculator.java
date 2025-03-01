@@ -1,10 +1,11 @@
 package com.munsun.calculator.services.impl.providers.impl;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.response.CreditDto;
-import com.munsun.calculator.dto.response.LoanOfferDto;
-import com.munsun.calculator.dto.response.PaymentScheduleElementDto;
-import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
+import com.munsun.calculator.dto.CreditDto;
+import com.munsun.calculator.dto.LoanOfferDto;
+import com.munsun.calculator.dto.PaymentScheduleElementDto;
+import com.munsun.calculator.dto.ScoringDataDto;
+import com.munsun.calculator.config.annotations.Generated;
+import com.munsun.calculator.services.impl.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
 import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.InsuranceSoftScoringFilter;
 import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.SalaryClientSoftScoringFilter;
@@ -27,19 +28,19 @@ public class DefaultCreditCalculator implements CreditCalculator {
     @Override
     public CreditDto calculateWithAnnuietyPayments(ScoringDataDto scoringDataDto, BigDecimal newRate, BigDecimal otherService) {
         BigDecimal monthlyRate = getMonthlyRate(newRate);
-        BigDecimal totalAmount = scoringDataDto.amount().add(otherService);
-        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, scoringDataDto.term(), newRate);
-        List<PaymentScheduleElementDto> schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, scoringDataDto.term());
+        BigDecimal totalAmount = scoringDataDto.getAmount().add(otherService);
+        BigDecimal monthlyPayment = getMonthlyPayment(totalAmount, scoringDataDto.getTerm(), newRate);
+        List<PaymentScheduleElementDto> schedule = getSchedule(monthlyPayment, monthlyRate, totalAmount, scoringDataDto.getTerm());
         BigDecimal psk = getPsk(schedule);
 
         return new CreditDto(
-                scoringDataDto.amount(),
-                scoringDataDto.term(),
+                scoringDataDto.getAmount(),
+                scoringDataDto.getTerm(),
                 monthlyPayment.setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN),
                 newRate,
                 psk,
-                scoringDataDto.isInsuranceEnabled(),
-                scoringDataDto.isSalaryClient(),
+                scoringDataDto.getIsInsuranceEnabled(),
+                scoringDataDto.getIsSalaryClient(),
                 schedule
         );
     }
@@ -72,16 +73,18 @@ public class DefaultCreditCalculator implements CreditCalculator {
         return loanOffers;
     }
 
+    @Generated
     private BigDecimal getPsk(List<PaymentScheduleElementDto> schedule) {
         BigDecimal summaInterestRatePayment = schedule.stream()
-                .map(PaymentScheduleElementDto::interestPayment)
+                .map(PaymentScheduleElementDto::getInterestPayment)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal summaDebtPayment = schedule.stream()
-                .map(PaymentScheduleElementDto::debtPayment)
+                .map(PaymentScheduleElementDto::getDebtPayment)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return summaInterestRatePayment.add(summaDebtPayment);
     }
 
+    @Generated
     private List<PaymentScheduleElementDto> getSchedule(BigDecimal monthlyPayment, BigDecimal monthlyRate, BigDecimal totalAmount, Integer term) {
         List<PaymentScheduleElementDto> schedule = new ArrayList<>();
         BigDecimal remainingDebt = totalAmount;
@@ -104,6 +107,7 @@ public class DefaultCreditCalculator implements CreditCalculator {
         return schedule;
     }
 
+    @Generated
     private BigDecimal getMonthlyPayment(BigDecimal totalAmount, Integer term, BigDecimal newRate) {
         BigDecimal monthlyPercent = getMonthlyRate(newRate);
         return totalAmount.multiply(
@@ -116,6 +120,7 @@ public class DefaultCreditCalculator implements CreditCalculator {
         );
     }
 
+    @Generated
     private BigDecimal getMonthlyRate(BigDecimal newRate) {
         return newRate.divide(BigDecimal.valueOf(100))
                 .divide(BigDecimal.valueOf(12), new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN));
@@ -123,21 +128,21 @@ public class DefaultCreditCalculator implements CreditCalculator {
 
     @Override
     public CreditDto calculateWithDifferentPayments(ScoringDataDto scoringDataDto, BigDecimal newRate, BigDecimal otherService) {
-        BigDecimal totalAmount = scoringDataDto.amount().add(otherService);
-        BigDecimal debtPayment = totalAmount.divide(BigDecimal.valueOf(scoringDataDto.term()), new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN));
+        BigDecimal totalAmount = scoringDataDto.getAmount().add(otherService);
+        BigDecimal debtPayment = totalAmount.divide(BigDecimal.valueOf(scoringDataDto.getTerm()), new MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.HALF_EVEN));
         BigDecimal ratePercents = getRatePercents(newRate);
-        var schedule = getSchedule(totalAmount, scoringDataDto.term(), ratePercents, debtPayment);
+        var schedule = getSchedule(totalAmount, scoringDataDto.getTerm(), ratePercents, debtPayment);
         BigDecimal psk = getPsk(schedule);
         BigDecimal averageMonthlyPayment = getAverageMonthlyPayment(schedule).setScale(countDigitAfterPoint, RoundingMode.HALF_EVEN);
 
         return new CreditDto(
-                scoringDataDto.amount(),
-                scoringDataDto.term(),
+                scoringDataDto.getAmount(),
+                scoringDataDto.getTerm(),
                 averageMonthlyPayment,
                 newRate,
                 psk,
-                scoringDataDto.isInsuranceEnabled(),
-                scoringDataDto.isSalaryClient(),
+                scoringDataDto.getIsInsuranceEnabled(),
+                scoringDataDto.getIsSalaryClient(),
                 schedule
         );
     }
@@ -171,23 +176,15 @@ public class DefaultCreditCalculator implements CreditCalculator {
         return loanOffers;
     }
 
+    @Generated
     private BigDecimal getAverageMonthlyPayment(List<PaymentScheduleElementDto> schedule) {
         return schedule.stream()
-                .map(paymentScheduleElementDto -> paymentScheduleElementDto.totalPayment())
+                .map(PaymentScheduleElementDto::getTotalPayment)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .divide(BigDecimal.valueOf(schedule.size()), new MathContext(countDigitAfterPoint, RoundingMode.HALF_EVEN));
     }
 
-//    private BigDecimal getPsk(List<PaymentScheduleElementDto> schedule) {
-//        BigDecimal summaInterestRatePayment = schedule.stream()
-//                .map(PaymentScheduleElementDto::interestPayment)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        BigDecimal summaDebtPayment = schedule.stream()
-//                .map(PaymentScheduleElementDto::debtPayment)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        return summaInterestRatePayment.add(summaDebtPayment);
-//    }
-
+    @Generated
     private List<PaymentScheduleElementDto> getSchedule(BigDecimal totalAmount, Integer term, BigDecimal ratePercents, BigDecimal debtPayment) {
         List<PaymentScheduleElementDto> schedule = new ArrayList<>();
         BigDecimal remainingDebt = totalAmount;
@@ -213,6 +210,7 @@ public class DefaultCreditCalculator implements CreditCalculator {
         return schedule;
     }
 
+    @Generated
     private BigDecimal getRatePercents(BigDecimal newRate) {
         return newRate.divide(BigDecimal.valueOf(100));
     }

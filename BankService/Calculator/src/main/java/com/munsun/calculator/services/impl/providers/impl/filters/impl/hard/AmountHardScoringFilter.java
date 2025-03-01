@@ -1,6 +1,6 @@
 package com.munsun.calculator.services.impl.providers.impl.filters.impl.hard;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.ScoringDataDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringHardFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +15,8 @@ public class AmountHardScoringFilter implements ScoringHardFilter {
     private Integer countSalary;
     @Override
     public boolean check(ScoringDataDto scoringDataDto) {
-        BigDecimal twentyFiveSalaries = scoringDataDto.employment().salary()
+        BigDecimal twentyFiveSalaries = scoringDataDto.getEmployment().getSalary()
                 .multiply(BigDecimal.valueOf(countSalary));
-        return scoringDataDto.amount().compareTo(twentyFiveSalaries) <= 0;
+        return scoringDataDto.getAmount().compareTo(twentyFiveSalaries) <= 0;
     }
 }

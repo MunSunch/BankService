@@ -1,21 +1,15 @@
 package com.munsun.calculator.services.impl;
 
-import com.munsun.calculator.dto.request.LoanStatementRequestDto;
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.request.enums.TypePayments;
-import com.munsun.calculator.dto.response.CreditDto;
-import com.munsun.calculator.dto.response.LoanOfferDto;
-import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
-import com.munsun.calculator.exceptions.ScoringException;
+import com.munsun.calculator.dto.*;
+import com.munsun.calculator.services.impl.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.CalculatorService;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +22,9 @@ public class DefaultCalculatorService implements CalculatorService {
         List<SimpleScoringInfoDto> info = scoringProvider.simpleScoring();
         return switch (typePayment) {
             case ANNUITY ->
-                    creditCalculator.generateLoanOfferWithAnnuietyPayments(loanStatementRequestDto.amount(), loanStatementRequestDto.term(), info);
+                    creditCalculator.generateLoanOfferWithAnnuietyPayments(loanStatementRequestDto.getAmount(), loanStatementRequestDto.getTerm(), info);
             case DIFFERENTIAL ->
-                    creditCalculator.generateLoanOfferWithDifferentPayments(loanStatementRequestDto.amount(), loanStatementRequestDto.term(), info);
+                    creditCalculator.generateLoanOfferWithDifferentPayments(loanStatementRequestDto.getAmount(), loanStatementRequestDto.getTerm(), info);
         };
     }
 

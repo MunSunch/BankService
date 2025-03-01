@@ -15,6 +15,9 @@ service:
   insurance:
     cost: 10000
 
+prescoring:
+  min_age: 18
+
 scoring:
   filters:
     soft:

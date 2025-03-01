@@ -1,12 +1,13 @@
 package com.munsun.calculator.services.impl.providers.impl.filters.impl.soft;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
+import com.munsun.calculator.dto.ScoringDataDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringSoftFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+
 
 @Component
 public class WorkPositionSoftScoringFilter implements ScoringSoftFilter {
@@ -17,7 +18,7 @@ public class WorkPositionSoftScoringFilter implements ScoringSoftFilter {
 
     @Override
     public RateAndOtherServiceDto check(ScoringDataDto scoringDataDto) {
-        switch(scoringDataDto.employment().position()) {
+        switch(scoringDataDto.getEmployment().getPosition()) {
             case MID_MANAGER -> {
                 return new RateAndOtherServiceDto(changeRateValueMiddleManager, BigDecimal.ZERO);
             }

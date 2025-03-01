@@ -1,7 +1,7 @@
 package com.munsun.calculator.services.providers.filters.hard;
 
+import com.munsun.calculator.dto.ScoringDataDto;
 import com.munsun.calculator.utils.TestUtils;
-import com.munsun.calculator.dto.request.ScoringDataDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.impl.hard.AgeHardScoringFilter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
