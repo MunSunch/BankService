@@ -1,0 +1,163 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /v1/statement:
+    post:
+      tags:
+        - statement-controller
+      summary: get possible offers
+      operationId: getLoanOffers
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Get possible offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Validation or prescoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /v1/statement/offer:
+    post:
+      tags:
+        - statement-controller
+      summary: select loan offer
+      operationId: selectLoanOffer
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanOfferDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+components:
+  schemas:
+    TypePayments:
+      type: string
+      enum:
+        - ANNUITY
+        - DIFFERENTIAL
+    LoanStatementRequestDto:
+      required:
+        - amount
+        - birthdate
+        - email
+        - firstName
+        - lastName
+        - middleName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 30000
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        lastName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        middleName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        email:
+          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          pattern: ^\d{4}$
+          type: string
+        passportNumber:
+          pattern: ^\d{6}$
+          type: string
+    ErrorMessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+    LoanOfferDto:
+      required:
+        - isInsuranceEnabled
+        - isSalaryClient
+        - monthlyPayment
+        - rate
+        - requestedAmount
+        - statementId
+        - term
+        - totalAmount
+      type: object
+      properties:
+        statementId:
+          type: string
+          format: uuid
+        requestedAmount:
+          type: number
+        totalAmount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean

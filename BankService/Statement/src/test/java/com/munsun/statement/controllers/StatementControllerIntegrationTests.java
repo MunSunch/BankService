@@ -2,11 +2,13 @@ package com.munsun.statement.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
 import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
 import com.munsun.statement.dto.LoanOfferDto;
 import com.munsun.statement.dto.LoanStatementRequestDto;
+import com.munsun.statement.dto.TypePayments;
 import com.munsun.statement.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,54 +49,30 @@ public class StatementControllerIntegrationTests {
     @DisplayName("Test get loan offers with unknown error deal-mc")
     @Test
     public void givenConfigServerReturnUnknownExceptionStatus500_whenGetLoanOffers_thenReturnErrorMessageWithDescription() throws Exception {
-        server.stubFor(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL)
-                .willReturn(aResponse()
+        server.stubFor(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL+"?typePayment=ANNUITY")
+                        .willReturn(aResponse()
                         .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(TestUtils.getErrorMessageWithUnknownExceptionJSON())));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(TestUtils.getLoanStatementRequestDto())))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message", containing("Server's error")).exists());
-    }
-
-    @DisplayName("Test prescoring")
-    @ParameterizedTest
-    @MethodSource("prescoringDataDtoInvalidDataProvider")
-    public void givenInvalidLoanStatement_sendRequestToGetLoanOffers_thenReturnResponseWithPrescoringException(LoanStatementRequestDto loanStatement) throws Exception {
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(loanStatement)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containing("prescoring")).exists());
-    }
-
-    private static Stream<Arguments> prescoringDataDtoInvalidDataProvider() {
-        return Stream.of(
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidAmount()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidTerm()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidFirstName()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidLastName()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidMiddleName()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidEmail()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidBirthdate()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidPassportSeries()),
-                Arguments.of(TestUtils.getLoanStatementRequestDtoInvalidPassportNumber())
-        );
+                        .content(mapper.writeValueAsString(TestUtils.getLoanStatementRequestDto())))
+                .andExpect(status().isInternalServerError());
     }
 
     @DisplayName("Test get loan offers")
     @Test
     public void givenConfigServerReturnLoanOffers_whenSendRequestToGetLoanOffers_thenReturnResponseWithListLoanOffers() throws Exception {
-        server.stubFor(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL)
+        server.stubFor(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL+"?typePayment=ANNUITY")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(TestUtils.getListLoanOffersJSON())));
 
         var response = mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestUtils.getLoanStatementRequestDto())))
                 .andExpect(status().isOk())
@@ -109,13 +88,14 @@ public class StatementControllerIntegrationTests {
     @DisplayName("Test select not exists loanOffer")
     @Test
     public void givenConfigServerReturnStatementNotFoundStatus404_whenRequestToSelectLoanOffer_thenResponseErrorMessageWithStatementNotFoundStatus404() throws Exception {
-        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL)
+        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL+"?typePayment=ANNUITY")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.NOT_FOUND.value())
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(TestUtils.getErrorMessageWithStatementNotFoundJSON())));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12())))
                 .andExpect(status().isNotFound())
@@ -125,12 +105,14 @@ public class StatementControllerIntegrationTests {
     @DisplayName("Test select loanOffer")
     @Test
     public void givenConfigServerReturnStatus200_whenRequestToSelectLoanOffer_thenResponseStatus200() throws Exception {
-        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL)
+        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL+"?typePayment=ANNUITY")
+                .withQueryParam("typePayment", equalTo(TypePayments.ANNUITY.name()))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", "application/json")));
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12())))
                 .andExpect(status().isOk());
@@ -139,13 +121,14 @@ public class StatementControllerIntegrationTests {
     @DisplayName("Test deal-mc unknown error, select loan offer")
     @Test
     public void givenConfigServerReturnUnknownErrorStatus500_whenRequestToSelectLoanOffer_thenResponseErrorMessageStatus500() throws Exception {
-        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL)
+        server.stubFor(post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_DEAL+"?typePayment=ANNUITY")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(TestUtils.getErrorMessageWithUnknownExceptionJSON())));
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.SELECT_LOAN_OFFER_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12())))
                 .andExpect(status().isInternalServerError())

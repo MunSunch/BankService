@@ -18,6 +18,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.3</spring-cloud.version>
+		<org.org.openapitools.openapi-generator-maven-plugin.version>7.9.0</org.org.openapitools.openapi-generator-maven-plugin.version>
 		<org.springdoc.springdoc-openapi-ui.version>1.7.0</org.springdoc.springdoc-openapi-ui.version>
 		<com.maciejwalkowiak.spring.wiremock-spring-boot.version>2.1.2</com.maciejwalkowiak.spring.wiremock-spring-boot.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.12</org.jacoco.jacoco-maven-plugin.version>
@@ -61,6 +62,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -88,6 +95,41 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${org.org.openapitools.openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skipValidateSpec>true</skipValidateSpec>
+							<inputSpec>${project.basedir}/src/main/resources/openapi-statement-api-v1.yml</inputSpec>
+							<apiPackage>com.munsun.statement.controllers</apiPackage>
+							<modelPackage>com.munsun.statement.dto</modelPackage>
+							<generatorName>spring</generatorName>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<useBeanValidation>true</useBeanValidation>
+								<interfaceOnly>true</interfaceOnly>
+								<delegatePattern>true</delegatePattern>
+								<openApiNullable>false</openApiNullable>
+								<skipDefaultInterface>true</skipDefaultInterface>
+								<useResponseEntity>true</useResponseEntity>
+								<generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+								<useSpringController>true</useSpringController>
+								<generateBuilders>true</generateBuilders>
+								<dateLibrary>java8</dateLibrary>
+								<generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+								<output>${project.build.directory}/generated-sources/openapi</output>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>

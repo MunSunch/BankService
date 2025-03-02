@@ -22,6 +22,7 @@ public class TestUtils {
     public static final String LOAN_OFFERS_ENDPOINT_STATEMENT = "/v1/statement";
     public static final String SELECT_LOAN_OFFER_ENDPOINT_DEAL = "/v1/deal/offer/select";
     public static final String SELECT_LOAN_OFFER_ENDPOINT_STATEMENT = "/v1/statement/offer";
+
     public static FeignException getFeignClientResponsePrescoringExceptionAmount() throws JsonProcessingException {
         return FeignException.errorStatus(HttpMethod.POST.name(), Response.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
