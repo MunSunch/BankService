@@ -35,14 +35,6 @@ public class StatementControllerAdvice {
                 .body(new ErrorMessageDto(message));
     }
 
-    @ExceptionHandler(PrescoringException.class)
-    public ResponseEntity<ErrorMessageDto> handlerPrescoringException(PrescoringException e) {
-        log.error("Prescoring: description = {}", e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorMessageDto(e.getMessage()));
-    }
-
     @ExceptionHandler(StatementNotFoundException.class)
     public ResponseEntity<ErrorMessageDto> handlerStatementNotFoundException(StatementNotFoundException e) {
         log.error("Statement not found! StatementId = {}", e.getMessage());
