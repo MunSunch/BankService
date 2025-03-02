@@ -154,14 +154,12 @@ components:
         birthdate:
           type: string
           format: date
-          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.DiffPresentAndCurrent"
+          x-field-extra-annotation: "@com.munsun.calculator.utils.annotations.DiffPresentAndCurrent"
         passportSeries:
           pattern: ^\d{4}$
-          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.Mask"
           type: string
         passportNumber:
           pattern: ^\d{6}$
-          x-field-extra-annotation: "@com.munsun.calculator.config.annotations.Mask"
           type: string
     CreditDto:
       type: object

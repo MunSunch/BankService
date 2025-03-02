@@ -4,7 +4,7 @@ import com.munsun.calculator.dto.CreditDto;
 import com.munsun.calculator.dto.LoanOfferDto;
 import com.munsun.calculator.dto.PaymentScheduleElementDto;
 import com.munsun.calculator.dto.ScoringDataDto;
-import com.munsun.calculator.config.annotations.Generated;
+import com.munsun.calculator.utils.annotations.Generated;
 import com.munsun.calculator.services.impl.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.impl.providers.CreditCalculator;
 import com.munsun.calculator.services.impl.providers.impl.filters.impl.soft.InsuranceSoftScoringFilter;

@@ -1,6 +1,6 @@
-package com.munsun.calculator.config.annotations;
+package com.munsun.calculator.utils.annotations;
 
-import com.munsun.calculator.config.validators.DiffPresentAndCurrentValidator;
+import com.munsun.calculator.utils.validators.DiffPresentAndCurrentValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

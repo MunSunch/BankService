@@ -1,4 +1,4 @@
-package com.munsun.calculator.config.filters;
+package com.munsun.calculator.utils.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

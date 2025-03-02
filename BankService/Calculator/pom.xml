@@ -11,7 +11,7 @@
 
 	<groupId>com.munsun.calculator</groupId>
 	<artifactId>Calculator</artifactId>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>Calculator</name>
 	<description>Microservice calculator for working with loans</description>
 

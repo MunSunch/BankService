@@ -1,6 +1,6 @@
 package com.munsun.calculator.config.validator;
 
-import com.munsun.calculator.config.validators.DiffPresentAndCurrentValidator;
+import com.munsun.calculator.utils.validators.DiffPresentAndCurrentValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

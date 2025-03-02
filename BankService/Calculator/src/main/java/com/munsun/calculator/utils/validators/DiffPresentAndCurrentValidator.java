@@ -1,6 +1,6 @@
-package com.munsun.calculator.config.validators;
+package com.munsun.calculator.utils.validators;
 
-import com.munsun.calculator.config.annotations.DiffPresentAndCurrent;
+import com.munsun.calculator.utils.annotations.DiffPresentAndCurrent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.munsun.calculator.config.annotations;
+package com.munsun.calculator.utils.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
