@@ -38,9 +38,9 @@ kafka:
 
 springdoc:
   api-docs:
-    path: openapi/api-doc
+    path: /api-doc
   swagger-ui:
-    path: openapi/api-docs-ui
+    path: /api-docs-ui
 
 client:
   calculator:
