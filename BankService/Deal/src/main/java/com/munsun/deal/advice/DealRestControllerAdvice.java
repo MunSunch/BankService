@@ -1,6 +1,6 @@
 package com.munsun.deal.advice;
 
-import com.munsun.deal.dto.response.ErrorMessageDto;
+import com.munsun.deal.dto.ErrorMessageDto;
 import com.munsun.deal.exceptions.InvalidSesCode;
 import com.munsun.deal.exceptions.PrescoringException;
 import com.munsun.deal.exceptions.ScoringException;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;

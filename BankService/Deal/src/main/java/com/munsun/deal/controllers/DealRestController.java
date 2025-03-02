@@ -1,70 +1,74 @@
 package com.munsun.deal.controllers;
 
-import com.munsun.deal.controllers.annotations.CalculateCreditSwaggerDescription;
-import com.munsun.deal.controllers.annotations.CalculateLoanOfferSwaggerDescription;
-import com.munsun.deal.controllers.annotations.SelectLoanOfferSwaggerDescription;
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
-import com.munsun.deal.dto.response.LoanOfferDto;
-import com.munsun.deal.models.enums.ApplicationStatus;
-import com.munsun.deal.queries.producers.DealProducer;
+import com.munsun.deal.dto.FinishRegistrationRequestDto;
+import com.munsun.deal.dto.LoanOfferDto;
+import com.munsun.deal.dto.LoanStatementRequestDto;
+import com.munsun.deal.dto.TypePayments;
 import com.munsun.deal.services.DealService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Validated
 @RestController
-@RequestMapping("v1/deal")
 @RequiredArgsConstructor
-public class DealRestController {
+public class DealRestController implements V1Api {
     private final DealService service;
 
-    @PostMapping("/statement")
-    @CalculateLoanOfferSwaggerDescription
-    public List<LoanOfferDto> calculateLoanOffers(@RequestBody @Valid LoanStatementRequestDto loanStatement) {
-        return service.getLoanOffers(loanStatement);
+    @Override
+    public ResponseEntity<Void> _calculateCredit(String statementId, FinishRegistrationRequestDto finishRegistrationRequestDto) {
+        service.calculateCredit(statementId, finishRegistrationRequestDto);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
-    @PostMapping("/offer/select")
-    @SelectLoanOfferSwaggerDescription
-    public void selectLoanOffer(@RequestBody LoanOfferDto loanOffer) {
-        service.selectLoanOffer(loanOffer);
+    @Override
+    public ResponseEntity<List<LoanOfferDto>> _calculateLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatementRequestDto) {
+        return ResponseEntity
+                .ok()
+                .body(service.getLoanOffers(typePayment, loanStatementRequestDto));
     }
 
-    @PostMapping("/calculate/{statementId}")
-    @CalculateCreditSwaggerDescription
-    public void calculateCredit(@RequestBody FinishRegistrationRequestDto finishRegistration,
-                                @PathVariable @NotBlank String statementId)
-    {
-        service.calculateCredit(statementId, finishRegistration);
+    @Override
+    public ResponseEntity<Void> _selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOfferDto) {
+        service.selectLoanOffer(typePayment, loanOfferDto);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
-    @PostMapping("/document/{statementId}/send")
-    public void createDocument(@PathVariable UUID statementId) {
+    @Override
+    public ResponseEntity<Void> _createDocument(UUID statementId) {
         service.prepareDocuments(statementId);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
-    @PutMapping("/admin/statement/{statementId}/status")
-    public void updateStatusDocument(@PathVariable UUID statementId)
-    {
-        service.updateStatus(statementId);
-    }
-
-    @PostMapping("/document/{statementId}/sign")
-    public void sendCodeDocument(@PathVariable UUID statementId) {
+    @Override
+    public ResponseEntity<Void> _sendCodeDocument(UUID statementId) {
         service.createSignCodeDocuments(statementId);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
-    @PostMapping("/document/{statementId}/code")
-    public void signCodeDocument(@PathVariable UUID statementId,
-                                  @RequestParam String sesCode)
-    {
+    @Override
+    public ResponseEntity<Void> _signCodeDocument(UUID statementId, String sesCode) {
         service.signDocuments(statementId, sesCode);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @Override
+    public ResponseEntity<Void> _updateStatusDocument(UUID statementId) {
+        service.updateStatus(statementId);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }

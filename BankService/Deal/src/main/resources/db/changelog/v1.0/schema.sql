@@ -33,6 +33,7 @@ create table statements (
     client_id UUID,
     credit_id UUID,
     application_status text,
+    type_payments text,
     creation_date timestamp,
     applied_offer text,
     sign_date timestamp,

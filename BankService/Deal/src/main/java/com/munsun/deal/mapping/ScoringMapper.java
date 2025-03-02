@@ -1,7 +1,7 @@
 package com.munsun.deal.mapping;
 
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.request.ScoringDataDto;
+import com.munsun.deal.dto.FinishRegistrationRequestDto;
+import com.munsun.deal.dto.ScoringDataDto;
 import com.munsun.deal.models.Statement;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

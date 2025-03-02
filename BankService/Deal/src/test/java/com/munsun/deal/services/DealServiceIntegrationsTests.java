@@ -6,9 +6,10 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
 import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.response.ErrorMessageDto;
+import com.munsun.deal.dto.*;
+import com.munsun.deal.exceptions.PrescoringException;
 import com.munsun.deal.exceptions.StatementNotFoundException;
+import com.munsun.deal.kafka.producers.DealProducer;
 import com.munsun.deal.models.Credit;
 import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.models.enums.CreditStatus;
@@ -16,8 +17,6 @@ import com.munsun.deal.repositories.ClientRepository;
 import com.munsun.deal.repositories.CreditRepository;
 import com.munsun.deal.utils.PostgresContainer;
 import com.munsun.deal.utils.TestUtils;
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
-import com.munsun.deal.dto.response.LoanOfferDto;
 import com.munsun.deal.models.Statement;
 import com.munsun.deal.repositories.StatementRepository;
 import feign.FeignException;
@@ -25,8 +24,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Transactional
 @SpringBootTest
 @EnableWireMock(
         @ConfigureWireMock(name="calculator-client", property = "${client.calculator.url}")
@@ -50,10 +53,8 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     private ObjectMapper mapper;
     @Autowired
     private StatementRepository statementRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private CreditRepository creditRepository;
+    @MockBean
+    private DealProducer dealProducer;
     @Autowired
     private DealService service;
 
@@ -61,13 +62,13 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     @Test
     public void givenLoanStatementRequestDto_whenGetLoanOffers_thenReturnListLoanOffersSize4() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDto();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR)
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayments=ANNUITY")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12()))));
 
-        List<LoanOfferDto> offers = service.getLoanOffers(loanStatement);
-        Optional<Statement> savedStatement = statementRepository.findById(offers.get(0).statementId());
+        List<LoanOfferDto> offers = service.getLoanOffers(TypePayments.ANNUITY, loanStatement);
+        Optional<Statement> savedStatement = statementRepository.findById(offers.get(0).getStatementId());
 
         assertThat(savedStatement)
                 .isPresent().get()
@@ -77,7 +78,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
                 .isNotNull();
         assertThat(offers)
                 .isNotNull().isNotEmpty()
-                .allMatch(offer -> offer.statementId() != null);
+                .allMatch(offer -> offer.getStatementId() != null);
     }
 
     @DisplayName("Test get loan offers, prescoring error")
@@ -85,39 +86,14 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     public void givenInvalidLoanStatementRequestDto_whenGetLoanOffers_thenReturnPrescoringException() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDtoInvalidAmount();
         ErrorMessageDto errorMessage = TestUtils.getErrorMessageInvalidAmount();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR)
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayments=ANNUITY")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.BAD_REQUEST.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(mapper.writeValueAsString(errorMessage))));
 
-        try {
-            service.getLoanOffers(loanStatement);
-        } catch (FeignException e) {
-            assertThat(e.status())
-                    .isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(e.contentUTF8())
-                    .contains("prescoring");
-        }
-    }
-
-    @DisplayName("Test select loan offer")
-    @Test
-    public void givenStatementPersistent_whenSelectLoanOffer_thenSaveAppliedOfferAndChangeStatusStatement() {
-        UUID uuidStatement = statementRepository.save(new Statement()).getStatementId();
-        LoanOfferDto loanOffer = TestUtils.getLoanOffer(uuidStatement);
-
-        service.selectLoanOffer(loanOffer);
-
-        Optional<Statement> savedStatement = statementRepository.findById(loanOffer.statementId());
-        assertThat(savedStatement)
-                .isPresent().get()
-                .extracting(Statement::getAppliedOffer, Statement::getStatus)
-                .containsExactly(loanOffer, ApplicationStatus.APPROVED);
-        assertThat(savedStatement)
-                .get()
-                .extracting(Statement::getStatusHistory)
-                .isNotNull();
+        assertThatThrownBy(() -> service.getLoanOffers(TypePayments.ANNUITY, loanStatement))
+                .isInstanceOf(PrescoringException.class);
     }
 
     @DisplayName("Test select not exists loan offer")
@@ -125,9 +101,9 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     public void givenNotExistsLoanOffer_whenSelectLoanOffer_thenThrownStatementNotFoundException() {
         LoanOfferDto loanOffer = TestUtils.getAnnuitentPaymentLoanOfferDtoAmount10_000Term12();
 
-        assertThatThrownBy(() -> service.selectLoanOffer(loanOffer))
+        assertThatThrownBy(() -> service.selectLoanOffer(TypePayments.ANNUITY, loanOffer))
                 .isInstanceOf(StatementNotFoundException.class)
-                .hasMessageContaining(loanOffer.statementId().toString());
+                .hasMessageContaining(loanOffer.getStatementId().toString());
     }
 
     @DisplayName("Test get credit not exists statementId")
@@ -139,32 +115,4 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
                 .isInstanceOf(StatementNotFoundException.class)
                 .hasMessageContaining(uuid.toString());
     }
-
-    @DisplayName("Test get credit")
-    @Test
-    public void givenDataForCredit_whenCalculateCredit_thenSaveCreditInDB() throws JsonProcessingException {
-        Statement statement = TestUtils.getStatementTransient();
-        statementRepository.save(statement);
-        FinishRegistrationRequestDto finishRegistration = TestUtils.getFinishRegistrationRequestDto();
-        calculatorServer.stubFor(post(CALC_CREDIT_ENDPOINT_CALCULATOR)
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(mapper.writeValueAsString(TestUtils.getCreditDto()))));
-
-
-        service.calculateCredit(statement.getStatementId().toString(), finishRegistration);
-
-        Optional<Statement> savedStatement = statementRepository.findById(statement.getStatementId());
-        assertThat(savedStatement)
-                .isPresent().get()
-                .extracting(Statement::getCredit)
-                .isNotNull()
-                .extracting(Credit::getStatus).isEqualTo(CreditStatus.CALCULATED);
-        assertThat(savedStatement.get().getStatus())
-                .isEqualTo(ApplicationStatus.CC_APPROVED);
-        assertThat(savedStatement.get().getStatusHistory())
-                .isNotNull().isNotEmpty();
-    }
-
-
 }

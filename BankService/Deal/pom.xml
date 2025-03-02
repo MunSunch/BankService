@@ -17,6 +17,7 @@
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.1</spring-cloud.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.12</org.jacoco.jacoco-maven-plugin.version>
+		<org.org.openapitools.openapi-generator-maven-plugin.version>7.9.0</org.org.openapitools.openapi-generator-maven-plugin.version>
 		<org.mapstruct.mapstruct.version>1.5.5.Final</org.mapstruct.mapstruct.version>
 		<org.testcontainers.postgresql.version>1.19.8</org.testcontainers.postgresql.version>
 		<com.maciejwalkowiak.spring.wiremock-spring-boot.version>2.1.2</com.maciejwalkowiak.spring.wiremock-spring-boot.version>
@@ -177,9 +178,54 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${org.org.openapitools.openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skipValidateSpec>true</skipValidateSpec>
+							<inputSpec>${project.basedir}/src/main/resources/openapi-deal-api-v1.yml</inputSpec>
+							<apiPackage>com.munsun.deal.controllers</apiPackage>
+							<modelPackage>com.munsun.deal.dto</modelPackage>
+							<generatorName>spring</generatorName>
+							<configOptions>
+								<useSpringBoot3>true</useSpringBoot3>
+								<dateLibrary>java8</dateLibrary>
+								<useBeanValidation>true</useBeanValidation>
+								<interfaceOnly>true</interfaceOnly>
+								<delegatePattern>true</delegatePattern>
+								<openApiNullable>false</openApiNullable>
+								<skipDefaultInterface>true</skipDefaultInterface>
+								<useResponseEntity>true</useResponseEntity>
+								<generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+								<useSpringController>true</useSpringController>
+								<generateBuilders>true</generateBuilders>
+								<dateLibrary>java8</dateLibrary>
+								<generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${org.jacoco.jacoco-maven-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/dto/*</exclude>
+						<exclude>**/exceptions/*</exclude>
+						<exclude>**/models/*</exclude>
+						<exclude>**/aspects/*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>

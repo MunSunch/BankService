@@ -1,14 +1,14 @@
 package com.munsun.deal.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.munsun.deal.dto.request.EmploymentDto;
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
-import com.munsun.deal.dto.request.ScoringDataDto;
-import com.munsun.deal.dto.response.CreditDto;
-import com.munsun.deal.dto.response.ErrorMessageDto;
-import com.munsun.deal.dto.response.LoanOfferDto;
-import com.munsun.deal.dto.response.PaymentScheduleElementDto;
+import com.munsun.deal.dto.EmploymentDto;
+import com.munsun.deal.dto.FinishRegistrationRequestDto;
+import com.munsun.deal.dto.LoanStatementRequestDto;
+import com.munsun.deal.dto.ScoringDataDto;
+import com.munsun.deal.dto.CreditDto;
+import com.munsun.deal.dto.ErrorMessageDto;
+import com.munsun.deal.dto.LoanOfferDto;
+import com.munsun.deal.dto.PaymentScheduleElementDto;
 import com.munsun.deal.models.Client;
 import com.munsun.deal.models.Credit;
 import com.munsun.deal.models.Statement;
@@ -38,20 +38,20 @@ public class TestUtils {
                 "Munir",
                 "Sunchalyaev",
                 "Raisovich",
-                Gender.MALE,
+                ScoringDataDto.GenderEnum.MALE,
                 "msunchalyaev@gmail.com",
                 LocalDate.of(1998, 5, 26),
                 "4618",
                 "321978",
                 LocalDate.of(2014, 8, 12),
                 "ГУ МВД ПО САРАТОВСКОЙ ОБЛАСТИ",
-                MaritalStatus.SINGLE,
+                ScoringDataDto.MaritalStatusEnum.SINGLE,
                 0,
                 new EmploymentDto(
-                        EmploymentStatus.SELF_EMPLOYED,
+                        EmploymentDto.EmploymentStatusEnum.SELF_EMPLOYED,
                         "1234567890123456",
                         BigDecimal.valueOf(100_000),
-                        EmploymentPosition.MID_MANAGER,
+                        EmploymentDto.PositionEnum.MID_MANAGER,
                         20,
                         18
                 ),
@@ -120,20 +120,20 @@ public class TestUtils {
                 "Munir",
                 "Sunchalyaev",
                 "Raisovich",
-                Gender.MALE,
+                ScoringDataDto.GenderEnum.MALE,
                 "msunchalyaev@gmail.com",
                 LocalDate.of(1998, 5, 26),
                 "1234",
                 "567890",
                 LocalDate.of(2014, 8, 10),
                 "ГУ МВД РОССИИ",
-                MaritalStatus.SINGLE,
+                ScoringDataDto.MaritalStatusEnum.SINGLE,
                 27,
                 new EmploymentDto(
-                        EmploymentStatus.SELF_EMPLOYED,
+                        EmploymentDto.EmploymentStatusEnum.SELF_EMPLOYED,
                         "123456789011231212",
                         BigDecimal.valueOf(41_000),
-                        EmploymentPosition.MID_MANAGER,
+                        EmploymentDto.PositionEnum.MID_MANAGER,
                         19,
                         4
                 ),
@@ -170,34 +170,31 @@ public class TestUtils {
     }
 
     private static LoanOfferDto getLoanOfferDtoPersistent(UUID id) {
-        return new LoanOfferDto(
-                id,
-                new LoanOfferDto(
-                        null,
-                        new BigDecimal("10000"),
-                        new BigDecimal("12000"),
-                        12,
-                        new BigDecimal("1100"),
-                        new BigDecimal("12"),
-                        false,
-                        true
-                )
-        );
+        return new LoanOfferDto().toBuilder()
+                .statementId(id)
+                .requestedAmount(new BigDecimal("10000"))
+                .totalAmount(new BigDecimal("12000"))
+                .term(12)
+                .monthlyPayment(new BigDecimal("1100"))
+                .rate(new BigDecimal("12"))
+                .isInsuranceEnabled(false)
+                .isSalaryClient(true)
+                .build();
     }
 
 
     public static FinishRegistrationRequestDto getFinishRegistrationRequestDto() {
         return new FinishRegistrationRequestDto(
-                Gender.MALE,
-                MaritalStatus.SINGLE,
+                FinishRegistrationRequestDto.GenderEnum.MALE,
+                FinishRegistrationRequestDto.MaritalStatusEnum.SINGLE,
                 0,
                 LocalDate.of(2014, 8, 12),
                 "ГУ МВД ПО САРАТОВСКОЙ ОБЛАСТИ",
                 new EmploymentDto(
-                        EmploymentStatus.SELF_EMPLOYED,
+                        EmploymentDto.EmploymentStatusEnum.SELF_EMPLOYED,
                         "1234567890123456",
                         new BigDecimal("100000"),
-                        EmploymentPosition.MID_MANAGER,
+                        EmploymentDto.PositionEnum.MID_MANAGER,
                         20,
                         18
                 ),
@@ -317,14 +314,14 @@ public class TestUtils {
     public static Credit getCredit() {
         var creditDto = getCreditDto();
         return Credit.builder()
-                .psk(creditDto.psk())
-                .rate(creditDto.rate())
-                .term(creditDto.term())
-                .amount(creditDto.amount())
-                .insuranceEnabled(creditDto.isInsuranceEnabled())
-                .monthlyPayment(creditDto.monthlyPayment())
-                .salaryClient(creditDto.isSalaryClient())
-                .paymentSchedule(creditDto.paymentSchedule())
+                .psk(creditDto.getPsk())
+                .rate(creditDto.getRate())
+                .term(creditDto.getTerm())
+                .amount(creditDto.getAmount())
+                .insuranceEnabled(creditDto.getIsInsuranceEnabled())
+                .monthlyPayment(creditDto.getMonthlyPayment())
+                .salaryClient(creditDto.getIsSalaryClient())
+                .paymentSchedule(creditDto.getPaymentSchedule())
                 .build();
     }
 

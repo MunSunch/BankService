@@ -1,0 +1,430 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /v1/deal/admin/statement/{statementId}/status:
+    put:
+      tags:
+        - deal-rest-controller
+      operationId: updateStatusDocument
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+  /v1/deal/statement:
+    post:
+      tags:
+        - deal-rest-controller
+      summary: calculation possible offers
+      operationId: calculateLoanOffers
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Calculated offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Invalid format or prescoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /v1/deal/offer/select:
+    post:
+      tags:
+        - deal-rest-controller
+      summary: calculation possible offers
+      operationId: selectLoanOffer
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanOfferDto'
+        required: true
+      responses:
+        '200':
+          description: Select offer
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /v1/deal/document/{statementId}/sign:
+    post:
+      tags:
+        - deal-rest-controller
+      operationId: sendCodeDocument
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+  /v1/deal/document/{statementId}/send:
+    post:
+      tags:
+        - deal-rest-controller
+      operationId: createDocument
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+  /v1/deal/document/{statementId}/code:
+    post:
+      tags:
+        - deal-rest-controller
+      operationId: signCodeDocument
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sesCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /v1/deal/calculate/{statementId}:
+    post:
+      tags:
+        - deal-rest-controller
+      summary: calculation possible offers
+      operationId: calculateCredit
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinishRegistrationRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Calculate and save credit
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+components:
+  schemas:
+    TypePayments:
+      type: string
+      enum:
+        - ANNUITY
+        - DIFFERENTIAL
+    ScoringDataDto:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: decimal
+        term:
+          type: integer
+        firstname:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        gender:
+          $ref: '#/components/schemas/FinishRegistrationRequestDto/properties/gender'
+        email:
+          type: string
+          format: email
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          type: string
+        passportNumber:
+          type: string
+        passportIssueDate:
+          type: string
+          format: date
+        passportIssueBranch:
+          type: string
+        maritalStatus:
+          $ref: '#/components/schemas/FinishRegistrationRequestDto/properties/maritalStatus'
+        dependentAmount:
+          type: integer
+        employment:
+          $ref: '#/components/schemas/EmploymentDto'
+        accountNumber:
+          type: string
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+      required:
+        - amount
+        - term
+        - firstname
+        - lastName
+        - middleName
+        - gender
+        - email
+        - birthdate
+        - passportSeries
+        - passportNumber
+        - passportIssueDate
+        - passportIssueBranch
+        - maritalStatus
+        - dependentAmount
+        - employment
+        - accountNumber
+        - isInsuranceEnabled
+        - isSalaryClient
+    LoanStatementRequestDto:
+      required:
+        - amount
+        - birthdate
+        - email
+        - firstName
+        - lastName
+        - middleName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 30000
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        lastName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        middleName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        email:
+          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          pattern: ^\d{4}$
+          type: string
+        passportNumber:
+          pattern: ^\d{6}$
+          type: string
+    LoanOfferDto:
+      type: object
+      properties:
+        statementId:
+          type: string
+          format: uuid
+        requestedAmount:
+          type: number
+        totalAmount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+    ErrorMessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+    EmploymentDto:
+      type: object
+      properties:
+        employmentStatus:
+          type: string
+          enum:
+            - UNEMPLOYED
+            - SELF_EMPLOYED
+            - EMPLOYED
+            - BUSINESS_OWNER
+        employerINN:
+          type: string
+        salary:
+          type: number
+        position:
+          type: string
+          enum:
+            - WORKER
+            - MID_MANAGER
+            - TOP_MANAGER
+            - OWNER
+        workExperienceTotal:
+          type: integer
+          format: int32
+        workExperienceCurrent:
+          type: integer
+          format: int32
+    FinishRegistrationRequestDto:
+      type: object
+      properties:
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - NON_BINARY
+        maritalStatus:
+          type: string
+          enum:
+            - MARRIED
+            - DIVORCED
+            - SINGLE
+            - WIDOW_WIDOWER
+        dependentAmount:
+          type: integer
+          format: int32
+        passportIssueDate:
+          type: string
+          format: date
+        passportIssueBranch:
+          type: string
+        employment:
+          $ref: '#/components/schemas/EmploymentDto'
+        accountNumber:
+          type: string
+    CreditDto:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: decimal
+        term:
+          type: integer
+        monthlyPayment:
+          type: number
+          format: decimal
+        rate:
+          type: number
+          format: decimal
+        psk:
+          type: number
+          format: decimal
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+        paymentSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+      required:
+        - amount
+        - term
+        - monthlyPayment
+        - rate
+        - psk
+        - isInsuranceEnabled
+        - isSalaryClient
+        - paymentSchedule
+    PaymentScheduleElementDto:
+      type: object
+      properties:
+        number:
+          type: integer
+        date:
+          type: string
+          format: date
+        totalPayment:
+          type: number
+          format: decimal
+        interestPayment:
+          type: number
+          format: decimal
+        debtPayment:
+          type: number
+          format: decimal
+        remainingDebt:
+          type: number
+          format: decimal
+      required:
+        - number
+        - date
+        - totalPayment
+        - interestPayment
+        - debtPayment
+        - remainingDebt
