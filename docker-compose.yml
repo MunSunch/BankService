@@ -11,6 +11,15 @@ services:
   #     - statement-mc
   #     - deal-mc
 
+  gateway-spring-cloud:
+    image: munirsunchalyaev/gateway:0.0.1
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+    ports:
+      - 8080:8080
+    depends_on:
+      - discovery-mc
+
   discovery-mc:
     image: munirsunchalyaev/discovery:0.0.1
     ports:
