@@ -25,11 +25,6 @@ jobs:
           distribution: 'liberica'
           java-version: '17'
 
-      - name: Set environment with docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
-        with:
-          compose-file: ${{ env.DIRECTORY }}/docker-compose.yml
-
       - name: Analyze with SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
