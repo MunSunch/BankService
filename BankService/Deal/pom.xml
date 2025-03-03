@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.munsun</groupId>
 	<artifactId>Deal</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<name>Deal</name>
 	<description>Deal Microservice</description>
 	<properties>
@@ -30,6 +30,14 @@
 		<org.springframework.kafka.org.springframework.kafka.version>3.2.0</org.springframework.kafka.org.springframework.kafka.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -109,6 +117,7 @@
 			<version>${org.springframework.kafka.org.springframework.kafka.version}</version>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

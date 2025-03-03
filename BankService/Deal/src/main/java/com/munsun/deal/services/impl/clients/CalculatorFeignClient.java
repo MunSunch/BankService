@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "calculator-mc", url = "${client.calculator.url}")
+@FeignClient(value = "${client.calculator.name}")
 public interface CalculatorFeignClient {
     @PostMapping("/v1/calculator/offers")
     List<LoanOfferDto> getLoanOffers(@RequestParam TypePayments typePayments,
