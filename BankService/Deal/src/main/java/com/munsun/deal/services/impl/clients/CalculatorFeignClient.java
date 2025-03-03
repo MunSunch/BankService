@@ -11,10 +11,10 @@ import java.util.List;
 @FeignClient(value = "${clients.calculator.name}")
 public interface CalculatorFeignClient {
     @PostMapping("/v1/calculator/offers")
-    List<LoanOfferDto> getLoanOffers(@RequestParam TypePayments typePayments,
+    List<LoanOfferDto> getLoanOffers(@RequestParam TypePayments typePayment,
                                      @RequestBody LoanStatementRequestDto loanStatementRequestDto);
 
     @PostMapping("/v1/calculator/calc")
-    CreditDto getCredit(@RequestParam TypePayments typePayments,
+    CreditDto getCredit(@RequestParam TypePayments typePayment,
                         @RequestBody ScoringDataDto scoringDataDto);
 }
