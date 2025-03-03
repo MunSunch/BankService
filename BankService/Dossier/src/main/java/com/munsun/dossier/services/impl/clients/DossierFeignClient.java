@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.UUID;
 
-@FeignClient(value = "${clients.dossier.name}")
+@FeignClient(value = "${clients.deal.name}")
 public interface DossierFeignClient {
     @PutMapping("v1/deal/admin/statement/{statementId}/status")
     void updateStatus(@PathVariable UUID statementId);
