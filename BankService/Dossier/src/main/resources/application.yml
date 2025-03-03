@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: dossier
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
