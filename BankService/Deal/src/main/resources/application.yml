@@ -37,6 +37,8 @@ kafka:
     statement_denied: statement-denied
 
 springdoc:
+  api-docs:
+    path: /api-doc
   swagger-ui:
     path: /api-docs-ui
 

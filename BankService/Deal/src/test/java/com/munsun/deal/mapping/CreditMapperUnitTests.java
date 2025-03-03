@@ -2,7 +2,7 @@ package com.munsun.deal.mapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.munsun.deal.utils.TestUtils;
-import com.munsun.deal.dto.response.CreditDto;
+import com.munsun.deal.dto.CreditDto;
 import com.munsun.deal.models.Credit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest(classes = {CreditMapperImpl.class})
 public class CreditMapperUnitTests {
-    private CreditMapper creditMapper = new CreditMapperImpl();
+    @Autowired
+    private CreditMapper creditMapper;
 
     @DisplayName("Test map CreditDto to Credit")
     @Test

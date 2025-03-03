@@ -1,8 +1,8 @@
 package com.munsun.deal.mapping;
 
 import com.munsun.deal.utils.TestUtils;
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.request.ScoringDataDto;
+import com.munsun.deal.dto.FinishRegistrationRequestDto;
+import com.munsun.deal.dto.ScoringDataDto;
 import com.munsun.deal.models.Statement;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = {ScoringMapperImpl.class})
 public class ScoringMapperUnitTests {
     @Autowired
     private ScoringMapper mapper;

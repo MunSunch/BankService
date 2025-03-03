@@ -1,6 +1,6 @@
 package com.munsun.deal.models;
 
-import com.munsun.deal.dto.response.PaymentScheduleElementDto;
+import com.munsun.deal.dto.PaymentScheduleElementDto;
 import com.munsun.deal.models.enums.CreditStatus;
 import jakarta.persistence.*;
 import lombok.*;

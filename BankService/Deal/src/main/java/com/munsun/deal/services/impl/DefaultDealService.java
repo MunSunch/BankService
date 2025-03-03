@@ -1,12 +1,8 @@
 package com.munsun.deal.services.impl;
 
+import com.munsun.deal.dto.*;
 import com.munsun.deal.exceptions.InvalidSesCode;
-import com.munsun.deal.queries.payload.enums.Theme;
-import com.munsun.deal.dto.request.FinishRegistrationRequestDto;
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
-import com.munsun.deal.dto.request.ScoringDataDto;
-import com.munsun.deal.dto.response.CreditDto;
-import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.kafka.payload.enums.Theme;
 import com.munsun.deal.exceptions.PrescoringException;
 import com.munsun.deal.exceptions.ScoringException;
 import com.munsun.deal.exceptions.StatementNotFoundException;
@@ -19,7 +15,7 @@ import com.munsun.deal.models.Statement;
 import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.models.enums.ChangeType;
 import com.munsun.deal.models.enums.CreditStatus;
-import com.munsun.deal.queries.producers.DealProducer;
+import com.munsun.deal.kafka.producers.DealProducer;
 import com.munsun.deal.repositories.ClientRepository;
 import com.munsun.deal.repositories.CreditRepository;
 import com.munsun.deal.repositories.StatementRepository;
@@ -51,7 +47,7 @@ public class DefaultDealService implements DealService {
     private final DealProducer dealProducer;
 
     @Override
-    public List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatement) {
+    public List<LoanOfferDto> getLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatement) {
         Client client = clientMapper.toClient(loanStatement);
             client.getPassport().setPassportUUID(UUID.randomUUID());
         clientRepository.save(client);
@@ -59,10 +55,11 @@ public class DefaultDealService implements DealService {
             statement.setCreationDate(LocalDate.now());
             statement.setStatus(ApplicationStatus.PREAPPROVAL, ChangeType.AUTOMATIC);
             statement.setClient(client);
+            statement.setTypePayments(typePayment);
         statementRepository.save(statement);
         List<LoanOfferDto> offers;
         try {
-            offers = calculatorClient.getLoanOffers(loanStatement);
+            offers = calculatorClient.getLoanOffers(typePayment, loanStatement);
         } catch (FeignException e) {
             if(e.status() == 400 && e.contentUTF8().contains("prescoring")) {
                 statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
@@ -72,7 +69,10 @@ public class DefaultDealService implements DealService {
             throw e;
         }
         return offers.stream()
-                .map(oldOffer -> new LoanOfferDto(statement.getStatementId(), oldOffer))
+                .map(oldOffer -> {
+                    oldOffer.setStatementId(statement.getStatementId());
+                    return oldOffer;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +86,7 @@ public class DefaultDealService implements DealService {
         ScoringDataDto scoringDataDto = scoringMapper.toScoringDataDto(statement, finishRegistration);
         CreditDto creditDto;
         try {
-            creditDto = calculatorClient.getCredit(scoringDataDto);
+            creditDto = calculatorClient.getCredit(statement.getTypePayments(), scoringDataDto);
             statement.setStatus(ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
         } catch (FeignException e) {
             if(e.status() == 500 && e.contentUTF8().contains("scoring")) {
@@ -107,10 +107,10 @@ public class DefaultDealService implements DealService {
     }
 
     @Override
-    public void selectLoanOffer(LoanOfferDto loanOffer) {
-        UUID statementUUID = loanOffer.statementId();
+    public void selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOffer) {
+        UUID statementUUID = loanOffer.getStatementId();
         Statement statement = statementRepository.findById(statementUUID)
-                .orElseThrow(() -> new StatementNotFoundException(loanOffer.statementId().toString()));
+                .orElseThrow(() -> new StatementNotFoundException(loanOffer.getStatementId().toString()));
             statement.setAppliedOffer(loanOffer);
             statement.setStatus(ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
         statementRepository.save(statement);

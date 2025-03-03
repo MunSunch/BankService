@@ -1,7 +1,7 @@
 package com.munsun.deal.mapping;
 
 import com.munsun.deal.utils.TestUtils;
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
+import com.munsun.deal.dto.LoanStatementRequestDto;
 import com.munsun.deal.models.Client;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = {ClientMapperImpl.class})
 public class ClientMapperUnitTests {
     @Autowired
     private ClientMapper mapper;

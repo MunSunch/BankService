@@ -1,7 +1,8 @@
 package com.munsun.deal.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.munsun.deal.dto.response.ErrorMessageDto;
+import com.munsun.deal.dto.ErrorMessageDto;
+import com.munsun.deal.dto.TypePayments;
 import com.munsun.deal.services.DealService;
 import com.munsun.deal.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -31,15 +32,15 @@ public class DealControllerUnitTests {
     @DisplayName("Test throw prescoring error")
     @Test
     public void givenRequestWithInvalidAmount_whenSendRequest_thenReturnErrorMessageStatus400() throws Exception {
-        var response = mockMvc.perform(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL)
+        var response = mockMvc.perform(post(TestUtils.LOAN_OFFERS_ENDPOINT_DEAL+"?typePayments=ANNUITY")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestUtils.getLoanStatementRequestDtoInvalidAmount())))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         ErrorMessageDto result = mapper.readValue(response.getResponse().getContentAsString(), ErrorMessageDto.class);
 
-        assertThat(result.message().contains("prescoring"))
+        assertThat(result.getMessage().contains("prescoring"))
                 .isTrue();
-        verify(service, never()).getLoanOffers(any());
+        verify(service, never()).getLoanOffers(TypePayments.ANNUITY, any());
     }
 }

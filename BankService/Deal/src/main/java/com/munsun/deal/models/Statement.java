@@ -1,6 +1,7 @@
 package com.munsun.deal.models;
 
-import com.munsun.deal.dto.response.LoanOfferDto;
+import com.munsun.deal.dto.LoanOfferDto;
+import com.munsun.deal.dto.TypePayments;
 import com.munsun.deal.models.enums.ApplicationStatus;
 import com.munsun.deal.models.enums.ChangeType;
 import com.munsun.deal.models.json.StatusHistory;
@@ -38,6 +39,10 @@ public class Statement {
     @Enumerated(EnumType.STRING)
     @Column(name = "application_status")
     ApplicationStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_payments")
+    TypePayments typePayments;
 
     @Column(name = "creation_date", columnDefinition = "timestamp")
     LocalDate creationDate;

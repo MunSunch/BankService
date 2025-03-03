@@ -1,6 +1,6 @@
 package com.munsun.deal.mapping;
 
-import com.munsun.deal.dto.response.CreditDto;
+import com.munsun.deal.dto.CreditDto;
 import com.munsun.deal.models.Credit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

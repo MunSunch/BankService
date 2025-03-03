@@ -1,7 +1,7 @@
 name: continue integration deal
 
 on:
-  push:
+  push: 
     branches:
       - dev/deal
   pull_request:

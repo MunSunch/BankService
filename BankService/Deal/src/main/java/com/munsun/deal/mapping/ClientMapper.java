@@ -1,6 +1,6 @@
 package com.munsun.deal.mapping;
 
-import com.munsun.deal.dto.request.LoanStatementRequestDto;
+import com.munsun.deal.dto.LoanStatementRequestDto;
 import com.munsun.deal.models.Client;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
