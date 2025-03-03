@@ -40,55 +40,36 @@ spring:
           uri: lb://${services.deal.name}
           predicates:
             - Method=POST
-            - Path=/api/statement/registration
+            - Path=/api/statement/registration/**
           filters:
-            - RewritePath=/api/statement/registration/(?<segment>), /v1/deal/calculate/${segment}
+            - RewritePath=/api/statement/registration/(?<segment>.*), /v1/deal/calculate/$\{segment}
 
         - id: rewrite_to_deal_api_documents
           uri: lb://${services.deal.name}
           predicates:
-            - Path=/api/document/(?<segment>)
+            - Path=/api/document/(?<segment>)/**
           filters:
-            - RewritePath=/api/document/(?<segment>), /v1/deal/document/${segment}
+            - RewritePath=/api/document/(?<segment>.*)/**, /v1/deal/document/$\{segment}/**
 
         - id: rewrite_to_deal_api_admin
           uri: lb://${services.deal.name}
           predicates:
             - Path=/api/admin/statement
           filters:
-            - RewritePath=/api/admin/statement/(?<segment>), /v1/deal/admin/statement/${segment}
-
-        - id: rewrite_to_statement_swagger
-          uri: lb://${services.statement.name}
-          predicates:
-            - Path=/api/statement/swagger
-          filters:
-            - RewritePath=/api/statement/swagger, /openapi/ui-docs
-
-        - id: rewrite_to_deal_swagger
-          uri: lb://${services.deal.name}
-          predicates:
-            - Path=/api/deal/swagger
-          filters:
-            - RewritePath=/api/deal/swagger, /api-docs-ui
-
-        - id: rewrite_to_calculator_swagger
-          uri: lb://${services.calculator.name}
-          predicates:
-            - Path=/api/calculator/swagger
-          filters:
-            - RewritePath=/api/calculator/swagger, /api-docs-ui
+            - RewritePath=/api/admin/statement/(?<segment>.*), /v1/deal/admin/statement/$\{segment}
 
 management:
   endpoint:
     gateway:
-      access: unrestricted
-    info:
-      access: unrestricted
-    health:
-      access: unrestricted
-    actuator:
-      access: unrestricted
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+springdoc:
+  swagger-ui:
+    path: /openapi/api-docs-ui
 
 eureka:
   instance:
