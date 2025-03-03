@@ -1,3 +1,13 @@
+services:
+  calculator:
+    name: calculator
+  deal:
+    name: deal
+  statement:
+    name: statement
+  dossier:
+    name: dossier
+
 spring:
   application:
     name: gateway
@@ -9,7 +19,7 @@ spring:
           lowerCaseServiceId: true
       routes:
         - id: rewrite_to_statement_api_get_loan
-          uri: lb://statement
+          uri: lb://${services.statement.name}
           predicates:
             - Query=typePayment
             - Method=POST
@@ -18,7 +28,7 @@ spring:
             - RewritePath=/api/statement(?<segment>), /v1/statement${segment}
 
         - id: rewrite_to_statement_api_select_loan
-          uri: lb://statement
+          uri: lb://${services.statement.name}
           predicates:
             - Query=typePayment
             - Method=POST
@@ -27,7 +37,7 @@ spring:
             - RewritePath=/api/statement/select(?<segment>), /v1/statement/offer${segment}
 
         - id: rewrite_to_deal_api_calculate_credit
-          uri: lb://deal
+          uri: lb://${services.deal.name}
           predicates:
             - Method=POST
             - Path=/api/statement/registration
@@ -35,35 +45,35 @@ spring:
             - RewritePath=/api/statement/registration/(?<segment>), /v1/deal/calculate/${segment}
 
         - id: rewrite_to_deal_api_documents
-          uri: lb://deal
+          uri: lb://${services.deal.name}
           predicates:
             - Path=/api/document/(?<segment>)
           filters:
             - RewritePath=/api/document/(?<segment>), /v1/deal/document/${segment}
 
         - id: rewrite_to_deal_api_admin
-          uri: lb://deal
+          uri: lb://${services.deal.name}
           predicates:
             - Path=/api/admin/statement
           filters:
             - RewritePath=/api/admin/statement/(?<segment>), /v1/deal/admin/statement/${segment}
 
         - id: rewrite_to_statement_swagger
-          uri: lb://statement
+          uri: lb://${services.statement.name}
           predicates:
             - Path=/api/statement/swagger
           filters:
             - RewritePath=/api/statement/swagger, /openapi/ui-docs
 
         - id: rewrite_to_deal_swagger
-          uri: lb://deal
+          uri: lb://${services.deal.name}
           predicates:
             - Path=/api/deal/swagger
           filters:
             - RewritePath=/api/deal/swagger, /api-docs-ui
 
         - id: rewrite_to_calculator_swagger
-          uri: lb://calculator
+          uri: lb://${services.calculator.name}
           predicates:
             - Path=/api/calculator/swagger
           filters:
