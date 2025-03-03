@@ -1,4 +1,4 @@
-# MVP Level 1 реализация микросервиса Калькулятор
+# MVP Level 11 реализация микросервиса Калькулятор
 ## Реализация
 Реализовано два профиля default(используется по умолчанию) и differentiated_payment. В первом профиле применяется
 метод расчета кредита с аннуитентными выплатами класс [CreditCalculatorWithAnnuityPayments](src/main/java/com/munsun/calculator/services/impl/providers/impl/CreditCalculatorWithAnnuityPayments.java),
@@ -7,10 +7,10 @@
 Логи вынесены в аспекты, доступные в папке [aspects](src/main/java/com/munsun/calculator/aspects). UPD: добавлено логирование для расчета возможных предложений и всего связаного с ними.
 для этого применил следующие стратегию: DTO объекты и результаты расчетов логируются на уровне debug, а на уровне info оповещение о начале/окончании расчета.
 
-Прескоринг реализован на уровне валидации и при неудаче МС возвращает [ErrorMessageDto](src/main/java/com/munsun/calculator/dto/response/ErrorMessageDto.java)
+Прескоринг реализован на уровне валидации и при неудаче МС возвращает [ErrorMessageDto](src/main/java/com/munsun/calculator/config/response/ErrorMessageDto.java)
 c возможной причиной.
 
-Скоринг реализован в сервисном слое и при неудаче МС возвращает [ErrorMessageDto](src/main/java/com/munsun/calculator/dto/response/ErrorMessageDto.java)
+Скоринг реализован в сервисном слое и при неудаче МС возвращает [ErrorMessageDto](src/main/java/com/munsun/calculator/config/response/ErrorMessageDto.java)
 с ошибкой [ScoringException](src/main/java/com/munsun/calculator/exceptions/ScoringException.java), причина, в отличие от прескоринга
 в мессадж не передается, а лишь логируется. Фильтры поделены на [hard](src/main/java/com/munsun/calculator/services/impl/providers/impl/filters/impl/hard), отказывающие при невыполнении условий фильтров, и 
 [soft](src/main/java/com/munsun/calculator/services/impl/providers/impl/filters/impl/soft), изменяющие процентную ставку и добавляющие стоимость доп. услуг, например, страховка.
@@ -19,7 +19,7 @@ UPD: добавлен новый интерфейс [ScoringLoanFilter](src/main
 [SalaryClientSoftScoringFilter](src/main/java/com/munsun/calculator/services/impl/providers/impl/filters/impl/soft/InsuranceSoftScoringFilter.java) и
 [InsuranceSoftScoringFilter](src/main/java/com/munsun/calculator/services/impl/providers/impl/filters/impl/soft/InsuranceSoftScoringFilter.java), 
 однако реализация позволяет добавлять значительное большее количество при возможном расширении. Также 
-добавлен [SimpleScoringInfoDto](src/main/java/com/munsun/calculator/dto/utils/SimpleScoringInfoDto.java) для работы с ними.
+добавлен [SimpleScoringInfoDto](src/main/java/com/munsun/calculator/config/utils/SimpleScoringInfoDto.java) для работы с ними.
 
 UPD: Документация по API в формате json доступна [здесь](api-docs.json), настроены эндпоинты **/calculator/api-docs-ui** и **/calculator/api-docs**.
 

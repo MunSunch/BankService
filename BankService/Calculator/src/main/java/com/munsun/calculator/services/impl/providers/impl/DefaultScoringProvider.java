@@ -1,13 +1,13 @@
 package com.munsun.calculator.services.impl.providers.impl;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.utils.SimpleScoringInfoDto;
+import com.munsun.calculator.dto.ScoringDataDto;
+import com.munsun.calculator.services.impl.utils.RateAndOtherServiceDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import com.munsun.calculator.services.impl.providers.ScoringProvider;
+import com.munsun.calculator.services.impl.utils.SimpleScoringInfoDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringHardFilter;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringLoanFilter;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringSoftFilter;
-import com.munsun.calculator.dto.utils.RateAndOtherServiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -55,8 +54,7 @@ public class DefaultScoringProvider implements ScoringProvider {
     }
 
     private String getName(ScoringLoanFilter filter) {
-        String temp = filter.getClass().getSimpleName();
-        return temp.substring(0,temp.indexOf("$"));
+        return filter.getClass().getSimpleName();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class DefaultScoringProvider implements ScoringProvider {
 
     @Override
     public RateAndOtherServiceDto softScoring(ScoringDataDto scoringDataDto, BigDecimal rate) {
-        var resultList =  softFilters.stream()
+        var resultList = softFilters.stream()
                                         .map(filter -> filter.check(scoringDataDto))
                                         .toList();
         BigDecimal diffRate = resultList.stream()

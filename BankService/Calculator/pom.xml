@@ -11,13 +11,17 @@
 
 	<groupId>com.munsun.calculator</groupId>
 	<artifactId>Calculator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>Calculator</name>
 	<description>Microservice calculator for working with loans</description>
 
 	<properties>
 		<java.version>17</java.version>
+		<org.jacoco.jacoco-maven-plugin.version>0.8.7</org.jacoco.jacoco-maven-plugin.version>
 		<org.springdoc.springdoc-openapi-ui.version>1.7.0</org.springdoc.springdoc-openapi-ui.version>
+		<org.apache.maven.plugins.maven-surefire-plugin.version>2.22.2</org.apache.maven.plugins.maven-surefire-plugin.version>
+		<org.springdoc.springdoc-openapi-maven-plugin.version>1.4</org.springdoc.springdoc-openapi-maven-plugin.version>
+		<org.org.openapitools.openapi-generator-maven-plugin.version>7.9.0</org.org.openapitools.openapi-generator-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -40,6 +44,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${org.springdoc.springdoc-openapi-ui.version}</version>
@@ -51,6 +60,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>Calculator</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -80,9 +90,43 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${org.org.openapitools.openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skipValidateSpec>true</skipValidateSpec>
+							<inputSpec>${project.basedir}/src/main/resources/calculator_rest_api_v1.yml</inputSpec>
+							<apiPackage>com.munsun.calculator.controllers</apiPackage>
+							<modelPackage>com.munsun.calculator.dto</modelPackage>
+							<generatorName>spring</generatorName>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<useBeanValidation>true</useBeanValidation>
+								<interfaceOnly>true</interfaceOnly>
+								<delegatePattern>true</delegatePattern>
+								<openApiNullable>false</openApiNullable>
+								<skipDefaultInterface>true</skipDefaultInterface>
+								<useResponseEntity>true</useResponseEntity>
+								<generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+								<useSpringController>true</useSpringController>
+								<generateBuilders>true</generateBuilders>
+								<dateLibrary>java8</dateLibrary>
+								<generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>${org.springdoc.springdoc-openapi-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>integration-test</phase>
@@ -100,7 +144,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>${org.apache.maven.plugins.maven-surefire-plugin.version}</version>
 				<configuration>
 					<argLine>
 						--illegal-access=permit
@@ -115,7 +159,14 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>${org.jacoco.jacoco-maven-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/dto/*</exclude>
+						<exclude>**/exceptions/*</exclude>
+						<exclude>**/controllers/*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>

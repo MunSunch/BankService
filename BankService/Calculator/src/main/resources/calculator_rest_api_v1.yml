@@ -1,0 +1,285 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Calculator of loans controller
+    description: displays possible offers and calculates the loan
+paths:
+  /v1/calculator/offers:
+    post:
+      tags:
+        - Calculator of loans controller
+      summary: calculation possible offers
+      operationId: calculatePossibleLoanTerms
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Calculated offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /v1/calculator/calc:
+    post:
+      tags:
+        - Calculator of loans controller
+      summary: calculation credit
+      operationId: fullCalculateLoanParametersAndScoring
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringDataDto'
+        required: true
+      responses:
+        '200':
+          description: Calculated credit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditDto'
+        '400':
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+components:
+  schemas:
+    TypePayments:
+      type: string
+      enum:
+        - ANNUITY
+        - DIFFERENTIAL
+    LoanOfferDto:
+      type: object
+      properties:
+        statementId:
+          type: string
+          format: uuid
+        requestedAmount:
+          type: number
+        totalAmount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+    ErrorMessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+    LoanStatementRequestDto:
+      required:
+        - amount
+        - birthdate
+        - email
+        - firstName
+        - lastName
+        - middleName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 30000
+          exclusiveMinimum: false
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        lastName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        middleName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        email:
+          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+          type: string
+        birthdate:
+          type: string
+          format: date
+          x-field-extra-annotation: "@com.munsun.calculator.utils.annotations.DiffPresentAndCurrent"
+        passportSeries:
+          pattern: ^\d{4}$
+          type: string
+        passportNumber:
+          pattern: ^\d{6}$
+          type: string
+    CreditDto:
+      type: object
+      properties:
+        amount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        psk:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+        paymentSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+    PaymentScheduleElementDto:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        totalPayment:
+          type: number
+        interestPayment:
+          type: number
+        debtPayment:
+          type: number
+        remainingDebt:
+          type: number
+    EmploymentDto:
+      type: object
+      properties:
+        employmentStatus:
+          type: string
+          enum:
+            - UNEMPLOYED
+            - SELF_EMPLOYED
+            - EMPLOYED
+            - BUSINESS_OWNER
+            - UNKNOWN
+        employerINN:
+          type: string
+        salary:
+          type: number
+        position:
+          type: string
+          enum:
+            - WORKER
+            - MID_MANAGER
+            - TOP_MANAGER
+            - OWNER
+        workExperienceTotal:
+          type: integer
+          format: int32
+        workExperienceCurrent:
+          type: integer
+          format: int32
+    ScoringDataDto:
+      type: object
+      properties:
+        amount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        firstname:
+          type: string
+
+        lastName:
+          type: string
+        middleName:
+          type: string
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - NON_BINARY
+            - UNKNOWN
+        email:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          type: string
+        passportNumber:
+          type: string
+        passportIssueDate:
+          type: string
+          format: date
+        passportIssueBranch:
+          type: string
+        maritalStatus:
+          type: string
+          enum:
+            - UNKNOWN
+            - MARRIED
+            - DIVORCED
+            - SINGLE
+            - WIDOW_WIDOWER
+        dependentAmount:
+          type: integer
+          format: int32
+        employment:
+          $ref: '#/components/schemas/EmploymentDto'
+        accountNumber:
+          type: string
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean

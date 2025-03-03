@@ -4,9 +4,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /calculator/api-docs
+    path: /openapi/docs
   swagger-ui:
-    path: /calculator/api-docs-ui
+    path: /openapi/ui-docs
 
 service:
   rate: 20
@@ -14,6 +14,9 @@ service:
     round: 2
   insurance:
     cost: 10000
+
+prescoring:
+  min_age: 18
 
 scoring:
   filters:

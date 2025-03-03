@@ -1,6 +1,6 @@
 package com.munsun.calculator.services.impl.providers.impl.filters.impl.hard;
 
-import com.munsun.calculator.dto.request.ScoringDataDto;
+import com.munsun.calculator.dto.ScoringDataDto;
 import com.munsun.calculator.services.impl.providers.impl.filters.ScoringHardFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +17,8 @@ public class WorkExperienceHardScoringFilter implements ScoringHardFilter {
 
     @Override
     public boolean check(ScoringDataDto scoringDataDto) {
-        return scoringDataDto.employment().workExperienceTotal() >= workExperienceTotal
-                && scoringDataDto.employment().workExperienceCurrent() >= workExperienceCurrent;
+        return scoringDataDto.getEmployment().getWorkExperienceTotal() >= workExperienceTotal
+                && scoringDataDto.getEmployment().getWorkExperienceCurrent() >= workExperienceCurrent;
     }
 
 }

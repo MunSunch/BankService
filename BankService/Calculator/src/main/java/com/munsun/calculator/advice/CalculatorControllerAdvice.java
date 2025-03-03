@@ -1,6 +1,6 @@
 package com.munsun.calculator.advice;
 
-import com.munsun.calculator.dto.response.ErrorMessageDto;
+import com.munsun.calculator.dto.ErrorMessageDto;
 import com.munsun.calculator.exceptions.ScoringException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +29,6 @@ public class CalculatorControllerAdvice {
     public ResponseEntity<ErrorMessageDto> handlerScoring(ScoringException e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorMessageDto("Scoring:".concat(e.getMessage())));
+                .body(new ErrorMessageDto(e.getMessage()));
     }
 }

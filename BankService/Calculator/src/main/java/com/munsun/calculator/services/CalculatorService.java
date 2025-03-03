@@ -1,13 +1,12 @@
 package com.munsun.calculator.services;
 
-import com.munsun.calculator.dto.request.LoanStatementRequestDto;
-import com.munsun.calculator.dto.request.ScoringDataDto;
-import com.munsun.calculator.dto.response.CreditDto;
-import com.munsun.calculator.dto.response.LoanOfferDto;
+import com.munsun.calculator.dto.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public interface CalculatorService {
-    CreditDto calculateCredit(ScoringDataDto scoringDataDto);
-    List<LoanOfferDto> calculateLoan(LoanStatementRequestDto loanStatementRequestDto);
+    List<LoanOfferDto> calculateLoan(@NotBlank TypePayments typePayment, @Valid LoanStatementRequestDto loanStatementRequestDto);
+    CreditDto calculateCredit(@NotBlank TypePayments typePayment, @Valid ScoringDataDto scoringDataDto);
 }
