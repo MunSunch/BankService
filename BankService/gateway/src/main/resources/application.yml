@@ -47,14 +47,14 @@ spring:
         - id: rewrite_to_deal_api_documents
           uri: lb://${services.deal.name}
           predicates:
-            - Path=/api/document/(?<segment>)/**
+            - Path=/api/document/**
           filters:
-            - RewritePath=/api/document/(?<segment>.*)/**, /v1/deal/document/$\{segment}/**
+            - RewritePath=/api/document/(?<segment>.*), /v1/deal/document/$\{segment}
 
         - id: rewrite_to_deal_api_admin
           uri: lb://${services.deal.name}
           predicates:
-            - Path=/api/admin/statement
+            - Path=/api/admin/statement/**
           filters:
             - RewritePath=/api/admin/statement/(?<segment>.*), /v1/deal/admin/statement/$\{segment}
 
