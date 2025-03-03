@@ -1,21 +1,21 @@
 version: '3'
 services:
-  gateway:
-    image: munirsunchalyaev/gateway-custom-nginx:latest
-    environment:
-      DEAL_MC: deal-mc:8080
-      STATEMENT_MC: statement-mc:8080
-    ports:
-      - 8080:8080
-    depends_on:
-      - statement-mc
-      - deal-mc
+  # gateway:
+  #   image: munirsunchalyaev/gateway-custom-nginx:latest
+  #   environment:
+  #     DEAL_MC: deal-mc:8080
+  #     STATEMENT_MC: statement-mc:8080
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - statement-mc
+  #     - deal-mc
 
   calculator-mc:
-    image: munirsunchalyaev/calculator:0.0.3
+    image: munirsunchalyaev/calculator:1.0.1
 
   statement-mc:
-    image: munirsunchalyaev/statement:0.0.1
+    image: munirsunchalyaev/statement:1.0.0
     environment:
       CLIENT_DEAL_URL: http://deal-mc:8080
     depends_on:
@@ -31,7 +31,7 @@ services:
       - init-kafka
       
   deal-mc:
-    image: munirsunchalyaev/deal:0.0.1
+    image: munirsunchalyaev/deal:1.0.0
     environment:
       CLIENT_CALCULATOR_URL: http://calculator-mc:8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
