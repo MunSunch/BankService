@@ -1,8 +1,8 @@
 package com.munsun.dossier.aspects;
 
-import com.munsun.dossier.queries.payload.EmailMessage;
-import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
-import com.munsun.dossier.queries.payload.EmailMessageWithSesCode;
+import com.munsun.dossier.kafka.payload.EmailMessage;
+import com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.kafka.payload.EmailMessageWithSesCode;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

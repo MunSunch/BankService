@@ -3,7 +3,7 @@ package com.munsun.dossier.services.impl.providers.impl;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto;
 import com.munsun.dossier.services.impl.providers.DocumentGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

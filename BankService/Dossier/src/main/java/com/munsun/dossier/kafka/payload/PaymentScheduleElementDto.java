@@ -1,4 +1,4 @@
-package com.munsun.dossier.queries.payload;
+package com.munsun.dossier.kafka.payload;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

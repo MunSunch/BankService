@@ -1,8 +1,8 @@
 package com.munsun.dossier.services.impl;
 
-import com.munsun.dossier.queries.payload.EmailMessage;
-import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
-import com.munsun.dossier.queries.payload.EmailMessageWithSesCode;
+import com.munsun.dossier.kafka.payload.EmailMessage;
+import com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.kafka.payload.EmailMessageWithSesCode;
 import com.munsun.dossier.services.DossierService;
 import com.munsun.dossier.services.impl.clients.DossierFeignClient;
 import com.munsun.dossier.services.impl.providers.DocumentGenerator;

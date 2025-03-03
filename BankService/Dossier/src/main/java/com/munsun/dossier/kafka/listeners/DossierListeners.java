@@ -1,8 +1,8 @@
-package com.munsun.dossier.queries.listeners;
+package com.munsun.dossier.kafka.listeners;
 
-import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
-import com.munsun.dossier.queries.payload.EmailMessageWithSesCode;
-import com.munsun.dossier.queries.payload.EmailMessage;
+import com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.kafka.payload.EmailMessageWithSesCode;
+import com.munsun.dossier.kafka.payload.EmailMessage;
 
 import com.munsun.dossier.services.DossierService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.munsun.dossier.queries.configuration;
+package com.munsun.dossier.kafka.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
