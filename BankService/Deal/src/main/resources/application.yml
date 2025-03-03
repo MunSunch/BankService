@@ -25,6 +25,15 @@ spring:
           default:
             logger-level: full
 
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8000/eureka/
+
 kafka:
   init:
     topics: true
@@ -42,9 +51,9 @@ springdoc:
   swagger-ui:
     path: /api-docs-ui
 
-client:
+clients:
   calculator:
-    url: http://localhost:8081
+    name: calculator
 
 logging:
   level:
