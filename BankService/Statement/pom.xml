@@ -11,13 +11,14 @@
 
 	<groupId>com.munsun</groupId>
 	<artifactId>Statement</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Statement</name>
 	<description>Statement Microservice</description>
 
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.3</spring-cloud.version>
+		<org.org.openapitools.openapi-generator-maven-plugin.version>7.9.0</org.org.openapitools.openapi-generator-maven-plugin.version>
 		<org.springdoc.springdoc-openapi-ui.version>1.7.0</org.springdoc.springdoc-openapi-ui.version>
 		<com.maciejwalkowiak.spring.wiremock-spring-boot.version>2.1.2</com.maciejwalkowiak.spring.wiremock-spring-boot.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.12</org.jacoco.jacoco-maven-plugin.version>
@@ -62,6 +63,7 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -91,6 +93,40 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${org.org.openapitools.openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skipValidateSpec>true</skipValidateSpec>
+							<inputSpec>${project.basedir}/src/main/resources/openapi-statement-api-v1.yml</inputSpec>
+							<apiPackage>com.munsun.statement.controllers</apiPackage>
+							<modelPackage>com.munsun.statement.dto</modelPackage>
+							<generatorName>spring</generatorName>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<useBeanValidation>true</useBeanValidation>
+								<interfaceOnly>true</interfaceOnly>
+								<delegatePattern>true</delegatePattern>
+								<openApiNullable>false</openApiNullable>
+								<skipDefaultInterface>true</skipDefaultInterface>
+								<useResponseEntity>true</useResponseEntity>
+								<generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+								<useSpringController>true</useSpringController>
+								<generateBuilders>true</generateBuilders>
+								<dateLibrary>java8</dateLibrary>
+								<generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${org.apache.maven.plugins.maven-surefire-plugin.version}</version>
@@ -114,6 +150,8 @@
 					<excludes>
 						<exclude>**/dto/*</exclude>
 						<exclude>**/exceptions/*</exclude>
+						<exclude>**/config/*</exclude>
+						<exclude>**/ApiUtil.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -160,6 +198,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 

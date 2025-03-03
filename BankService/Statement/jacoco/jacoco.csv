@@ -1,9 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Statement,com.munsun.statement.services.impl,DefaultStatementService,0,16,0,0,0,4,0,3,0,3
-Statement,com.munsun.statement.dto.annotations,DiffPresentAndCurrentValidator,0,11,0,0,0,3,0,2,0,2
-Statement,com.munsun.statement,StatementApplication,5,3,0,0,2,1,1,1,1,1
-Statement,com.munsun.statement.controllers,StatementController,0,16,0,0,0,4,0,3,0,3
-Statement,com.munsun.statement.advice,StatementControllerAdvice,0,82,0,0,0,21,0,7,0,7
-Statement,com.munsun.statement.aspects,StatementServiceAspect,2,119,0,0,2,25,2,10,2,10
-Statement,com.munsun.statement.aspects,DealClientAspects,2,60,1,3,2,15,3,7,2,6
-Statement,com.munsun.statement.aspects,StatementControllerAspect,12,45,0,0,5,13,3,6,3,6

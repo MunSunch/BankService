@@ -1,32 +1,33 @@
 package com.munsun.statement.controllers;
 
-import com.munsun.statement.controllers.annotations.GetLoanOffersSwaggerDescription;
-import com.munsun.statement.controllers.annotations.SelectLoanOfferSwaggerDescription;
 import com.munsun.statement.dto.LoanOfferDto;
 import com.munsun.statement.dto.LoanStatementRequestDto;
+import com.munsun.statement.dto.TypePayments;
 import com.munsun.statement.services.StatementService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/statement")
-public class StatementController {
+public class StatementController implements V1Api {
     private final StatementService service;
-    @PostMapping
-    @GetLoanOffersSwaggerDescription
-    public List<LoanOfferDto> getLoanOffers(@RequestBody @Valid LoanStatementRequestDto loanStatement) {
-        return service.getLoanOffers(loanStatement);
+
+    @Override
+    public ResponseEntity<List<LoanOfferDto>> _getLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatementRequestDto) {
+        return ResponseEntity
+                .ok()
+                .body(service.getLoanOffers(typePayment, loanStatementRequestDto));
     }
 
-    @PostMapping("/offer")
-    @SelectLoanOfferSwaggerDescription
-    public void selectLoanOffer(@RequestBody @Valid LoanOfferDto loanOfferDto) {
-        service.selectLoanOffer(loanOfferDto);
+    @Override
+    public ResponseEntity<Void> _selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOfferDto) {
+        service.selectLoanOffer(typePayment, loanOfferDto);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }

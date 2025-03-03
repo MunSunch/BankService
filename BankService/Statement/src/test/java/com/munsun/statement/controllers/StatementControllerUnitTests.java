@@ -3,6 +3,7 @@ package com.munsun.statement.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.munsun.statement.dto.LoanOfferDto;
 import com.munsun.statement.dto.LoanStatementRequestDto;
+import com.munsun.statement.dto.TypePayments;
 import com.munsun.statement.services.StatementService;
 import com.munsun.statement.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -32,7 +34,8 @@ public class StatementControllerUnitTests {
     @ParameterizedTest
     @MethodSource("invalidDataDtoInvalidDataProvider")
     public void givenInvalidLoanStatement_whenSendRequest_thenResponseWithBadRequest(LoanStatementRequestDto loanStatement) throws Exception {
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+        mockMvc.perform(post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(loanStatement)))
                 .andExpect(status().isBadRequest());
@@ -56,7 +59,8 @@ public class StatementControllerUnitTests {
     @ParameterizedTest
     @MethodSource("DataDtoInvalidDataProvider")
     public void givenInvalidLoanOffer_whenSendRequest_thenResponseWithBadRequest(LoanOfferDto loanOffer) throws Exception {
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+        mockMvc.perform(post(TestUtils.LOAN_OFFERS_ENDPOINT_STATEMENT)
+                        .queryParam("typePayment", TypePayments.ANNUITY.name())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(loanOffer)))
                 .andExpect(status().isBadRequest());

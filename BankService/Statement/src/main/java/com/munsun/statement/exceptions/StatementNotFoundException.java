@@ -6,4 +6,8 @@ public class StatementNotFoundException extends RuntimeException {
     public StatementNotFoundException(UUID uuid) {
         super(uuid.toString());
     }
+
+    public StatementNotFoundException(String message) {
+        super(message);
+    }
 }
