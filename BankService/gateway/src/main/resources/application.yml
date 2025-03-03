@@ -2,6 +2,12 @@ spring:
   application:
     name: gateway
 
+springdoc:
+  api-docs:
+    path: /openapi/api-docs
+  swagger-ui:
+    path: /openapi/api-docs-ui
+
 eureka:
   instance:
     ip-address: true
