@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: deal
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -6,8 +8,6 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   main:
     banner-mode: off
-  application:
-    name: Deal
   jpa:
     hibernate:
       ddl-auto: validate
