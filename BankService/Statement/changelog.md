@@ -1,3 +1,10 @@
+# 1.1.0 - 2025.03.03
+
+### Feature
+
+- добавлена поддержка обнаружения сервисов с помощью discovery. [Статья](https://habr.com/ru/companies/otus/articles/539348/)
+
+
 # 1.0.0 - 2025.03.02
 
 ### Feature

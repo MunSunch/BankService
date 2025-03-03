@@ -3,7 +3,11 @@ name: continue integration statement
 on:
   push:
     branches:
+<<<<<<< HEAD
       - dev/statement
+=======
+        - dev/statement
+>>>>>>> dev/statement
   pull_request:
     branches:
       - dev/statement

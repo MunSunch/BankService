@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "deal-mc", url = "${client.deal.url}", configuration = FeignClientConfiguration.class)
+@FeignClient(value = "${clients.deal.name}", configuration = FeignClientConfiguration.class)
 public interface DealClient {
     @PostMapping("v1/deal/statement")
     ResponseEntity<List<LoanOfferDto>> getLoanOffers(@RequestParam(value = "typePayment") TypePayments typePayments,
