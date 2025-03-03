@@ -7,7 +7,73 @@ spring:
         locator:
           enabled: true
           lowerCaseServiceId: true
-          
+      routes:
+        - id: rewrite_to_statement_api_get_loan
+          uri: lb://statement
+          predicates:
+            - Query=typePayment
+            - Method=POST
+            - Path=/api/statement
+          filters:
+            - RewritePath=/api/statement(?<segment>), /v1/statement${segment}
+
+        - id: rewrite_to_statement_api_select_loan
+          uri: lb://statement
+          predicates:
+            - Query=typePayment
+            - Method=POST
+            - Path=/api/statement/select
+          filters:
+            - RewritePath=/api/statement/select(?<segment>), /v1/statement/offer${segment}
+
+        - id: rewrite_to_deal_api_calculate_credit
+          uri: lb://deal
+          predicates:
+            - Method=POST
+            - Path=/api/statement/registration
+          filters:
+            - RewritePath=/api/statement/registration(?<segment>), /v1/statement/registration${segment}
+
+        - id: rewrite_to_deal_api_documents
+          uri: lb://deal
+          predicates:
+            - Path=/api/document/(?<segment>)
+          filters:
+            - RewritePath=/api/document/(?<segment>), /v1/deal/document/${segment}
+
+        - id: rewrite_to_deal_api_admin
+          uri: lb://deal
+          predicates:
+            - Path=/api/admin/statement
+          filters:
+            - RewritePath=/api/admin/statement/(?<segment>), /v1/deal/admin/statement/${segment}
+
+        - id: rewrite_to_statement_swagger
+          uri: lb://statement
+          predicates:
+            - Path=/api/statement/swagger
+          filters:
+            - RewritePath=/api/statement/swagger, /openapi/ui-docs
+
+        - id: rewrite_to_deal_swagger
+          uri: lb://deal
+          predicates:
+            - Path=/api/deal/swagger
+          filters:
+            - RewritePath=/api/deal/swagger, /api-docs-ui
+
+        - id: rewrite_to_calculator_swagger
+          uri: lb://calculator
+          predicates:
+            - Path=/api/calculator/swagger
+          filters:
+            - RewritePath=/api/calculator/swagger, /api-docs-ui
+
+management:
+  endpoint:
+    actuator:
+      access: unrestricted
+
 eureka:
   instance:
     ip-address: true
