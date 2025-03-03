@@ -11,11 +11,12 @@
 
 	<groupId>com.munsun.calculator</groupId>
 	<artifactId>Calculator</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<name>Calculator</name>
 	<description>Microservice calculator for working with loans</description>
 
 	<properties>
+		<spring-cloud.version>2021.0.3</spring-cloud.version>
 		<java.version>17</java.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.7</org.jacoco.jacoco-maven-plugin.version>
 		<org.springdoc.springdoc-openapi-ui.version>1.7.0</org.springdoc.springdoc-openapi-ui.version>
@@ -25,6 +26,14 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -58,6 +67,18 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<finalName>Calculator</finalName>
