@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Statement
+    name: statement
 
 eureka:
   instance:
