@@ -1,6 +1,6 @@
 package com.munsun.dossier.services.impl.providers;
 
-import com.munsun.dossier.queries.payload.EmailMessageWithCreditDto;
+import com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto;
 
 import javax.activation.DataSource;
 

@@ -4,7 +4,7 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
-    protocol: ${MAIL_PROTOCOL}
+#    protocol: ${MAIL_PROTOCOL}
     properties:
       "mail.smtp.auth": true
       "mail.smtp.starttls.enable": true
@@ -17,11 +17,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.type.mapping: com.munsun.deal.queries.payload.EmailMessage:com.munsun.dossier.queries.payload.EmailMessage,
-                                  com.munsun.deal.queries.payload.EmailMessageWithSesCode:com.munsun.dossier.queries.payload.EmailMessageWithSesCode,
-                                  com.munsun.deal.queries.payload.EmailMessageWithCreditDto:com.munsun.dossier.queries.payload.EmailMessageWithCreditDto,
-                                  com.munsun.deal.dto.response.CreditDto:com.munsun.dossier.queries.payload.CreditDto,
-                                  com.munsun.deal.dto.response.PaymentScheduleElementDto:com.munsun.dossier.queries.payload.PaymentScheduleElementDto
+        spring.json.type.mapping: com.munsun.deal.kafka.payload.EmailMessage:com.munsun.dossier.kafka.payload.EmailMessage,
+                                  com.munsun.deal.kafka.payload.EmailMessageWithSesCode:com.munsun.dossier.kafka.payload.EmailMessageWithSesCode,
+                                  com.munsun.deal.kafka.payload.EmailMessageWithCreditDto:com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto,
+                                  com.munsun.deal.dto.CreditDto:com.munsun.dossier.kafka.payload.CreditDto,
+                                  com.munsun.deal.dto.PaymentScheduleElementDto:com.munsun.dossier.kafka.payload.PaymentScheduleElementDto
 kafka:
   init:
     topics: true
@@ -32,6 +32,16 @@ kafka:
     send_ses: send-ses
     credit_issued: credit-issued
     statement_denied: statement-denied
-client:
+
+clients:
   deal:
-    url: http://localhost:8080
+    name: deal
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8000/eureka/

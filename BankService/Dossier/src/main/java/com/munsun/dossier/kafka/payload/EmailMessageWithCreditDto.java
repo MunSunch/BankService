@@ -1,6 +1,6 @@
-package com.munsun.dossier.queries.payload;
+package com.munsun.dossier.kafka.payload;
 
-import com.munsun.dossier.queries.payload.enums.Theme;
+import com.munsun.dossier.kafka.payload.enums.Theme;
 
 import java.util.UUID;
 

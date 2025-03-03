@@ -1,4 +1,4 @@
-package com.munsun.dossier.queries.payload.enums;
+package com.munsun.dossier.kafka.payload.enums;
 
 public enum Theme {
     PREPARE_DOCUMENTS,
