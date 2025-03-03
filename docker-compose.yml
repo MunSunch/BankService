@@ -33,7 +33,7 @@ services:
       - discovery-mc
 
   dossier-mc:
-    image: munirsunchalyaev/dossier:0.1.1
+    image: munirsunchalyaev/dossier:0.1.2
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
