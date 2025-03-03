@@ -35,7 +35,7 @@ services:
   statement-mc:
     image: munirsunchalyaev/statement:1.1.0
     environment:
-      # CLIENT_DEAL_URL: http://deal-mc:8080
+      CLIENTS_DEAL_NAME: deal-mc
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     depends_on:
       - deal-mc
@@ -47,7 +47,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
       SPRING_KAFKA_CONSUMER_BOOTSTRAPSERVERS: kafka:29092
-      # CLIENT_DEAL_URL: http://deal-mc:8080
+      CLIENTS_DEAL_NAME: deal-mc
     depends_on:
       - init-kafka
       - discovery-mc
@@ -55,7 +55,7 @@ services:
   deal-mc:
     image: munirsunchalyaev/deal:1.1.2
     environment:
-      # CLIENT_CALCULATOR_URL: http://calculator-mc:8080
+      CLIENTS_CALCULATOR_NAME: calculator-mc
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db/deal_db
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
       SPRING_KAFKA_PRODUCER_BOOTSTRAPSERVERS: kafka:29092
