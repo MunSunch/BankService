@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.munsun</groupId>
 	<artifactId>Gateway</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>gateway</name>
 
 	<properties>
@@ -22,11 +22,6 @@
 	</properties>
 
 	<dependencies>
-<!--		<dependency>-->
-<!--			<groupId>org.springdoc</groupId>-->
-<!--			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>-->
-<!--			<version>${org.springdoc.springdoc-openapi-starter-webflux-ui.version}</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
