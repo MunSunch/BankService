@@ -25,6 +25,21 @@ spring:
           default:
             logger-level: full
 
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
 eureka:
   instance:
     prefer-ip-address: true
