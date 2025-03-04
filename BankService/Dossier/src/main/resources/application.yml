@@ -24,6 +24,22 @@ spring:
                                   com.munsun.deal.kafka.payload.EmailMessageWithCreditDto:com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto,
                                   com.munsun.deal.dto.CreditDto:com.munsun.dossier.kafka.payload.CreditDto,
                                   com.munsun.deal.dto.PaymentScheduleElementDto:com.munsun.dossier.kafka.payload.PaymentScheduleElementDto
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
 kafka:
   init:
     topics: true
