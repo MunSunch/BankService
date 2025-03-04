@@ -67,9 +67,19 @@ management:
       exposure:
         include: gateway
 
-springdoc:
-  swagger-ui:
-    path: /openapi/api-docs-ui
+#springdoc:
+#  swagger-ui:
+#    enabled: true
+#    config-url: /gateway/openapi/swagger-ui
+#    urls:
+#      - name: gateway
+#        url: /gateway/openapi/swagger-ui
+#      - name: calculator-mc
+#        url: /calculator/openapi/ui-docs
+#      - name: deal-mc
+#        url: /deal/api-docs-ui
+#      - name: statement-mc
+#        url: /statement/openapi/ui-docs
 
 eureka:
   instance:
