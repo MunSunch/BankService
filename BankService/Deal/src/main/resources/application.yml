@@ -25,6 +25,10 @@ spring:
           default:
             logger-level: full
 
+app:
+  metrics:
+    enabled: true
+
 management:
   server:
     port: 8081

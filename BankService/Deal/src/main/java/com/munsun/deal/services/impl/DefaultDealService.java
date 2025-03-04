@@ -22,6 +22,7 @@ import com.munsun.deal.repositories.StatementRepository;
 import com.munsun.deal.services.DealService;
 import com.munsun.deal.services.impl.clients.CalculatorFeignClient;
 import feign.FeignException;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,21 +52,20 @@ public class DefaultDealService implements DealService {
         Client client = clientMapper.toClient(loanStatement);
             client.getPassport().setPassportUUID(UUID.randomUUID());
         clientRepository.save(client);
+
         Statement statement = new Statement();
             statement.setCreationDate(LocalDate.now());
             statement.setStatus(ApplicationStatus.PREAPPROVAL, ChangeType.AUTOMATIC);
             statement.setClient(client);
             statement.setTypePayments(typePayment);
         statementRepository.save(statement);
+
         List<LoanOfferDto> offers;
         try {
             offers = calculatorClient.getLoanOffers(typePayment, loanStatement);
-        } catch (FeignException e) {
-            if(e.status() == 400 && e.contentUTF8().contains("prescoring")) {
-                statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
-                statementRepository.save(statement);
-                throw new PrescoringException(e.contentUTF8());
-            }
+        } catch (PrescoringException e) {
+            statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
+            statementRepository.save(statement);
             throw e;
         }
         return offers.stream()
@@ -88,13 +88,10 @@ public class DefaultDealService implements DealService {
         try {
             creditDto = calculatorClient.getCredit(statement.getTypePayments(), scoringDataDto);
             statement.setStatus(ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
-        } catch (FeignException e) {
-            if(e.status() == 500 && e.contentUTF8().contains("scoring")) {
-                statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
-                statementRepository.save(statement);
-                dealProducer.sendScoringException(statement.getClient().getEmail(), Theme.CC_DENIED, statement.getStatementId());
-                throw new ScoringException(e.contentUTF8());
-            }
+        } catch (ScoringException e) {
+            statement.setStatus(ApplicationStatus.CC_DENIED, ChangeType.AUTOMATIC);
+            statementRepository.save(statement);
+            dealProducer.sendScoringException(statement.getClient().getEmail(), Theme.CC_DENIED, statement.getStatementId());
             throw e;
         }
         Credit credit = creditMapper.toCredit(creditDto);

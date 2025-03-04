@@ -29,7 +29,7 @@ public class LoggingRequestResponseFilter implements Filter {
         String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
                 response.getCharacterEncoding());
 
-        log.info("Response{ method: {}, uri: {}, payload={}; status_code={}; response={}",
+        log.info("Request{{} {}, body={}}; Response{{}; body={}}",
                 request.getMethod(), request.getRequestURI(), requestBody, response.getStatus(), responseBody);
         responseWrapper.copyBodyToResponse();
     }

@@ -20,6 +20,10 @@ kafka:
     credit_issued: credit-issued
     statement_denied: statement-denied
 
-client:
+clients:
   calculator:
-    url: http://service-advice.ru
+    name: calculator
+
+app:
+  metrics:
+    enabled: false

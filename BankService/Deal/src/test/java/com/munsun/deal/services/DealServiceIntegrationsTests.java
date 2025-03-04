@@ -44,10 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @SpringBootTest
 @EnableWireMock(
-        @ConfigureWireMock(name="calculator-client", property = "${client.calculator.url}")
+        @ConfigureWireMock(name="calculator", property = "${clients.calculator.name}")
 )
 public class DealServiceIntegrationsTests extends PostgresContainer {
-    @InjectWireMock("calculator-client")
+    @InjectWireMock("calculator")
     private WireMockServer calculatorServer;
     @Autowired
     private ObjectMapper mapper;
@@ -62,7 +62,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     @Test
     public void givenLoanStatementRequestDto_whenGetLoanOffers_thenReturnListLoanOffersSize4() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDto();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayments=ANNUITY")
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayment=ANNUITY")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(mapper.writeValueAsString(TestUtils.getAnnuitentPaymentListLoanOffersDtoAmount10_000Term12()))));
@@ -86,7 +86,7 @@ public class DealServiceIntegrationsTests extends PostgresContainer {
     public void givenInvalidLoanStatementRequestDto_whenGetLoanOffers_thenReturnPrescoringException() throws JsonProcessingException {
         LoanStatementRequestDto loanStatement = TestUtils.getLoanStatementRequestDtoInvalidAmount();
         ErrorMessageDto errorMessage = TestUtils.getErrorMessageInvalidAmount();
-        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayments=ANNUITY")
+        calculatorServer.stubFor(post(LOAN_OFFERS_ENDPOINT_CALCULATOR+"?typePayment=ANNUITY")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.BAD_REQUEST.value())
                         .withHeader("Content-Type", "application/json")

@@ -156,6 +156,118 @@ public class TestUtils {
         );
     }
 
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidBirthDate() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                12,
+                "Munir",
+                "Sunchalyaev",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(2020, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidPassportSeries() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                12,
+                "Munir",
+                "Sunchalyaev",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "461812312",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidPassportNumber() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                12,
+                "Munir",
+                "Sunchalyaev",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "46971212198"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidEmail() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                12,
+                "Munir",
+                "Sunchalyaev",
+                "Raisovich",
+                "",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidTerm() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                1,
+                "Munir",
+                "Sunchalyaev",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidLastName() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                1,
+                "Munir",
+                "12321e2121",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidFirstName() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                15,
+                "123231232321",
+                "Sunchalyaev",
+                "Raisovich",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
+    public static LoanStatementRequestDto getLoanStatementRequestDtoInvalidMiddleName() {
+        return new LoanStatementRequestDto(
+                new BigDecimal("40000"),
+                15,
+                "Munir",
+                "Sunchalyaev",
+                "1213213",
+                "msunchalyaev@gmail.com",
+                LocalDate.of(1998, 5, 26),
+                "4618",
+                "469798"
+        );
+    }
+
     public static Statement getStatementPersistent() {
         UUID id = UUID.randomUUID();
         return Statement.builder()
