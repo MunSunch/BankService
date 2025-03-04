@@ -5,8 +5,32 @@ scrape_configs:
     static_configs:
       - targets: ['calculator-mc:8081']
 
+  - job_name: 'spring_boot_dossier'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['dossier-mc:8081']
+
   - job_name: 'spring_boot_statement'
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['statement-mc:8081']
+
+  - job_name: 'spring_boot_deal'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['deal-mc:8081']
+
+  - job_name: 'spring_boot_gateway'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['gateway-spring-cloud:8081']
+
+  - job_name: 'spring_boot_discovery'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['discovery:8081']
