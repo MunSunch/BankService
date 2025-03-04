@@ -9,3 +9,18 @@ eureka:
 
 server:
   port: 8000
+
+management:
+  server:
+    port: 8001
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
