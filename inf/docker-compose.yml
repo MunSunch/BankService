@@ -1,16 +1,5 @@
 version: '3'
 services:
-  # gateway:
-  #   image: munirsunchalyaev/gateway-custom-nginx:latest
-  #   environment:
-  #     DEAL_MC: deal-mc:8080
-  #     STATEMENT_MC: statement-mc:8080
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - statement-mc
-  #     - deal-mc
-
   grafana:
     image: grafana/grafana
     ports:
@@ -51,7 +40,7 @@ services:
       - discovery-mc
 
   statement-mc:
-    image: munirsunchalyaev/statement:1.1.0
+    image: munirsunchalyaev/statement:1.1.1
     environment:
       CLIENTS_DEAL_NAME: deal
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
