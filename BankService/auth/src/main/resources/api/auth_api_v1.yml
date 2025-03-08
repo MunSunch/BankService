@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: User Authentication API
+  version: 1.0.0
+  description: API for user login and registration, validate JWT
+tags:
+  - name: Auth controller
+paths:
+  /login:
+    post:
+      tags:
+        - auth-rest-controller
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoDto'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityInfoDto'
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /registration:
+    post:
+      tags:
+        - auth-rest-controller
+      operationId: registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoDto'
+      responses:
+        '201':
+          description: User successfully registered
+        '400':
+          description: Bad Request - Username already exists or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+  /validate:
+    post:
+      tags:
+        - auth-rest-controller
+      operationId: validate
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JWT is valid
+        '401':
+          description: Unauthorized - Invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '400':
+          description: Bad Request - Username already exists or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+components:
+  schemas:
+    SecurityInfoDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF
+    UserInfoDto:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: ^[a-zA-Z]{2,30}$
+          example: john_doe
+        password:
+          type: string
+          pattern: ^[a-zA-Z0-9]{2,30}$
+      required:
+        - username
+        - password
+
+    ErrorDto:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid credentials
+        exception:
+          type: string
+          example: InvalidCredentialsException
+        httpStatusCode:
+          type: integer
+          example: 401
+      required:
+        - message
+        - httpStatusCode

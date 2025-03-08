@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: auth
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/admin
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: create schema if not exists liquibase;
+  liquibase:
+    default-schema: liquibase
+    change-log: classpath:db/changelog/2025/03/06-01-changelog.xml
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger/api-docs-ui
+
+security:
+  token:
+    type: Bearer
+    secret: 87be0e332cfaed36983126f729b73d37e5a681327e96e26d051258f0498638c0990fed1a4cec3da7d186b1e98d83d1136994d52cfa78c27b39a1b37e4726dd4c76af4c3be296277891c5ceaddc4ec1f23073459041a5040052f0a60f2dfd5e624cc908373dfd7779925fa35ad989de2ea8754c32ad5a1de5bc4489ec13ceff450d997ac5b3bafafa3b99880b2897cbbb5d7e9c7a48eaadbd6abb91d02414855792570576ac6f93cd1b1dea944661e72ee781636dc53667053c6847b06b89591ca53abd8f13ce57adda641d073d7e01403a634aff05215ced08841a2384dab7f7e8e2baefaa7430f4df0bca4563abfdffec4489800960c0d746ad1d12d848caf2
+    expire:
+      ms: 300000

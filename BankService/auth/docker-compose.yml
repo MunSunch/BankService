@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: admin
+    ports:
+      - 5432:5432
