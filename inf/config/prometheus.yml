@@ -23,6 +23,12 @@ scrape_configs:
     static_configs:
       - targets: ['deal-mc:8081']
 
+  - job_name: 'spring_boot_auth'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['auth-mc:8081']
+
   - job_name: 'spring_boot_gateway'
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'

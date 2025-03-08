@@ -73,8 +73,24 @@ services:
       - init-kafka
       - discovery-mc
 
+  auth-mc:
+    image: munirsunchalyaev/auth:0.0.1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth-db/admin
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+    depends_on:
+      - postgres-auth-db
+      - discovery-mc
+
+  postgres-auth-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: admin
+
   postgres-db:
-    image: postgres
+    image: postgres:alpine
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
