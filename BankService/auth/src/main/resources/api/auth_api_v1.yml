@@ -6,7 +6,7 @@ info:
 tags:
   - name: Auth controller
 paths:
-  /login:
+  /auth/v1/login:
     post:
       tags:
         - auth-rest-controller
@@ -37,7 +37,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
 
-  /registration:
+  /auth/v1/registration:
     post:
       tags:
         - auth-rest-controller
@@ -63,7 +63,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
-  /validate:
+  /auth/v1/validate:
     post:
       tags:
         - auth-rest-controller
