@@ -1,0 +1,458 @@
+openapi: 3.0.0
+info:
+  title: API Routes
+  version: 1.0.0
+tags:
+  - name: "GatewayV1"
+    description: "API Gateway"
+paths:
+  /api/login:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: login user
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoDto'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityInfoDto'
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+  /api/registration:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Register user
+      operationId: registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfoDto'
+      responses:
+        '201':
+          description: User successfully registered
+        '400':
+          description: Bad Request - Invalid credentials or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+  /api/statement:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Get loan statement
+      operationId: getLoanStatements
+      parameters:
+        - in: query
+          name: typePayment
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Get possible offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Validation or prescoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /api/statement/select:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: select loan offer
+      operationId: selectLoanOffer
+      parameters:
+        - name: typePayment
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TypePayments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanOfferDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /api/statement/registration/{statementId}:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: calculation possible offers
+      operationId: calculateCredit
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          schema:
+            type: UUID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinishRegistrationRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Calculate and save credit
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+  /api/document/{statementId}/send:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Deal documents
+      operationId: createDocuments
+      parameters:
+        - in: path
+          name: statementId
+          required: true
+          schema:
+            type: UUID
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+
+  /api/document/{statementId}/sign:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Deal documents
+      operationId: sendSesCodeForSignDocument
+      parameters:
+        - in: path
+          name: statementId
+          required: true
+          schema:
+            type: UUID
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+
+  /api/document/{statementId}/code:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Deal documents
+      operationId: signCodeDocument
+      parameters:
+        - in: path
+          name: statementId
+          required: true
+          schema:
+            type: UUID
+        - name: sesCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+
+  /api/admin/statement/{statementId}:
+    post:
+      tags:
+        - "GatewayV1"
+      summary: Admin statement
+      operationId: getStatements
+      parameters:
+        - in: path
+          name: statementId
+          required: true
+          schema:
+            type: UUID
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Statement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+        '500':
+          description: Server's error or scoring error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageDto'
+components:
+  schemas:
+    TypePayments:
+      type: string
+      enum:
+        - ANNUITY
+        - DIFFERENTIAL
+    ErrorMessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+    LoanOfferDto:
+      required:
+        - isInsuranceEnabled
+        - isSalaryClient
+        - monthlyPayment
+        - rate
+        - requestedAmount
+        - statementId
+        - term
+        - totalAmount
+      type: object
+      properties:
+        statementId:
+          type: string
+          format: uuid
+        requestedAmount:
+          type: number
+        totalAmount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+    LoanStatementRequestDto:
+      required:
+        - amount
+        - birthdate
+        - email
+        - firstName
+        - lastName
+        - middleName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 30000
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        lastName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        middleName:
+          pattern: ^[a-zA-Z]{2,30}$
+          type: string
+        email:
+          pattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          pattern: ^\d{4}$
+          type: string
+        passportNumber:
+          pattern: ^\d{6}$
+          type: string
+    FinishRegistrationRequestDto:
+      type: object
+      properties:
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - NON_BINARY
+        maritalStatus:
+          type: string
+          enum:
+            - MARRIED
+            - DIVORCED
+            - SINGLE
+            - WIDOW_WIDOWER
+        dependentAmount:
+          type: integer
+          format: int32
+        passportIssueDate:
+          type: string
+          format: date
+        passportIssueBranch:
+          type: string
+        employment:
+          $ref: '#/components/schemas/EmploymentDto'
+        accountNumber:
+          type: string
+    EmploymentDto:
+      type: object
+      properties:
+        employmentStatus:
+          type: string
+          enum:
+            - UNEMPLOYED
+            - SELF_EMPLOYED
+            - EMPLOYED
+            - BUSINESS_OWNER
+        employerINN:
+          type: string
+        salary:
+          type: number
+        position:
+          type: string
+          enum:
+            - WORKER
+            - MID_MANAGER
+            - TOP_MANAGER
+            - OWNER
+        workExperienceTotal:
+          type: integer
+          format: int32
+        workExperienceCurrent:
+          type: integer
+          format: int32
+    UserInfoDto:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: ^[a-zA-Z]{2,30}$
+          example: john_doe
+        password:
+          type: string
+          pattern: ^[a-zA-Z0-9]{2,30}$
+      required:
+        - username
+        - password
+    ErrorDto:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid credentials
+        exception:
+          type: string
+          example: InvalidCredentialsException
+        httpStatusCode:
+          type: integer
+          example: 401
+      required:
+        - message
+        - httpStatusCode
+    SecurityInfoDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF
