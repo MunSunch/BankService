@@ -35,7 +35,7 @@ services:
       - 8000:8000
       
   calculator-mc:
-    image: munirsunchalyaev/calculator:1.1.2
+    image: munirsunchalyaev/calculator:1.1.3
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     depends_on:
