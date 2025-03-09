@@ -6,12 +6,14 @@ import com.munsun.statement.dto.TypePayments;
 import com.munsun.statement.services.StatementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 public class StatementController implements V1Api {
     private final StatementService service;
