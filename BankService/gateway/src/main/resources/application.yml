@@ -11,6 +11,7 @@ services:
     name: auth
 
 jwt:
+  type: Bearer
   header: Authorization
 
 server:
