@@ -20,6 +20,8 @@ public class JwtProvider {
     private final AuthClient authClient;
     @Value("${jwt.header}")
     private String header;
+    @Value("${jwt.type}")
+    private String type;
 
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader(header);
@@ -36,6 +38,7 @@ public class JwtProvider {
     }
 
     public Authentication getAuthentication(String token) {
+        token = token.substring(type.length() + 1);
         var claims = JWT.decode(token)
                         .getClaims();
         return new UsernamePasswordAuthenticationToken(
