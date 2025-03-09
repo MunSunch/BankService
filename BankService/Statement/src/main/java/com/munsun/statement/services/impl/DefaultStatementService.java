@@ -1,6 +1,6 @@
 package com.munsun.statement.services.impl;
 
-import com.munsun.statement.clients.DealClient;
+import com.munsun.statement.integrations.http.DealClient;
 import com.munsun.statement.dto.LoanOfferDto;
 import com.munsun.statement.dto.LoanStatementRequestDto;
 import com.munsun.statement.dto.TypePayments;

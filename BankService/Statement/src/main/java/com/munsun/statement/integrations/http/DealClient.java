@@ -1,4 +1,4 @@
-package com.munsun.statement.clients;
+package com.munsun.statement.integrations.http;
 
 import com.munsun.statement.config.FeignClientConfiguration;
 import com.munsun.statement.dto.LoanOfferDto;
