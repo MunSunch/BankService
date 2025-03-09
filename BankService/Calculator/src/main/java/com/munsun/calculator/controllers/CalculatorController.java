@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 public class CalculatorController implements V1Api {
     private final CalculatorService calculatorService;
