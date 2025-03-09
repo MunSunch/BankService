@@ -1,6 +1,6 @@
-package com.munsun.deal.kafka.payload;
+package com.munsun.deal.integrations.amqp.kafka.payload;
 
-import com.munsun.deal.kafka.payload.enums.Theme;
+import com.munsun.deal.integrations.amqp.kafka.payload.enums.Theme;
 
 import java.util.UUID;
 

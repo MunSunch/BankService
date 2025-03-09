@@ -1,11 +1,11 @@
-package com.munsun.deal.kafka.producers.impl;
+package com.munsun.deal.integrations.amqp.kafka.producers.impl;
 
 import com.munsun.deal.dto.CreditDto;
-import com.munsun.deal.kafka.payload.EmailMessage;
-import com.munsun.deal.kafka.payload.EmailMessageWithCreditDto;
-import com.munsun.deal.kafka.payload.EmailMessageWithSesCode;
-import com.munsun.deal.kafka.payload.enums.Theme;
-import com.munsun.deal.kafka.producers.DealProducer;
+import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessage;
+import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithCreditDto;
+import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithSesCode;
+import com.munsun.deal.integrations.amqp.kafka.payload.enums.Theme;
+import com.munsun.deal.integrations.amqp.kafka.producers.DealProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

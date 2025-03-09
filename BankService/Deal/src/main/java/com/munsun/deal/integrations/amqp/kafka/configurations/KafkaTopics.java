@@ -1,4 +1,4 @@
-package com.munsun.deal.kafka.configurations;
+package com.munsun.deal.integrations.amqp.kafka.configurations;
 
 import lombok.Getter;
 import lombok.Setter;

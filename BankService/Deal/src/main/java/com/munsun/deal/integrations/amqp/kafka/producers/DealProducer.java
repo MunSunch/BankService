@@ -1,7 +1,7 @@
-package com.munsun.deal.kafka.producers;
+package com.munsun.deal.integrations.amqp.kafka.producers;
 
 import com.munsun.deal.dto.CreditDto;
-import com.munsun.deal.kafka.payload.enums.Theme;
+import com.munsun.deal.integrations.amqp.kafka.payload.enums.Theme;
 
 import java.util.UUID;
 

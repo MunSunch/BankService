@@ -1,4 +1,4 @@
-package com.munsun.deal.services.impl.clients;
+package com.munsun.deal.integrations.http;
 
 import com.munsun.deal.dto.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
