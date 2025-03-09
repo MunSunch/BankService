@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "${services.auth.name}", configuration = AuthClientConfig.class)
+@FeignClient(value = "${services.auth.name}", configuration = AuthClientConfig.class)
 public interface AuthClient {
     @PostMapping("/auth/v1/validate")
     void validateToken(@RequestParam(name = "token") String token);
