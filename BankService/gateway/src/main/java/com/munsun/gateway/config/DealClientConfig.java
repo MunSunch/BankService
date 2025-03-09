@@ -14,7 +14,7 @@ import javax.script.ScriptException;
 
 @Configuration
 public class DealClientConfig {
-    @Bean
+    @Bean("dealClientErrorDecoder")
     public ErrorDecoder errorDecoder() {
         return (methodKey, response) -> {
             FeignException e = FeignException.errorStatus(methodKey, response);

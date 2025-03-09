@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 
 @Configuration
 public class StatementClientConfig {
-    @Bean
+    @Bean("statementClientErrorDecoder")
     public ErrorDecoder errorDecoder() {
         return (methodKey, response) -> {
             FeignException e = FeignException.errorStatus(methodKey, response);
