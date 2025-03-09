@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "${services.statement.name}", configuration = StatementClientConfig.class)
+@FeignClient(value = "${services.statement.name}", configuration = StatementClientConfig.class)
 public interface StatementClient {
     @PostMapping("/v1/statement")
     List<LoanOfferDto> getLoanStatements(@RequestParam(name = "typePayment") TypePayments typePayments,
