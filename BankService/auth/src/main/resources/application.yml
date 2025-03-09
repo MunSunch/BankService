@@ -15,6 +15,9 @@ spring:
     default-schema: liquibase
     change-log: classpath:db/changelog/2025/03/06-01-changelog.xml
 
+server:
+  port: 8080
+
 management:
   server:
     port: 8081
