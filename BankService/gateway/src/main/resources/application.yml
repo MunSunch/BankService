@@ -7,6 +7,11 @@ services:
     name: statement
   dossier:
     name: dossier
+  auth:
+    name: auth
+
+jwt:
+  header: Authorization
 
 server:
   port: 8080
@@ -14,84 +19,33 @@ server:
 spring:
   application:
     name: gateway
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8088/realms/project
-            userNameAttribute: preferred_username
-        registration:
-          keycloak:
-            client-id: project
-            client-secret: nNrawyGXBheR9cSp4ubX83vO2LoXzPb3
-            scope:
-              - openid
-              - microprofile-jwt
-            authorizationGrantType: authorization_code
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lowerCaseServiceId: true
-      routes:
-        - id: rewrite_to_statement_api_get_loan
-          uri: lb://${services.statement.name}
-          predicates:
-            - Query=typePayment
-            - Method=POST
-            - Path=/api/statement
-          filters:
-            - TokenRelay=
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/api/statement(?<segment>), /v1/statement${segment}
-
-        - id: rewrite_to_statement_api_select_loan
-          uri: lb://${services.statement.name}
-          predicates:
-            - Query=typePayment
-            - Method=POST
-            - Path=/api/statement/select
-          filters:
-            - RewritePath=/api/statement/select(?<segment>), /v1/statement/offer${segment}
-
-        - id: rewrite_to_deal_api_calculate_credit
-          uri: lb://${services.deal.name}
-          predicates:
-            - Method=POST
-            - Path=/api/statement/registration/**
-          filters:
-            - RewritePath=/api/statement/registration/(?<segment>.*), /v1/deal/calculate/$\{segment}
-
-        - id: rewrite_to_deal_api_documents
-          uri: lb://${services.deal.name}
-          predicates:
-            - Path=/api/document/**
-          filters:
-            - RewritePath=/api/document/(?<segment>.*), /v1/deal/document/$\{segment}
-
-        - id: rewrite_to_deal_api_admin
-          uri: lb://${services.deal.name}
-          predicates:
-            - Path=/api/admin/statement/**
-          filters:
-            - RewritePath=/api/admin/statement/(?<segment>.*), /v1/deal/admin/statement/$\{segment}
 
 management:
-  endpoint:
-    gateway:
-      enabled: true
+  server:
+    port: 8081
   endpoints:
     web:
       exposure:
-        include: gateway
+        include: info, health, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
 
 eureka:
   instance:
-    ip-address: true
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
-    serviceUrl:
+    service-url:
       defaultZone: http://localhost:8000/eureka/
+
+springdoc:
+  api-docs:
+    path: /swagger/api-doc
+  swagger-ui:
+    path: /swagger/api-docs-ui
