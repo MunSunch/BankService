@@ -33,7 +33,7 @@ scrape_configs:
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['gateway-spring-cloud:8081']
+      - targets: ['gateway-mc:8080']
 
   - job_name: 'spring_boot_discovery'
     scrape_interval: 5s

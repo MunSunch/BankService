@@ -18,14 +18,15 @@ services:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus:/prometheus
 
-  gateway-spring-cloud:
-    image: munirsunchalyaev/gateway:1.0.2
+  gateway-mc:
+    image: munirsunchalyaev/gateway:2.0.1
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     ports:
       - 8080:8080
       - 8081:8081
     depends_on:
+      - auth-mc
       - discovery-mc
 
   discovery-mc:
