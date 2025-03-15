@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 email-config.yml
+.env
 
 ### STS ###
 .apt_generated

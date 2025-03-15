@@ -6,7 +6,6 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
-#    protocol: ${MAIL_PROTOCOL}
     properties:
       "mail.smtp.auth": true
       "mail.smtp.starttls.enable": true
