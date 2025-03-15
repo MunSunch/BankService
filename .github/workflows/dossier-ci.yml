@@ -35,11 +35,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B clean verify 
-          -DMAIL_HOST=${{ secrets.MAIL_HOST }}
-          -DMAIL_PORT=${{ secrets.MAIL_PORT }} 
-          -DMAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-          -DMAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-          -DMAIL_PROTOCOL=${{ secrets.MAIL_PROTOCOL }} 
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=MunSunch_BankService -Dsonar.organization=munsunch -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml
         working-directory: ${{ env.DIRECTORY }}
 
