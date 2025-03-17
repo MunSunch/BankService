@@ -1,0 +1,124 @@
+openapi: 3.0.1
+info:
+  title: Audit API
+  description: API for retrieving audit logs.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /audit/admin/v1/logs:
+    post:
+      tags:
+        - audit-rest-controller
+      summary: Get audit logs
+      description: Retrieve a paginated list of audit logs based on the provided filter criteria.
+      operationId: getAuditLogs
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Page number for pagination.
+          schema:
+            type: integer
+            minimum: 0
+        - name: size
+          in: query
+          required: true
+          description: Number of items per page.
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditActionRequestDto'
+        required: true
+      responses:
+        '200':
+          description: A paginated list of audit logs.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AuditActionResponseDto'
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+
+components:
+  schemas:
+    ErrorResponseDto:
+      type: object
+      properties:
+        statusCodeHttp:
+          type: integer
+          description: HTTP status code of the error response.
+          example: 400
+        exception:
+          type: string
+          description: Name of the exception that occurred.
+          example: BadRequestException
+        message:
+          type: string
+          description: Detailed error message.
+          example: Invalid input parameters
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the error response.
+
+    OperationType:
+      type: string
+      enum:
+        - START
+        - SUCCESS
+        - FAILURE
+      description: Type of operation performed.
+
+    ServiceType:
+      type: string
+      enum:
+        - DEAL
+        - CALCULATOR
+        - DOSSIER
+        - STATEMENT
+      description: Type of service involved in the operation.
+
+    AuditActionRequestDto:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Unique identifier for the audit action.
+        type:
+          $ref: '#/components/schemas/OperationType'
+        service:
+          $ref: '#/components/schemas/ServiceType'
+
+    AuditActionResponseDto:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Unique identifier for the audit action.
+        type:
+          $ref: '#/components/schemas/OperationType'
+        service:
+          $ref: '#/components/schemas/ServiceType'
+        message:
+          type: string
+          description: Message associated with the audit action.
