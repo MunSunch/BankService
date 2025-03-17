@@ -9,6 +9,8 @@ services:
     name: dossier
   auth:
     name: auth
+  audit:
+    name: audit
 
 jwt:
   type: Bearer

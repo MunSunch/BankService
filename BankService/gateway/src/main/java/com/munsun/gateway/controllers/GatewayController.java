@@ -1,6 +1,7 @@
 package com.munsun.gateway.controllers;
 
 import com.munsun.gateway.dto.*;
+import com.munsun.gateway.integrations.http.AuditClient;
 import com.munsun.gateway.integrations.http.AuthClient;
 import com.munsun.gateway.integrations.http.DealClient;
 import com.munsun.gateway.integrations.http.StatementClient;
@@ -19,6 +20,22 @@ public class GatewayController implements GatewayV1Api {
     private final AuthClient authClient;
     private final DealClient dealClient;
     private final StatementClient statementClient;
+    private final AuditClient auditClient;
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Override
+    public ResponseEntity<List<AuditActionResponseDto>> getAuditLogs(Integer page, Integer size, AuditActionRequestDto auditActionRequestDto) {
+        return ResponseEntity
+                .ok()
+                .body(auditClient.getAuditLogs(page, size, auditActionRequestDto));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Override
+    public ResponseEntity<Void> getStatements(UUID statementId) {
+        dealClient.updateStatusStatement(statementId);
+        return ResponseEntity.ok().build();
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Override
@@ -41,23 +58,6 @@ public class GatewayController implements GatewayV1Api {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_GUEST')")
-    @Override
-    public ResponseEntity<SecurityInfoDto> login(UserInfoDto userInfoDto) {
-        return ResponseEntity
-                .ok()
-                .body(authClient.login(userInfoDto));
-    }
-
-    @PreAuthorize("hasRole('GUEST')")
-    @Override
-    public ResponseEntity<Void> registration(UserInfoDto userInfoDto) {
-        authClient.register(userInfoDto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
-    }
-
     @PreAuthorize("hasRole('ROLE_USER')")
     @Override
     public ResponseEntity<Void> calculateCredit(UUID statementId, FinishRegistrationRequestDto finishRegistrationRequestDto) {
@@ -75,17 +75,27 @@ public class GatewayController implements GatewayV1Api {
                 .body(statementClient.getLoanStatements(typePayment, loanStatementRequestDto));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Override
-    public ResponseEntity<Void> getStatements(UUID statementId) {
-        dealClient.updateStatusStatement(statementId);
-        return ResponseEntity.ok().build();
-    }
-
     @PreAuthorize("hasRole('ROLE_USER')")
     @Override
     public ResponseEntity<Void> selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOfferDto) {
         statementClient.selectLoanOffer(typePayment, loanOfferDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_GUEST')")
+    @Override
+    public ResponseEntity<SecurityInfoDto> login(UserInfoDto userInfoDto) {
+        return ResponseEntity
+                .ok()
+                .body(authClient.login(userInfoDto));
+    }
+
+    @PreAuthorize("hasRole('GUEST')")
+    @Override
+    public ResponseEntity<Void> registration(UserInfoDto userInfoDto) {
+        authClient.register(userInfoDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 }
