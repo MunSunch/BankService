@@ -17,6 +17,7 @@
 
 	<properties>
 		<java.version>17</java.version>
+		<spring-cloud.version>2021.0.3</spring-cloud.version>
 		<redis.clients.jedis.version>5.1.2</redis.clients.jedis.version>
 		<org.mapstruct.mapstruct.version>1.5.5.Final</org.mapstruct.mapstruct.version>
 		<com.redis.testcontainers-redis.version>2.2.2</com.redis.testcontainers-redis.version>
@@ -66,6 +67,14 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
@@ -88,6 +97,19 @@
 			<version>${org.springdoc.springdoc-openapi-starter-webmvc-ui.version}</version>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 
 	<build>
 		<plugins>
