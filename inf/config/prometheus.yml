@@ -11,6 +11,12 @@ scrape_configs:
     static_configs:
       - targets: ['dossier-mc:8081']
 
+  - job_name: 'spring_boot_audit'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['audit-mc:8081']
+
   - job_name: 'spring_boot_statement'
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'

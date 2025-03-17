@@ -29,6 +29,26 @@ services:
       - auth-mc
       - discovery-mc
 
+  audit-mc:
+    image: munirsunchalyaev/audit:0.0.1
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+      SPRING_DATA_REDIS_HOST: redis-audit-db
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
+      SPRING_KAFKA_CONSUMER_BOOTSTRAPSERVERS: kafka:29092
+    depends_on:
+      - discovery-mc
+      - redis-audit-db
+
+  redis-audit-db:
+    image: redis:7.4.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+
   discovery-mc:
     image: munirsunchalyaev/discovery:0.0.1
     ports:
