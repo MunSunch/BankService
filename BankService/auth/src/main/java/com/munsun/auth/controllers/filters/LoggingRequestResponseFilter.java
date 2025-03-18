@@ -1,4 +1,4 @@
-package com.munsun.auth.utils.filters;
+package com.munsun.auth.controllers.filters;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
