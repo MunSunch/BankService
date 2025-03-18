@@ -17,7 +17,7 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<spring-cloud.version>2021.0.3</spring-cloud.version>
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
 		<redis.clients.jedis.version>5.1.2</redis.clients.jedis.version>
 		<org.mapstruct.mapstruct.version>1.5.5.Final</org.mapstruct.mapstruct.version>
 		<com.redis.testcontainers-redis.version>2.2.2</com.redis.testcontainers-redis.version>
