@@ -19,7 +19,7 @@ services:
       - ./prometheus:/prometheus
 
   gateway-mc:
-    image: munirsunchalyaev/gateway:2.1.0
+    image: munirsunchalyaev/gateway:2.1.1
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     ports:
