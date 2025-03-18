@@ -16,4 +16,5 @@ public class KafkaTopics {
     private String send_ses;
     private String credit_issued;
     private String statement_denied;
+    private String audit_logs;
 }

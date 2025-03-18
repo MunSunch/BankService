@@ -1,10 +1,13 @@
 package com.munsun.deal.integrations.amqp.kafka.producers.impl;
 
 import com.munsun.deal.dto.CreditDto;
+import com.munsun.deal.integrations.amqp.kafka.configurations.KafkaTopics;
+import com.munsun.deal.integrations.amqp.kafka.payload.AuditActionPayload;
 import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessage;
 import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithCreditDto;
 import com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithSesCode;
 import com.munsun.deal.integrations.amqp.kafka.payload.enums.Theme;
+import com.munsun.deal.integrations.amqp.kafka.producers.AuditProducer;
 import com.munsun.deal.integrations.amqp.kafka.producers.DealProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,25 +23,22 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KafkaDealProducer implements DealProducer {
+public class KafkaDealProducer implements DealProducer, AuditProducer {
     private final KafkaTemplate<String, EmailMessage> kafkaTemplate;
+    private final KafkaTopics kafkaTopics;
 
-    @Value("${kafka.topics.finish_registration}")
-    private String finishRegistration;
-    @Value("${kafka.topics.create_documents}")
-    private String createDocuments;
-    @Value("${kafka.topics.send_documents}")
-    private String sendDocuments;
-    @Value("${kafka.topics.send_ses}")
-    private String sendSesCode;
-    @Value("${kafka.topics.credit_issued}")
-    private String creditIssued;
-    @Value("${kafka.topics.statement_denied}")
-    private String statementDenied;
+    @Override
+    public void sendAudit(AuditActionPayload auditActionPayload) {
+        Message<AuditActionPayload> message = MessageBuilder
+                .withPayload(auditActionPayload)
+                .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getAudit_logs())
+                .build();
+        kafkaTemplate.send(message);
+    }
 
     @Override
     public void sendFinishRegistrationRequestNotification(String email, Theme theme, UUID statementId) {
-        sendNotification(email, finishRegistration, theme, statementId);
+        sendNotification(email, kafkaTopics.getFinish_registration(), theme, statementId);
     }
 
     private void sendNotification(String email, String topic, Theme theme, UUID statementId) {
@@ -53,7 +53,7 @@ public class KafkaDealProducer implements DealProducer {
     public void sendPrepareDocumentsNotification(String email, Theme theme, UUID statementId, CreditDto creditDto) {
         Message<EmailMessageWithCreditDto> message = MessageBuilder
                 .withPayload(new EmailMessageWithCreditDto(email, theme, statementId, creditDto))
-                    .setHeader(KafkaHeaders.TOPIC, sendDocuments)
+                    .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getSend_documents())
                 .build();
         kafkaTemplate.send(message);
     }
@@ -62,14 +62,14 @@ public class KafkaDealProducer implements DealProducer {
     public void sendSignCodeDocumentsNotification(String email, Theme theme, UUID statementId, UUID sesCode) {
         Message<EmailMessageWithSesCode> message = MessageBuilder
                 .withPayload(new EmailMessageWithSesCode(email, theme, statementId, sesCode))
-                .setHeader(KafkaHeaders.TOPIC, sendSesCode)
+                .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getSend_ses())
                 .build();
         kafkaTemplate.send(message);
     }
 
     @Override
     public void sendSuccessSignDocumentsNotification(String email, Theme theme, UUID statementId) {
-        sendNotification(email, creditIssued, theme, statementId);
+        sendNotification(email, kafkaTopics.getCredit_issued(), theme, statementId);
     }
 
     @Override
@@ -79,6 +79,6 @@ public class KafkaDealProducer implements DealProducer {
 
     @Override
     public void sendCreateDocumentsNotification(String email, Theme theme, UUID statementId) {
-        sendNotification(email, createDocuments, theme, statementId);
+        sendNotification(email, kafkaTopics.getCreate_documents(), theme, statementId);
     }
 }

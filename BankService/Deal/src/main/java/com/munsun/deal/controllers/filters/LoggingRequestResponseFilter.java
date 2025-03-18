@@ -1,4 +1,4 @@
-package com.munsun.deal.utils.filters;
+package com.munsun.deal.controllers.filters;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
