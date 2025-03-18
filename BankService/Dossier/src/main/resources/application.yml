@@ -18,8 +18,12 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.add.type.headers: false
-
+        spring.json.type.mapping: com.munsun.deal.integrations.amqp.kafka.payload.EmailMessage:com.munsun.dossier.kafka.payload.EmailMessage,
+          com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithSesCode:com.munsun.dossier.kafka.payload.EmailMessageWithSesCode,
+          com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithCreditDto:com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto,
+          com.munsun.deal.dto.CreditDto:com.munsun.dossier.kafka.payload.CreditDto,
+          com.munsun.deal.dto.PaymentScheduleElementDto:com.munsun.dossier.kafka.payload.PaymentScheduleElementDto
+        
 management:
   server:
     port: 8081
