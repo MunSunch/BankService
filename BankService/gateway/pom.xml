@@ -12,7 +12,7 @@
 
 	<groupId>com.munsun</groupId>
 	<artifactId>gateway</artifactId>
-	<version>2.1.0-SNAPSHOT</version>
+	<version>2.1.1-SNAPSHOT</version>
 	<name>gateway</name>
 
 	<properties>
@@ -148,7 +148,6 @@
 								<generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 								<useSpringController>true</useSpringController>
 								<generateBuilders>true</generateBuilders>
-								<dateLibrary>java8</dateLibrary>
 								<generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
 							</configOptions>
 						</configuration>

@@ -4,7 +4,6 @@ import com.munsun.gateway.config.AuthClientConfig;
 import com.munsun.gateway.dto.SecurityInfoDto;
 import com.munsun.gateway.dto.UserInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
