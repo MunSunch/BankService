@@ -1,5 +1,6 @@
 package com.munsun.deal.services.impl;
 
+import com.munsun.deal.aspects.annotations.AuditAction;
 import com.munsun.deal.dto.*;
 import com.munsun.deal.exceptions.InvalidSesCode;
 import com.munsun.deal.integrations.amqp.kafka.payload.enums.Theme;
@@ -45,6 +46,7 @@ public class DefaultDealService implements DealService {
     private final CalculatorFeignClient calculatorClient;
     private final DealProducer dealProducer;
 
+    @AuditAction
     @Override
     public List<LoanOfferDto> getLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatement) {
         Client client = clientMapper.toClient(loanStatement);
@@ -74,6 +76,20 @@ public class DefaultDealService implements DealService {
                 .collect(Collectors.toList());
     }
 
+    @AuditAction
+    @Override
+    public void selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOffer) {
+        UUID statementUUID = loanOffer.getStatementId();
+        Statement statement = statementRepository.findById(statementUUID)
+                .orElseThrow(() -> new StatementNotFoundException(loanOffer.getStatementId().toString()));
+        statement.setAppliedOffer(loanOffer);
+        statement.setStatus(ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
+        statementRepository.save(statement);
+        dealProducer.sendFinishRegistrationRequestNotification(statement.getClient().getEmail(),
+                Theme.FINISH_REGISTRATION, statement.getStatementId());
+    }
+
+    @AuditAction
     @Override
     public void calculateCredit(String statementId, FinishRegistrationRequestDto finishRegistration) {
         Statement statement = statementRepository.findById(UUID.fromString(statementId))
@@ -96,21 +112,10 @@ public class DefaultDealService implements DealService {
             credit.setStatus(CreditStatus.CALCULATED);
         statement.setCredit(credit);
         statementRepository.save(statement);
+        creditRepository.save(credit);
 
         dealProducer.sendCreateDocumentsNotification(statement.getClient().getEmail(), Theme.CC_APPROVED, statement.getStatementId());
         dealProducer.sendCreateDocumentsNotification(statement.getClient().getEmail(), Theme.CREATED_DOCUMENTS, statement.getStatementId());
-    }
-
-    @Override
-    public void selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOffer) {
-        UUID statementUUID = loanOffer.getStatementId();
-        Statement statement = statementRepository.findById(statementUUID)
-                .orElseThrow(() -> new StatementNotFoundException(loanOffer.getStatementId().toString()));
-            statement.setAppliedOffer(loanOffer);
-            statement.setStatus(ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
-        statementRepository.save(statement);
-        dealProducer.sendFinishRegistrationRequestNotification(statement.getClient().getEmail(),
-                Theme.FINISH_REGISTRATION, statement.getStatementId());
     }
 
     @Override
@@ -142,6 +147,7 @@ public class DefaultDealService implements DealService {
         statementRepository.save(statement);
     }
 
+    @AuditAction
     @Override
     public void signDocuments(UUID statementId, String sesCode) {
         Statement statement = statementRepository.findById(statementId)

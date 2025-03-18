@@ -63,6 +63,7 @@ kafka:
     send_ses: send-ses
     credit_issued: credit-issued
     statement_denied: statement-denied
+    audit_logs: audit
 
 springdoc:
   api-docs:

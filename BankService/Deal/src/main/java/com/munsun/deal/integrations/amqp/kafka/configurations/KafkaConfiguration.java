@@ -52,4 +52,11 @@ public class KafkaConfiguration {
                 .name(topics.getStatement_denied())
                 .build();
     }
+
+    @Bean
+    public NewTopic auditDealTopic() {
+        return TopicBuilder
+                .name(topics.getAudit_logs())
+                .build();
+    }
 }
