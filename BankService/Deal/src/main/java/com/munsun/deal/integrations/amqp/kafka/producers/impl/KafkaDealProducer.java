@@ -11,7 +11,6 @@ import com.munsun.deal.integrations.amqp.kafka.producers.AuditProducer;
 import com.munsun.deal.integrations.amqp.kafka.producers.DealProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -24,7 +23,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class KafkaDealProducer implements DealProducer, AuditProducer {
-    private final KafkaTemplate<String, EmailMessage> kafkaTemplate;
+    private final KafkaTemplate<String, EmailMessage> kafkaTemplateForDossier;
+    private final KafkaTemplate<String, AuditActionPayload> kafkaTemplateForAuditLogs;
     private final KafkaTopics kafkaTopics;
 
     @Override
@@ -33,7 +33,7 @@ public class KafkaDealProducer implements DealProducer, AuditProducer {
                 .withPayload(auditActionPayload)
                 .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getAudit_logs())
                 .build();
-        kafkaTemplate.send(message);
+        kafkaTemplateForAuditLogs.send(message);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class KafkaDealProducer implements DealProducer, AuditProducer {
                 .withPayload(new EmailMessage(email, theme, statementId))
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
-        kafkaTemplate.send(message);
+        kafkaTemplateForDossier.send(message);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class KafkaDealProducer implements DealProducer, AuditProducer {
                 .withPayload(new EmailMessageWithCreditDto(email, theme, statementId, creditDto))
                     .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getSend_documents())
                 .build();
-        kafkaTemplate.send(message);
+        kafkaTemplateForDossier.send(message);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class KafkaDealProducer implements DealProducer, AuditProducer {
                 .withPayload(new EmailMessageWithSesCode(email, theme, statementId, sesCode))
                 .setHeader(KafkaHeaders.TOPIC, kafkaTopics.getSend_ses())
                 .build();
-        kafkaTemplate.send(message);
+        kafkaTemplateForDossier.send(message);
     }
 
     @Override
