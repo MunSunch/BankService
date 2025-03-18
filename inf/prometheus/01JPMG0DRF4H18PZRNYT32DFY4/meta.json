@@ -1,0 +1,17 @@
+{
+	"ulid": "01JPMG0DRF4H18PZRNYT32DFY4",
+	"minTime": 1742284803788,
+	"maxTime": 1742292000000,
+	"stats": {
+		"numSamples": 182529,
+		"numSeries": 1854,
+		"numChunks": 3114
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JPMG0DRF4H18PZRNYT32DFY4"
+		]
+	},
+	"version": 1
+}

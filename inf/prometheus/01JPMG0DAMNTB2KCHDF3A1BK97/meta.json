@@ -1,0 +1,17 @@
+{
+	"ulid": "01JPMG0DAMNTB2KCHDF3A1BK97",
+	"minTime": 1742284778788,
+	"maxTime": 1742284800000,
+	"stats": {
+		"numSamples": 25,
+		"numSeries": 5,
+		"numChunks": 5
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JPMG0DAMNTB2KCHDF3A1BK97"
+		]
+	},
+	"version": 1
+}
