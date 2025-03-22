@@ -2,14 +2,11 @@ openapi: 3.0.0
 info:
   title: API Routes
   version: 1.0.0
-tags:
-  - name: "GatewayV1"
-    description: "API Gateway"
 paths:
   /api/login:
     post:
       tags:
-        - "GatewayV1"
+        - Security
       summary: login user
       operationId: login
       requestBody:
@@ -39,7 +36,7 @@ paths:
   /api/registration:
     post:
       tags:
-        - "GatewayV1"
+        - Security
       summary: Register user
       operationId: registration
       requestBody:
@@ -66,7 +63,7 @@ paths:
   /api/statement:
     post:
       tags:
-        - "GatewayV1"
+        - Credits
       summary: Get loan statement
       operationId: getLoanStatements
       parameters:
@@ -75,6 +72,13 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/TypePayments'
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       requestBody:
         content:
           application/json:
@@ -105,7 +109,7 @@ paths:
   /api/statement/select:
     post:
       tags:
-        - "GatewayV1"
+        - Credits
       summary: select loan offer
       operationId: selectLoanOffer
       parameters:
@@ -114,6 +118,13 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/TypePayments'
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       requestBody:
         content:
           application/json:
@@ -138,7 +149,7 @@ paths:
   /api/statement/registration/{statementId}:
     post:
       tags:
-        - "GatewayV1"
+        - Credits
       summary: calculation possible offers
       operationId: calculateCredit
       parameters:
@@ -147,6 +158,13 @@ paths:
           required: true
           schema:
             type: UUID
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       requestBody:
         content:
           application/json:
@@ -171,7 +189,7 @@ paths:
   /api/document/{statementId}/send:
     post:
       tags:
-        - "GatewayV1"
+        - Documents
       summary: Deal documents
       operationId: createDocuments
       parameters:
@@ -180,6 +198,13 @@ paths:
           required: true
           schema:
             type: UUID
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       responses:
         '200':
           description: Successful response
@@ -199,7 +224,7 @@ paths:
   /api/document/{statementId}/sign:
     post:
       tags:
-        - "GatewayV1"
+        - Documents
       summary: Deal documents
       operationId: sendSesCodeForSignDocument
       parameters:
@@ -208,6 +233,13 @@ paths:
           required: true
           schema:
             type: UUID
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       responses:
         '200':
           description: Successful response
@@ -227,7 +259,7 @@ paths:
   /api/document/{statementId}/code:
     post:
       tags:
-        - "GatewayV1"
+        - Documents
       summary: Deal documents
       operationId: signCodeDocument
       parameters:
@@ -241,6 +273,13 @@ paths:
           required: true
           schema:
             type: string
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       responses:
         '200':
           description: Successful response
@@ -260,7 +299,7 @@ paths:
   /api/admin/statement/{statementId}:
     post:
       tags:
-        - "GatewayV1"
+        - Admin
       summary: Admin statement
       operationId: getStatements
       parameters:
@@ -269,6 +308,13 @@ paths:
           required: true
           schema:
             type: UUID
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       responses:
         '200':
           description: Successful response
@@ -287,7 +333,7 @@ paths:
   /api/admin/audit/logs:
     post:
       tags:
-        - "GatewayV1"
+        - Admin
       summary: Get audit logs
       description: Retrieve a paginated list of audit logs based on the provided filter criteria.
       operationId: getAuditLogs
@@ -306,6 +352,13 @@ paths:
           schema:
             type: integer
             minimum: 1
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: Bearer <your-token-here>
       requestBody:
         content:
           application/json:
