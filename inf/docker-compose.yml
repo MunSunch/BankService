@@ -19,7 +19,7 @@ services:
       - ./prometheus:/prometheus
 
   gateway-mc:
-    image: munirsunchalyaev/gateway:2.1.1
+    image: munirsunchalyaev/gateway:2.2.0
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     ports:
@@ -28,6 +28,37 @@ services:
     depends_on:
       - auth-mc
       - discovery-mc
+
+  elasticsearch:
+    image: elasticsearch:8.16.5
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9300:9300
+      - 9200:9200
+
+  kibana:
+    image: kibana:8.16.5
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+
+  logstash:
+    image: logstash:8.16.5
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config/logstash.conf:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
 
   audit-mc:
     image: munirsunchalyaev/audit:0.0.1
