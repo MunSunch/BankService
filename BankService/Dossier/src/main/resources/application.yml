@@ -23,7 +23,11 @@ spring:
           com.munsun.deal.integrations.amqp.kafka.payload.EmailMessageWithCreditDto:com.munsun.dossier.kafka.payload.EmailMessageWithCreditDto,
           com.munsun.deal.dto.CreditDto:com.munsun.dossier.kafka.payload.CreditDto,
           com.munsun.deal.dto.PaymentScheduleElementDto:com.munsun.dossier.kafka.payload.PaymentScheduleElementDto
-        
+
+logging:
+  logstash:
+    server: localhost:9999
+
 management:
   server:
     port: 8081
