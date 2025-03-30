@@ -2,6 +2,10 @@ spring:
   application:
     name: calculator
 
+logging:
+  logstash:
+    server: localhost:9999
+
 management:
   server:
     port: 8081
