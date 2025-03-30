@@ -1,4 +1,4 @@
-package com.munsun.calculator.utils.filters;
+package com.munsun.calculator.controllers.filters;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
