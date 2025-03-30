@@ -15,6 +15,10 @@ spring:
     default-schema: liquibase
     change-log: classpath:db/changelog/2025/03/06-01-changelog.xml
 
+logging:
+  logstash:
+    server: localhost:9999
+
 server:
   port: 8080
 
