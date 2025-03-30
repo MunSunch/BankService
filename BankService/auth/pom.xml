@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.munsun</groupId>
 	<artifactId>auth</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>auth</name>
 
 	<properties>
@@ -24,6 +24,7 @@
 		<org.testcontainers.junit-jupiter.version>1.19.8</org.testcontainers.junit-jupiter.version>
 		<org.junit.vintage.junit-vintage-engine.version>5.10.2</org.junit.vintage.junit-vintage-engine.version>
 		<org.testcontainers.postgresql.version>1.19.8</org.testcontainers.postgresql.version>
+		<net.logstash.logback.logstash-logback-encoder.version>7.2</net.logstash.logback.logstash-logback-encoder.version>
 		<org.apache.maven.plugins.maven-compiler-plugin.version>3.11.0</org.apache.maven.plugins.maven-compiler-plugin.version>
 		<org.projectlombok.lombok-mapstruct-binding.version>0.2.0</org.projectlombok.lombok-mapstruct-binding.version>
 		<org.springdoc.springdoc-openapi-ui.version>1.7.0</org.springdoc.springdoc-openapi-ui.version>
@@ -34,6 +35,11 @@
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${net.logstash.logback.logstash-logback-encoder.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
