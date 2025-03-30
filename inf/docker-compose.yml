@@ -1,7 +1,7 @@
 version: '3'
 services:
   gateway-mc:
-    image: munirsunchalyaev/gateway:2.2.0
+    image: munirsunchalyaev/gateway:2.2.1
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
       LOGGING_LOGSTASH_SERVER: logstash:9999
@@ -62,10 +62,10 @@ services:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
       SPRING_KAFKA_CONSUMER_BOOTSTRAPSERVERS: kafka:29092
       CLIENTS_DEAL_NAME: deal
-      SPRING_MAIL_HOST: smtp.gmail.com
-      SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: msunchalyaev@gmail.com
-      SPRING_MAIL_PASSWORD: bfas qspn oipq jrvx
+      SPRING_MAIL_HOST: host
+      SPRING_MAIL_PORT: 777
+      SPRING_MAIL_USERNAME: username
+      SPRING_MAIL_PASSWORD: password
       LOGGING_LOGSTASH_SERVER: logstash:9999
     depends_on:
       - init-kafka
