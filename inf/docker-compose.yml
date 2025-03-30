@@ -1,23 +1,5 @@
 version: '3'
 services:
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-    volumes:
-      - ./grafana:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-          
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus:/prometheus
-
   gateway-mc:
     image: munirsunchalyaev/gateway:2.2.0
     environment:
@@ -28,22 +10,6 @@ services:
     depends_on:
       - auth-mc
       - discovery-mc
-
-  elasticsearch:
-    image: elasticsearch:8.16.5
-    environment:
-      - node.name=elasticsearch
-      - discovery.type=single-node
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9300:9300
-      - 9200:9200
 
   audit-mc:
     image: munirsunchalyaev/audit:0.0.1
@@ -87,7 +53,7 @@ services:
       - discovery-mc
 
   dossier-mc:
-    image: munirsunchalyaev/dossier:0.1.4
+    image: munirsunchalyaev/dossier:1.0.0
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
@@ -115,7 +81,7 @@ services:
       - discovery-mc
 
   auth-mc:
-    image: munirsunchalyaev/auth:0.0.2
+    image: munirsunchalyaev/auth:0.1.0
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth-db/admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
@@ -137,6 +103,58 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: deal_db
+
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    container_name: elasticsearch
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash:
+    image: logstash:7.10.1
+    container_name: logstash
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./logstash/:/etc/logstash/conf.d/
+    ports:
+      - "9999:9999"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:7.10.1
+    container_name: kibana
+    volumes:
+      - ./kibana/:/usr/share/kibana/config/
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+          
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
 
   zookeeper:
     image: confluentinc/cp-zookeeper
