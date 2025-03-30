@@ -4,6 +4,7 @@ services:
     image: munirsunchalyaev/gateway:2.2.0
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+      LOGGING_LOGSTASH_SERVER: logstash:9999
     ports:
       - 8080:8080
       - 8081:8081
@@ -39,6 +40,7 @@ services:
   calculator-mc:
     image: munirsunchalyaev/calculator:1.2.0
     environment:
+      LOGGING_LOGSTASH_SERVER: logstash:9999
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
     depends_on:
       - discovery-mc
@@ -48,6 +50,7 @@ services:
     environment:
       CLIENTS_DEAL_NAME: deal
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+      LOGGING_LOGSTASH_SERVER: logstash:9999
     depends_on:
       - deal-mc
       - discovery-mc
@@ -59,10 +62,11 @@ services:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
       SPRING_KAFKA_CONSUMER_BOOTSTRAPSERVERS: kafka:29092
       CLIENTS_DEAL_NAME: deal
-      SPRING_MAIL_HOST: host
-      SPRING_MAIL_PORT: 777
-      SPRING_MAIL_USERNAME: username
-      SPRING_MAIL_PASSWORD: password
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: msunchalyaev@gmail.com
+      SPRING_MAIL_PASSWORD: bfas qspn oipq jrvx
+      LOGGING_LOGSTASH_SERVER: logstash:9999
     depends_on:
       - init-kafka
       - discovery-mc
@@ -75,6 +79,7 @@ services:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:29092
       SPRING_KAFKA_PRODUCER_BOOTSTRAPSERVERS: kafka:29092
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
+      LOGGING_LOGSTASH_SERVER: logstash:9999
     depends_on:
       - postgres-deal-db
       - init-kafka
@@ -86,6 +91,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth-db/admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-mc:8000/eureka/
       SECURITY_TOKEN_EXPIRE_MS: 3000000
+      LOGGING_LOGSTASH_SERVER: logstash:9999
     depends_on:
       - postgres-auth-db
       - discovery-mc
