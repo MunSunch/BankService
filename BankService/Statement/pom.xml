@@ -11,7 +11,7 @@
 
 	<groupId>com.munsun</groupId>
 	<artifactId>Statement</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>Statement</name>
 	<description>Statement Microservice</description>
 
@@ -23,9 +23,15 @@
 		<com.maciejwalkowiak.spring.wiremock-spring-boot.version>2.1.2</com.maciejwalkowiak.spring.wiremock-spring-boot.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.12</org.jacoco.jacoco-maven-plugin.version>
 		<org.apache.maven.plugins.maven-surefire-plugin.version>2.22.2</org.apache.maven.plugins.maven-surefire-plugin.version>
+		<net.logstash.logback.logstash-logback-encoder.version>6.6</net.logstash.logback.logstash-logback-encoder.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${net.logstash.logback.logstash-logback-encoder.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
@@ -115,7 +121,7 @@
 						</goals>
 						<configuration>
 							<skipValidateSpec>true</skipValidateSpec>
-							<inputSpec>${project.basedir}/src/main/resources/openapi-statement-api-v1.yml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/api/openapi-statement-api-v1.yml</inputSpec>
 							<apiPackage>com.munsun.statement.controllers</apiPackage>
 							<modelPackage>com.munsun.statement.dto</modelPackage>
 							<generatorName>spring</generatorName>

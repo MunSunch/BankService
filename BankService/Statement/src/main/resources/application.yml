@@ -2,6 +2,10 @@ spring:
   application:
     name: statement
 
+logging:
+  logstash:
+    server: localhost:9999
+
 management:
   server:
     port: 8081
