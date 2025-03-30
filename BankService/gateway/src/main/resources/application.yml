@@ -1,3 +1,7 @@
+spring:
+  application:
+    name: gateway
+
 services:
   calculator:
     name: calculator
@@ -12,13 +16,13 @@ services:
   audit:
     name: audit
 
+logging:
+  logstash:
+    server: localhost:9999
+
 jwt:
   type: Bearer
   header: Authorization
-
-spring:
-  application:
-    name: gateway
 
 management:
   server:

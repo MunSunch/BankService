@@ -29,7 +29,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             var authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
-            log.info("Token is invalid or empty; set ROLE_GUEST");
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(null, null, List.of(new SimpleGrantedAuthority("ROLE_GUEST")))
             );

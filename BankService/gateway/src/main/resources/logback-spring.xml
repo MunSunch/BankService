@@ -1,17 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <springProperty scope="context" name="application_name" source="spring.application.name"/>
+    <springProperty scope="context" name="logstashServer" source="logging.logstash.server"/>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"/>
 
-    <appender name="logstash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
-        <destination>logstash:9999</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstashServer}</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"host": "${applicationName}"}</customFields>
+        </encoder>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="logstash"/>
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="LOGSTASH" />
     </root>
-    <logger name="org.springframework" level="INFO"/>
-    <logger name="com.optimagrowth" level="DEBUG"/>
+
 </configuration>

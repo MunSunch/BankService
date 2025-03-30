@@ -19,6 +19,7 @@
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.5</spring-cloud.version>
 		<com.auth0.java-jwt.version>4.2.1</com.auth0.java-jwt.version>
+		<net.logstash.logback.logstash-logback-encoder.version>7.2</net.logstash.logback.logstash-logback-encoder.version>
 		<org.springdoc.springdoc-openapi-starter-webmvc-ui.version>2.5.0</org.springdoc.springdoc-openapi-starter-webmvc-ui.version>
 		<org.org.openapitools.openapi-generator-maven-plugin.version>7.9.0</org.org.openapitools.openapi-generator-maven-plugin.version>
 	</properties>
@@ -27,7 +28,7 @@
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
-			<version>7.4</version>
+			<version>${net.logstash.logback.logstash-logback-encoder.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
