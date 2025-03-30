@@ -25,6 +25,8 @@ spring:
           default:
             logger-level: full
 
+
+
 app:
   metrics:
     enabled: true
@@ -76,5 +78,7 @@ clients:
     name: calculator
 
 logging:
+  logstash:
+    server: localhost:9999
   level:
     root: info

@@ -19,7 +19,7 @@ public class DealRestController implements V1Api {
     private final DealService service;
 
     @Override
-    public ResponseEntity<Void> _calculateCredit(String statementId, FinishRegistrationRequestDto finishRegistrationRequestDto) {
+    public ResponseEntity<Void> calculateCredit(String statementId, FinishRegistrationRequestDto finishRegistrationRequestDto) {
         service.calculateCredit(statementId, finishRegistrationRequestDto);
         return ResponseEntity
                 .ok()
@@ -27,14 +27,14 @@ public class DealRestController implements V1Api {
     }
 
     @Override
-    public ResponseEntity<List<LoanOfferDto>> _calculateLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatementRequestDto) {
+    public ResponseEntity<List<LoanOfferDto>> calculateLoanOffers(TypePayments typePayment, LoanStatementRequestDto loanStatementRequestDto) {
         return ResponseEntity
                 .ok()
                 .body(service.getLoanOffers(typePayment, loanStatementRequestDto));
     }
 
     @Override
-    public ResponseEntity<Void> _selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOfferDto) {
+    public ResponseEntity<Void> selectLoanOffer(TypePayments typePayment, LoanOfferDto loanOfferDto) {
         service.selectLoanOffer(typePayment, loanOfferDto);
         return ResponseEntity
                 .ok()
@@ -42,7 +42,7 @@ public class DealRestController implements V1Api {
     }
 
     @Override
-    public ResponseEntity<Void> _createDocument(UUID statementId) {
+    public ResponseEntity<Void> createDocument(UUID statementId) {
         service.prepareDocuments(statementId);
         return ResponseEntity
                 .ok()
@@ -50,7 +50,7 @@ public class DealRestController implements V1Api {
     }
 
     @Override
-    public ResponseEntity<Void> _sendCodeDocument(UUID statementId) {
+    public ResponseEntity<Void> sendCodeDocument(UUID statementId) {
         service.createSignCodeDocuments(statementId);
         return ResponseEntity
                 .ok()
@@ -58,7 +58,7 @@ public class DealRestController implements V1Api {
     }
 
     @Override
-    public ResponseEntity<Void> _signCodeDocument(UUID statementId, String sesCode) {
+    public ResponseEntity<Void> signCodeDocument(UUID statementId, String sesCode) {
         service.signDocuments(statementId, sesCode);
         return ResponseEntity
                 .ok()
@@ -66,7 +66,7 @@ public class DealRestController implements V1Api {
     }
 
     @Override
-    public ResponseEntity<Void> _updateStatusDocument(UUID statementId) {
+    public ResponseEntity<Void> updateStatusDocument(UUID statementId) {
         service.updateStatus(statementId);
         return ResponseEntity
                 .ok()
